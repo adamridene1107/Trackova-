@@ -114,19 +114,7 @@ export default function App({ user, onLogout }) {
         style={{ background: "rgba(12,12,20,0.95)", borderBottom: "1px solid rgba(139,92,246,0.1)", backdropFilter: "blur(20px)" }}>
         <div className="max-w-2xl mx-auto flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <img src="/logo.svg" alt="Goal Tracking" className="w-12 h-12 flex-shrink-0" />
-            <div>
-              <h1 className="font-bold text-white text-sm leading-tight">{goal.label}</h1>
-              <div className="inline-flex items-center gap-1 mt-0.5 px-2 py-0.5 rounded-full text-xs font-semibold"
-                style={{
-                  background: streakBig ? "rgba(251,191,36,0.15)" : "rgba(139,92,246,0.1)",
-                  border: "1px solid " + (streakBig ? "rgba(251,191,36,0.3)" : "rgba(139,92,246,0.2)"),
-                  color: streakBig ? "#fbbf24" : "#a78bfa",
-                }}>
-                <Flame size={10} />
-                <span>{data.streak} jour{data.streak !== 1 ? "s" : ""} de streak{streakBig ? " 🔥" : ""}</span>
-              </div>
-            </div>
+            <img src="/logo.svg" alt="Goal Tracking" className="h-10 flex-shrink-0" />
           </div>
           <div className="flex items-center gap-1">
             <ExportPDF data={data} />
