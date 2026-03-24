@@ -18,7 +18,7 @@ export default function Subscription() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch("/.netlify/functions/create-checkout", { method: "POST" })
+      const res = await fetch("/api/create-checkout", { method: "POST" })
       const data = await res.json()
       if (data.url) { window.location.href = data.url }
       else { setError("Erreur lors de la création de la session.") }
