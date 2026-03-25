@@ -25,6 +25,7 @@ export default function AuthPage({ onAuth }) {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const [loading, setLoading] = useState(false)
+  const [acceptTerms, setAcceptTerms] = useState(false)
 
   // Questions de sécurité
   const [q1, setQ1] = useState(QUESTIONS[0])
@@ -58,6 +59,7 @@ export default function AuthPage({ onAuth }) {
       if (!name.trim()) { setLoading(false); return setError("Entre ton prénom") }
       if (!email.trim()) { setLoading(false); return setError("Entre ton email") }
       if (password.length < 6) { setLoading(false); return setError("Mot de passe trop court (6 min)") }
+      if (!acceptTerms) { setLoading(false); return setError("Tu dois accepter les CGU et la politique de confidentialité") }
       if (users[email]) { setLoading(false); return setError("Ce compte existe déjà") }
       setLoading(false)
       goTo("questions")
@@ -224,6 +226,18 @@ export default function AuthPage({ onAuth }) {
               </div>
             )}
 
+            {mode === "signup" && (
+              <label className="flex items-start gap-2.5 cursor-pointer">
+                <input type="checkbox" checked={acceptTerms} onChange={e => setAcceptTerms(e.target.checked)}
+                  className="mt-0.5 flex-shrink-0 accent-violet-500" />
+                <span className="text-white/40 text-xs leading-relaxed">
+                  J'accepte les{" "}
+                  <a href="/cgu" target="_blank" className="text-violet-400 hover:text-violet-300 underline">CGU</a>
+                  {" "}et la{" "}
+                  <a href="/privacy" target="_blank" className="text-violet-400 hover:text-violet-300 underline">politique de confidentialité</a>
+                </span>
+              </label>
+            )}
             {error && <div className="px-3 py-2 rounded-xl text-xs text-red-400" style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.15)" }}>{error}</div>}
             {success && <div className="px-3 py-2 rounded-xl text-xs text-emerald-400" style={{ background:"rgba(52,211,153,0.08)", border:"1px solid rgba(52,211,153,0.15)" }}>{success}</div>}
 
