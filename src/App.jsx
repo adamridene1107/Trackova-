@@ -12,6 +12,7 @@ import Devoirs from "./components/Devoirs"
 const MesFichiers = lazy(() => import("./components/MesFichiers"))
 const Gamification = lazy(() => import("./components/Gamification"))
 import Seance from "./components/Seance"
+const SettingsPage = lazy(() => import("./components/SettingsPage"))
 import Idees from "./components/Idees"
 import { useGamification } from "./hooks/useGamification"
 import { getGoalById } from "./lib/goals"
@@ -156,21 +157,15 @@ export default function App({ user, onLogout }) {
       </Suspense></main>
 
       {showSettings && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
-          style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="w-full max-w-md fade-up" style={{ background: "rgba(18,18,26,0.97)", border: "1px solid rgba(139,92,246,0.15)", borderRadius: "1.25rem", boxShadow: "0 24px 64px rgba(0,0,0,0.6)" }}>
-            <div className="flex items-center justify-between p-5" style={{ borderBottom: "1px solid rgba(139,92,246,0.08)" }}>
-              <h2 className="font-semibold text-white text-sm">Paramètres</h2>
-              <button onClick={() => setShowSettings(false)} className="btn-ghost"><X size={16} /></button>
-            </div>
-            <div className="p-5 space-y-4">
-              <Notifications data={data} updateNotifications={updateNotifications} />
-              <button onClick={() => { resetGoal(); setShowSettings(false) }} className="btn-outline w-full py-3 text-sm">
-                Changer d'objectif
-              </button>
-            </div>
-          </div>
-        </div>
+        <Suspense fallback={null}>
+          <SettingsPage
+            user={user}
+            data={data}
+            onLogout={onLogout}
+            resetGoal={() => { resetGoal(); setShowSettings(false) }}
+            onClose={() => setShowSettings(false)}
+          />
+        </Suspense>
       )}
     </div>
   )
