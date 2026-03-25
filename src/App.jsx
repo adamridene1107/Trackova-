@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react"
+import { useState, useCallback } from "react" // trakova
 import { useGoalTracker } from "./hooks/useGoalTracker"
 import GoalSelector from "./components/GoalSelector"
 import DailyCheck from "./components/DailyCheck"
