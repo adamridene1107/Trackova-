@@ -9,6 +9,7 @@ const TrialExpired = lazy(() => import("./components/TrialExpired"))
 const AdminPage = lazy(() => import("./components/AdminPage"))
 const LandingPage = lazy(() => import("./components/LandingPage"))
 const AuthPage = lazy(() => import("./components/AuthPage"))
+const LegalPage = lazy(() => import("./components/LegalPage"))
 
 const Spinner = () => (
   <div className="min-h-screen flex items-center justify-center" style={{ background:"#0A0A0F" }}>
@@ -30,6 +31,8 @@ function Root() {
        path === "/success" ? <SuccessPage /> :
        path === "/trial-expired" ? <TrialExpired /> :
        path === "/admin" ? <AdminPage /> :
+       path === "/privacy" ? <LegalPage type="privacy" /> :
+       path === "/cgu" ? <LegalPage type="cgu" /> :
        path === "/login" ? <AuthPage onAuth={(u) => { setSession(u); window.location.href = "/" }} /> :
        !session ? <LandingPage onGetStarted={() => { window.location.href = "/login" }} /> :
        <App user={session} onLogout={() => { localStorage.removeItem("gt_session"); setSession(null) }} />}
