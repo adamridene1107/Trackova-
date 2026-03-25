@@ -1,13 +1,20 @@
-﻿import React, { useState } from "react"
+import React, { useState, lazy, Suspense } from "react"
 import ReactDOM from "react-dom/client"
-import App from "./App"
-import Subscription from "./components/Subscription"
-import SuccessPage from "./components/SuccessPage"
-import TrialExpired from "./components/TrialExpired"
-import AdminPage from "./components/AdminPage"
-import LandingPage from "./components/LandingPage"
-import AuthPage from "./components/AuthPage"
 import "./index.css"
+
+const App = lazy(() => import("./App"))
+const Subscription = lazy(() => import("./components/Subscription"))
+const SuccessPage = lazy(() => import("./components/SuccessPage"))
+const TrialExpired = lazy(() => import("./components/TrialExpired"))
+const AdminPage = lazy(() => import("./components/AdminPage"))
+const LandingPage = lazy(() => import("./components/LandingPage"))
+const AuthPage = lazy(() => import("./components/AuthPage"))
+
+const Spinner = () => (
+  <div className="min-h-screen flex items-center justify-center" style={{ background:"#0A0A0F" }}>
+    <div className="w-8 h-8 border-2 border-white/20 border-t-white/60 rounded-full animate-spin"/>
+  </div>
+)
 
 function getSession() {
   try { return JSON.parse(localStorage.getItem("gt_session")) } catch { return null }
@@ -17,15 +24,17 @@ function Root() {
   const path = window.location.pathname
   const [session, setSession] = useState(getSession)
 
-  if (path === "/subscribe") return <Subscription />
-  if (path === "/success") return <SuccessPage />
-  if (path === "/trial-expired") return <TrialExpired />
-  if (path === "/admin") return <AdminPage />
-  if (path === "/login") return <AuthPage onAuth={(u) => { setSession(u); window.location.href = "/" }} />
-
-  if (!session) return <LandingPage onGetStarted={() => { window.location.href = "/login" }} />
-
-  return <App user={session} onLogout={() => { localStorage.removeItem("gt_session"); setSession(null) }} />
+  return (
+    <Suspense fallback={<Spinner />}>
+      {path === "/subscribe" ? <Subscription /> :
+       path === "/success" ? <SuccessPage /> :
+       path === "/trial-expired" ? <TrialExpired /> :
+       path === "/admin" ? <AdminPage /> :
+       path === "/login" ? <AuthPage onAuth={(u) => { setSession(u); window.location.href = "/" }} /> :
+       !session ? <LandingPage onGetStarted={() => { window.location.href = "/login" }} /> :
+       <App user={session} onLogout={() => { localStorage.removeItem("gt_session"); setSession(null) }} />}
+    </Suspense>
+  )
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(

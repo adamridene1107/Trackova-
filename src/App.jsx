@@ -1,16 +1,16 @@
-import { useState, useCallback } from "react" // trakova
+import { useState, useCallback, useMemo, lazy, Suspense } from "react" // trakova
 import { useGoalTracker } from "./hooks/useGoalTracker"
 import GoalSelector from "./components/GoalSelector"
-import DailyCheck from "./components/DailyCheck"
+const DailyCheck = lazy(() => import("./components/DailyCheck"))
 import Missions from "./components/Missions"
-import ProgressCalendar from "./components/ProgressCalendar"
-import ProgressChart from "./components/ProgressChart"
-import ExportPDF from "./components/ExportPDF"
+const ProgressCalendar = lazy(() => import("./components/ProgressCalendar"))
+const ProgressChart = lazy(() => import("./components/ProgressChart"))
+const ExportPDF = lazy(() => import("./components/ExportPDF"))
 import Notifications from "./components/Notifications"
 import Resources from "./components/Resources"
 import Devoirs from "./components/Devoirs"
-import MesFichiers from "./components/MesFichiers"
-import Gamification from "./components/Gamification"
+const MesFichiers = lazy(() => import("./components/MesFichiers"))
+const Gamification = lazy(() => import("./components/Gamification"))
 import Seance from "./components/Seance"
 import Idees from "./components/Idees"
 import { useGamification } from "./hooks/useGamification"
@@ -142,7 +142,7 @@ export default function App({ user, onLogout }) {
         </nav>
       </header>
 
-      <main className="max-w-2xl mx-auto p-4 pb-8">
+      <main className="max-w-2xl mx-auto p-4 pb-8"><Suspense fallback={<div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-white/20 border-t-white/60 rounded-full animate-spin"/></div>}>
         <div className={activeTab === "today"     ? "" : "hidden"}><DailyCheck data={data} today={today} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} onTaskComplete={handleTaskComplete} onFocusComplete={onFocusComplete} showPomodoro={data.goal === "homework"} /></div>
         <div className={activeTab === "seance"    ? "" : "hidden"}><Seance data={data} updateEntry={updateEntry} getTodayEntry={getTodayEntry} /></div>
         <div className={activeTab === "idees"     ? "" : "hidden"}><Idees /></div>
@@ -153,7 +153,7 @@ export default function App({ user, onLogout }) {
         <div className={activeTab === "stats"     ? "" : "hidden"}><ProgressChart data={data} /></div>
         <div className={activeTab === "fichiers"  ? "" : "hidden"}><MesFichiers goalId={data.goal} /></div>
         <div className={activeTab === "xp"        ? "" : "hidden"}><Gamification /></div>
-      </main>
+      </Suspense></main>
 
       {showSettings && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
