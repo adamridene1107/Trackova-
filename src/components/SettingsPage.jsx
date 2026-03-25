@@ -67,8 +67,29 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
   const [streakGoal, setStreakGoal] = useState(settings.streakGoal || 7)
 
   const [deleteConfirm, setDeleteConfirm] = useState(0)
+  const [cancelStatus, setCancelStatus] = useState("") // "" | "confirm" | "loading" | "done"
+  const [cancelEndDate, setCancelEndDate] = useState("")
 
   const toast_ = (msg) => setToast(msg)
+
+  const cancelSub = async () => {
+    if (cancelStatus === "") { setCancelStatus("confirm"); return }
+    if (cancelStatus === "confirm") {
+      setCancelStatus("loading")
+      try {
+        const res = await fetch("/api/cancel-subscription", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        })
+        const data = await res.json()
+        if (!res.ok) { toast_(data.error || "Erreur"); setCancelStatus(""); return }
+        setCancelEndDate(data.endDate)
+        setCancelStatus("done")
+        toast_("Abonnement résilié — actif jusqu'au " + data.endDate)
+      } catch(e) { toast_("Erreur réseau"); setCancelStatus("") }
+    }
+  }
 
   const saveProfil = () => {
     if (!name.trim()) return
@@ -303,11 +324,26 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                     <p className="text-white font-bold">Trakova Premium — 6€/mois</p>
                     <p className="text-white/40 text-xs mt-1">Essai gratuit 7 jours · Sans engagement</p>
                   </div>
-                  <a href="/subscribe" className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm text-white/60 hover:text-white transition-all"
-                    style={{ border:"1px solid rgba(255,255,255,0.08)", background:"rgba(255,255,255,0.02)" }}>
-                    <span>Gérer mon abonnement</span>
-                    <ChevronRight size={14}/>
-                  </a>
+                  {cancelStatus === "done" ? (
+                    <div className="px-4 py-3 rounded-xl text-sm text-amber-400" style={{ background:"rgba(251,191,36,0.08)", border:"1px solid rgba(251,191,36,0.2)" }}>
+                      Abonnement résilié — accès jusqu'au {cancelEndDate}
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <button onClick={cancelSub} disabled={cancelStatus==="loading"}
+                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm transition-all"
+                        style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", color:"#f87171" }}>
+                        {cancelStatus === "loading" ? <span className="w-4 h-4 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin"/> :
+                         cancelStatus === "confirm" ? "Confirmer la résiliation" : "Résilier mon abonnement"}
+                      </button>
+                      {cancelStatus === "confirm" && (
+                        <div className="flex gap-2">
+                          <p className="text-white/30 text-xs flex-1">Ton accès reste actif jusqu'à la fin de la période en cours.</p>
+                          <button onClick={() => setCancelStatus("")} className="text-white/30 text-xs hover:text-white/60">Annuler</button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </Section>
             )}
