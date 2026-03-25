@@ -28,6 +28,7 @@ function Confetti({ items }) {
 }
 
 export default function LandingPage({ onGetStarted }) {
+  const [faqOpen, setFaqOpen] = useState(null)
   const [confetti, setConfetti] = useState([])
   const [activeFeature, setActiveFeature] = useState(0)
 
@@ -229,6 +230,29 @@ export default function LandingPage({ onGetStarted }) {
       </section>
 
       {/* FOOTER */}
+
+      {/* FAQ */}
+      <section className="px-6 py-20 max-w-2xl mx-auto">
+        <h2 className="text-2xl font-bold text-white text-center mb-2">Questions fréquentes</h2>
+        <p className="text-white/40 text-sm text-center mb-10">Tout ce que tu veux savoir sur Trackova</p>
+        <div className="space-y-3">
+          {[
+            { q:"Comment s'organiser quand on est étudiant ?", a:"Trackova centralise tes devoirs, révisions et objectifs. Tu crées des tâches quotidiennes, suis ta progression et maintiens un streak de travail régulier pour rester motivé." },
+            { q:"Quelle est la meilleure app de productivité gratuite ?", a:"Trackova propose un essai gratuit de 7 jours sans carte bancaire avec toutes les fonctionnalités : suivi d'objectifs, gamification XP, calendrier et gestion de fichiers." },
+            { q:"Comment suivre ses objectifs sportifs efficacement ?", a:"Le mode Sport de Trackova te permet de planifier tes séances avec des templates (Push/Pull/Legs, HIIT, Yoga), suivre ton volume et tes calories, et accéder à des ressources nutrition." },
+            { q:"Comment rester motivé sur un projet personnel ?", a:"Trackova utilise des streaks et des points XP pour te garder motivé. Plus tu travailles régulièrement, plus tu montes en niveau. Les badges de récompense rendent chaque victoire satisfaisante." },
+            { q:"Peut-on gérer plusieurs objectifs avec Trackova ?", a:"Oui, 4 modes disponibles : Études, Sport, Projet créatif et Organisation. Chaque mode a ses propres outils adaptés à tes besoins spécifiques." },
+          ].map((item, i) => (
+            <div key={i} className="rounded-xl overflow-hidden" style={{ border:"1px solid rgba(139,92,246,0.15)", background:"rgba(139,92,246,0.04)" }}>
+              <button onClick={() => setFaqOpen(faqOpen===i ? null : i)} className="w-full flex items-center justify-between px-5 py-4 text-left">
+                <h3 className="text-white/80 text-sm font-medium pr-4">{item.q}</h3>
+                <span className="text-violet-400 flex-shrink-0 text-lg leading-none">{faqOpen===i ? "−" : "+"}</span>
+              </button>
+              {faqOpen===i && <div className="px-5 pb-4"><p className="text-white/50 text-sm leading-relaxed">{item.a}</p></div>}
+            </div>
+          ))}
+        </div>
+      </section>
       <footer className="px-6 py-8" style={{ borderTop: "1px solid rgba(139,92,246,0.1)" }}>
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">

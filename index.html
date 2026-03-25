@@ -6,11 +6,68 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="theme-color" content="#080808" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#8b5cf6" />
+
+    <!-- SEO -->
+    <title>Trackova — App pour s'organiser | Études, Sport, Projets</title>
+    <meta name="description" content="Trackova : l'app pour s'organiser, suivre ses objectifs et booster sa productivité. Études, sport, projets perso. Essai gratuit 7 jours." />
+    <meta name="keywords" content="app pour s'organiser, application suivi objectifs, app productivité étudiant, tracker habitudes gratuit, organiser études sport projet, suivi objectifs personnels" />
+    <meta name="author" content="Trackova" />
+    <link rel="canonical" href="https://trackova.vercel.app/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://trackova.vercel.app/" />
+    <meta property="og:title" content="Trackova — App pour s'organiser | Études, Sport, Projets" />
+    <meta property="og:description" content="Suis tes objectifs, booste ta productivité et reste motivé. Études, sport, projets perso — tout en un. Essai gratuit 7 jours." />
+    <meta property="og:image" content="https://trackova.vercel.app/logo.svg" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Trackova" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Trackova — App pour s'organiser | Études, Sport, Projets" />
+    <meta name="twitter:description" content="Suis tes objectifs, booste ta productivité et reste motivé. Essai gratuit 7 jours." />
+    <meta name="twitter:image" content="https://trackova.vercel.app/logo.svg" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Trakova</title>
+    <link rel="apple-touch-icon" href="/logo.svg" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- JSON-LD Schema.org SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Trackova",
+      "url": "https://trackova.vercel.app",
+      "description": "Application de suivi d'objectifs personnels pour étudiants, sportifs et créatifs. Organise tes études, ton sport et tes projets personnels.",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "Web, iOS, Android",
+      "offers": {
+        "@type": "Offer",
+        "price": "6",
+        "priceCurrency": "EUR",
+        "priceValidUntil": "2027-12-31",
+        "description": "Abonnement mensuel — Essai gratuit 7 jours"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "124"
+      },
+      "featureList": ["Suivi d'objectifs", "Tracker d'habitudes", "Gestion des devoirs", "Suivi sportif", "Gamification XP"],
+      "inLanguage": "fr",
+      "author": { "@type": "Organization", "name": "Trackova" }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

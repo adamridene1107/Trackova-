@@ -1,0 +1,23 @@
+{
+  "name": "Trackova — App pour s'organiser",
+  "short_name": "Trackova",
+  "description": "Application de suivi d'objectifs pour étudiants, sportifs et créatifs. Organise tes études, ton sport et tes projets.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0F",
+  "theme_color": "#8b5cf6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "productivity",
+    "education",
+    "lifestyle"
+  ]
+}
