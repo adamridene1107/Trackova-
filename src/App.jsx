@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react"
-import { useTrakova } from "./hooks/useTrakova"
+import { useGoalTracker } from "./hooks/useGoalTracker"
 import GoalSelector from "./components/GoalSelector"
 import DailyCheck from "./components/DailyCheck"
 import Missions from "./components/Missions"
@@ -70,7 +70,7 @@ function ConfettiParticle({ x, y, color, delay, size, round }) {
 }
 
 export default function App({ user, onLogout }) {
-  const { data, today, setGoal, resetGoal, getTodayEntry, updateEntry, toggleTask, updateMissions, updateNotifications, updateDevoirs } = useTrakova()
+  const { data, today, setGoal, resetGoal, getTodayEntry, updateEntry, toggleTask, updateMissions, updateNotifications, updateDevoirs } = useGoalTracker()
   const { g, onTaskComplete, onFocusComplete } = useGamification()
   const [tab, setTab] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
