@@ -144,11 +144,18 @@ export default function App({ user, onLogout }) {
           style={{ cursor: "grab", WebkitOverflowScrolling: "touch" }}
           onMouseDown={e => {
             const el = e.currentTarget
-            el.style.cursor = "grabbing"
             const startX = e.pageX - el.offsetLeft
             const scrollLeft = el.scrollLeft
-            const onMove = mv => { el.scrollLeft = scrollLeft - (mv.pageX - el.offsetLeft - startX) }
-            const onUp = () => { el.style.cursor = "grab"; window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp) }
+            let dragging = false
+            const onMove = mv => {
+              const dx = Math.abs(mv.pageX - el.offsetLeft - startX)
+              if (dx > 5) { dragging = true; el.style.cursor = "grabbing"; el.scrollLeft = scrollLeft - (mv.pageX - el.offsetLeft - startX) }
+            }
+            const onUp = () => {
+              el.style.cursor = "grab"
+              window.removeEventListener("mousemove", onMove)
+              window.removeEventListener("mouseup", onUp)
+            }
             window.addEventListener("mousemove", onMove)
             window.addEventListener("mouseup", onUp)
           }}>
