@@ -1,5 +1,6 @@
 ﻿import { useState } from "react"
 import { getGoalById, getDailyContent } from "../lib/goals"
+import { getDailyQuote } from "../lib/quotes"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { CheckCircle2, Circle, Trophy, Lightbulb, Zap, Flame, Plus, Trash2, Clock, ChevronUp, ChevronDown } from "lucide-react"
@@ -17,6 +18,7 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
   const goal = getGoalById(data.goal)
   const entry = getTodayEntry()
   const daily = getDailyContent(data.goal, today)
+  const quote = getDailyQuote(data.goal, today)
   const [victory, setVictory] = useState(() => getTodayEntry().victory || "")
   const [newTask, setNewTask] = useState("")
   const [newTaskHour, setNewTaskHour] = useState("08:00")
@@ -67,6 +69,11 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
 
   return (
     <div className="space-y-3 fade-in">
+
+      {/* Citation du jour */}
+      <div className="card" style={{ borderLeft:"3px solid rgba(139,92,246,0.5)" }}>
+        <p className="text-white/60 text-sm italic leading-relaxed">"{quote}"</p>
+      </div>
 
       {/* Hero */}
       <div className="card">

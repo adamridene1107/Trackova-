@@ -2,6 +2,29 @@ import { useState } from "react"
 import { useGamification, getLevel, LEVELS } from "../hooks/useGamification"
 import { Zap, Flame, Trophy, Star, Plus, Trash2, Gift, Target, Clock, CheckSquare } from "lucide-react"
 
+
+const BADGES = [
+  { id:"first_task",   emoji:"⭐", label:"Premier pas",      desc:"Completer ta premiere tache",        xp:0,   streak:0,  tasks:1   },
+  { id:"streak_3",     emoji:"🔥", label:"En feu",           desc:"3 jours de streak",                  xp:0,   streak:3,  tasks:0   },
+  { id:"streak_7",     emoji:"🌟", label:"Une semaine",      desc:"7 jours de streak",                  xp:0,   streak:7,  tasks:0   },
+  { id:"streak_30",    emoji:"💎", label:"Un mois",          desc:"30 jours de streak",                 xp:0,   streak:30, tasks:0   },
+  { id:"xp_100",       emoji:"⚡", label:"Energise",         desc:"Atteindre 100 XP",                   xp:100, streak:0,  tasks:0   },
+  { id:"xp_500",       emoji:"🏆", label:"Champion",         desc:"Atteindre 500 XP",                   xp:500, streak:0,  tasks:0   },
+  { id:"xp_1000",      emoji:"👑", label:"Roi",              desc:"Atteindre 1000 XP",                  xp:1000,streak:0,  tasks:0   },
+  { id:"tasks_10",     emoji:"✅", label:"Productif",        desc:"Completer 10 taches",                xp:0,   streak:0,  tasks:10  },
+  { id:"tasks_50",     emoji:"🎯", label:"Focuse",           desc:"Completer 50 taches",                xp:0,   streak:0,  tasks:50  },
+  { id:"tasks_100",    emoji:"🚀", label:"Inarretable",      desc:"Completer 100 taches",               xp:0,   streak:0,  tasks:100 },
+  { id:"streak_14",    emoji:"🌈", label:"Deux semaines",    desc:"14 jours de streak",                 xp:0,   streak:14, tasks:0   },
+  { id:"xp_2000",      emoji:"🦁", label:"Legendaire",       desc:"Atteindre 2000 XP",                  xp:2000,streak:0,  tasks:0   },
+]
+
+function isUnlocked(badge, g) {
+  if (badge.xp > 0 && (g?.xp || 0) < badge.xp) return false
+  if (badge.streak > 0 && (g?.streak || 0) < badge.streak) return false
+  if (badge.tasks > 0 && (g?.totalTasks || 0) < badge.tasks) return false
+  return true
+}
+
 function XPToast({ lastXP }) {
   if (!lastXP) return null
   return (
@@ -11,6 +34,25 @@ function XPToast({ lastXP }) {
         <span className="text-white font-bold text-sm">+{lastXP.amount} XP</span>
       </div>
       <p className="text-white/50 text-xs mt-0.5">{lastXP.reasons.join(" · ")}</p>
+      {/* Badges */}
+      <div className="card">
+        <h3 className="text-white/70 text-sm font-semibold mb-4">Badges</h3>
+        <div className="grid grid-cols-3 gap-3">
+          {BADGES.map(b => {
+            const unlocked = isUnlocked(b, xpData)
+            return (
+              <div key={b.id} className="flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all"
+                style={{ background: unlocked ? "rgba(139,92,246,0.1)" : "rgba(255,255,255,0.03)", border: unlocked ? "1px solid rgba(139,92,246,0.25)" : "1px solid rgba(255,255,255,0.06)", opacity: unlocked ? 1 : 0.4 }}>
+                <span className="text-2xl" style={{ filter: unlocked ? "none" : "grayscale(1)" }}>{b.emoji}</span>
+                <p className="text-white/70 text-[11px] font-medium text-center leading-tight">{b.label}</p>
+                <p className="text-white/30 text-[10px] text-center leading-tight">{b.desc}</p>
+                {unlocked && <span className="text-[9px] text-violet-400 font-medium">Debloque</span>}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
     </div>
   )
 }
