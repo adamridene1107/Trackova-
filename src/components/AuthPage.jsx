@@ -68,7 +68,9 @@ export default function AuthPage({ onAuth }) {
       })
       if (error) { setError(error.message) }
       else if (data.user) {
-        onAuth({ id: data.user.id, email: data.user.email, name: name.trim() }, true)
+        // Envoyer email de bienvenue
+      fetch("/api/welcome-email", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ email, name: name.trim() }) }).catch(()=>{})
+      onAuth({ id: data.user.id, email: data.user.email, name: name.trim() }, true)
       }
 
     } else if (mode === "forgot") {

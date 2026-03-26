@@ -13,6 +13,9 @@ import Devoirs from "./components/Devoirs"
 const MesFichiers = lazy(() => import("./components/MesFichiers"))
 const Gamification = lazy(() => import("./components/Gamification"))
 import Seance from "./components/Seance"
+const WeekSummary = lazy(() => import("./components/WeekSummary"))
+const AmbientSound = lazy(() => import("./components/AmbientSound"))
+const FocusMode = lazy(() => import("./components/FocusMode"))
 const SettingsPage = lazy(() => import("./components/SettingsPage"))
 const HistoryPage = lazy(() => import("./components/HistoryPage"))
 const Onboarding = lazy(() => import("./components/Onboarding"))
@@ -83,6 +86,7 @@ export default function App({ user, onLogout }) {
   const { g, onTaskComplete, onFocusComplete } = useGamification()
   const [tab, setTab] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
+  const [showFocus, setShowFocus] = useState(false)
   const [confetti, setConfetti] = useState([])
   const [showOnboarding, setShowOnboarding] = useState(() => {
     try { return !localStorage.getItem("gt_onboarded") } catch { return false }
@@ -132,6 +136,7 @@ export default function App({ user, onLogout }) {
           <div className="flex items-center gap-1">
             <ExportPDF data={data} />
             <button onClick={() => { resetGoal() }} className="btn-ghost" title="Changer d'objectif"><RefreshCw size={16} /></button>
+            <button onClick={() => setShowFocus(true)} className="btn-ghost" title="Mode Focus" style={{ color: showFocus ? "#8b5cf6" : "" }}><Zap size={16} /></button>
             <button onClick={() => setShowSettings(true)} className="btn-ghost"><Settings size={16} /></button>
           </div>
         </div>
@@ -167,7 +172,7 @@ export default function App({ user, onLogout }) {
       </header>
 
       <main className="max-w-2xl mx-auto p-4 pb-8"><Suspense fallback={<div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-white/20 border-t-white/60 rounded-full animate-spin"/></div>}>
-        <div key={activeTab} className={activeTab === "today" ? "tab-content" : "hidden"}><DailyCheck data={data} today={today} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} onTaskComplete={handleTaskComplete} onFocusComplete={onFocusComplete} showPomodoro={data.goal === "homework"} /></div>
+        <div key={activeTab} className={activeTab === "today" ? "tab-content" : "hidden"}><Suspense fallback={null}><WeekSummary data={data} /></Suspense><Suspense fallback={null}><AmbientSound /></Suspense><DailyCheck data={data} today={today} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} onTaskComplete={handleTaskComplete} onFocusComplete={onFocusComplete} showPomodoro={data.goal === "homework"} /></div>
         <div key={activeTab} className={activeTab === "seance" ? "tab-content" : "hidden"}><Seance data={data} updateEntry={updateEntry} getTodayEntry={getTodayEntry} /></div>
         <div key={activeTab} className={activeTab === "idees" ? "tab-content" : "hidden"}><Idees /></div>
         <div key={activeTab} className={activeTab === "devoirs" ? "tab-content" : "hidden"}><Devoirs devoirs={data.devoirs || []} updateDevoirs={updateDevoirs} goalId={data.goal} /></div>
@@ -180,6 +185,11 @@ export default function App({ user, onLogout }) {
         <div key={activeTab} className={activeTab === "history" ? "tab-content" : "hidden"}><HistoryPage data={data} /></div>
       </Suspense></main>
 
+      {showFocus && (
+        <Suspense fallback={null}>
+          <FocusMode data={data} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} onClose={() => setShowFocus(false)} onFocusComplete={onFocusComplete} />
+        </Suspense>
+      )}
       {showOnboarding && (
         <Suspense fallback={null}>
           <Onboarding onDone={() => { localStorage.setItem("gt_onboarded","1"); setShowOnboarding(false) }} />
