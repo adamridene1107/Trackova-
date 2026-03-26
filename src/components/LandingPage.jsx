@@ -270,6 +270,7 @@ export default function LandingPage({ onGetStarted }) {
           <p className="text-white/25 text-xs">© 2025 Trakova · Fait avec ��</p>
           <div className="flex items-center gap-4 text-white/30 text-xs">
             <a href="/subscribe" className="hover:text-white/60 transition-colors">Abonnement</a>
+            <a href="/contact" className="hover:text-white/60 transition-colors">Contact</a>
             <a href="/admin" className="hover:text-white/60 transition-colors">Admin</a>
           </div>
         </div>
