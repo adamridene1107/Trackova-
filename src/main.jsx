@@ -1,5 +1,6 @@
-import React, { useState, lazy, Suspense } from "react"
+import React, { useState, lazy, Suspense, useEffect } from "react"
 import { ThemeProvider } from "./context/ThemeContext"
+import { supabase } from "./lib/supabase"
 import ReactDOM from "react-dom/client"
 import "./index.css"
 
@@ -18,35 +19,61 @@ const Spinner = () => (
   </div>
 )
 
-// Appliquer le theme sauvegarde
-const savedTheme = (() => { try { return JSON.parse(localStorage.getItem("gt_settings") || "{}").theme || "dark" } catch { return "dark" } })()
-if (savedTheme === "light") {
-  document.documentElement.setAttribute("data-theme", "light")
-  document.body.style.background = "#f8f8ff"
-}
-
-function getSession() {
-  try { return JSON.parse(localStorage.getItem("gt_session")) } catch { return null }
-}
-
 function Root() {
   const path = window.location.pathname
-  const [session, setSession] = useState(getSession)
+  const [session, setSession] = useState(undefined) // undefined = loading
+
+  useEffect(() => {
+    // Recuperer la session actuelle
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+    // Ecouter les changements de session
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  // Pages publiques
+  if (path === "/subscribe") return <Suspense fallback={<Spinner />}><Subscription /></Suspense>
+  if (path === "/success") return <Suspense fallback={<Spinner />}><SuccessPage /></Suspense>
+  if (path === "/trial-expired") return <Suspense fallback={<Spinner />}><TrialExpired /></Suspense>
+  if (path === "/admin") return <Suspense fallback={<Spinner />}><AdminPage /></Suspense>
+  if (path === "/privacy") return <Suspense fallback={<Spinner />}><LegalPage type="privacy" /></Suspense>
+  if (path === "/cgu") return <Suspense fallback={<Spinner />}><LegalPage type="cgu" /></Suspense>
+
+  // Loading session
+  if (session === undefined) return <Spinner />
+
+  // Auth
+  if (path === "/login" || !session) {
+    if (session) { window.location.href = "/"; return null }
+    return (
+      <Suspense fallback={<Spinner />}>
+        {path === "/login" || !session ? (
+          <AuthPage onAuth={(u, isNew) => {
+            if (isNew) window.location.href = "/subscribe"
+            else window.location.href = "/"
+          }} />
+        ) : (
+          <LandingPage onGetStarted={() => { window.location.href = "/login" }} />
+        )}
+      </Suspense>
+    )
+  }
+
+  const user = { id: session.user.id, email: session.user.email, name: session.user.user_metadata?.name || session.user.email.split("@")[0] }
 
   return (
     <Suspense fallback={<Spinner />}>
-      {path === "/subscribe" ? <Subscription /> :
-       path === "/success" ? <SuccessPage /> :
-       path === "/trial-expired" ? <TrialExpired /> :
-       path === "/admin" ? <AdminPage /> :
-       path === "/privacy" ? <LegalPage type="privacy" /> :
-       path === "/cgu" ? <LegalPage type="cgu" /> :
-       path === "/login" ? <AuthPage onAuth={(u, isNew) => {
-         if (isNew) { window.location.href = "/subscribe" }
-         else { setSession(u); window.location.href = "/" }
-       }} /> :
-       !session ? <LandingPage onGetStarted={() => { window.location.href = "/login" }} /> :
-       <App user={session} onLogout={() => { localStorage.removeItem("gt_session"); localStorage.removeItem("gt_settings"); window.location.href = "/" }} />}
+      <App user={user} onLogout={async () => {
+        await supabase.auth.signOut()
+        const s = JSON.parse(localStorage.getItem("gt_settings") || "{}")
+        s.theme = "dark"
+        localStorage.setItem("gt_settings", JSON.stringify(s))
+        window.location.href = "/"
+      }} />
     </Suspense>
   )
 }
