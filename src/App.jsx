@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, lazy, Suspense } from "react" // trakova
 import { useGoalTracker } from "./hooks/useGoalTracker"
+import { useTheme } from "./context/ThemeContext"
 import GoalSelector from "./components/GoalSelector"
 const DailyCheck = lazy(() => import("./components/DailyCheck"))
 import Missions from "./components/Missions"
@@ -77,6 +78,7 @@ function ConfettiParticle({ x, y, color, delay, size, round }) {
 }
 
 export default function App({ user, onLogout }) {
+  const { theme } = useTheme()
   const { data, today, setGoal, resetGoal, getTodayEntry, updateEntry, toggleTask, updateMissions, updateNotifications, updateDevoirs } = useGoalTracker()
   const { g, onTaskComplete, onFocusComplete } = useGamification()
   const [tab, setTab] = useState(null)
@@ -117,11 +119,11 @@ export default function App({ user, onLogout }) {
   const streakBig = data.streak >= 7
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--app-bg, #0A0A0F)" }}>
+    <div className="min-h-screen" style={{ background: theme === "light" ? "#f0f0f5" : "#0A0A0F" }}>
       {confetti.map(p => <ConfettiParticle key={p.id} {...p} />)}
 
       <header className="sticky top-0 z-40 px-4 pt-4 pb-0"
-        style={{ background: "var(--header-bg, rgba(12,12,20,0.95))", borderBottom: "1px solid var(--border-color, rgba(139,92,246,0.1))", backdropFilter: "blur(20px)" }}>
+        style={{ background: theme === "light" ? "rgba(240,240,245,0.97)" : "rgba(12,12,20,0.95)", borderBottom: theme === "light" ? "1px solid rgba(0,0,0,0.08)" : "1px solid rgba(139,92,246,0.1)", backdropFilter: "blur(20px)" }}>
         <div className="max-w-2xl mx-auto flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
             <img src="/logo.svg" alt="Trakova" style={{ height:"60px", width:"auto" }} className="flex-shrink-0" />
