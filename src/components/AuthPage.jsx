@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Lock, Mail, User, Eye, EyeOff, ArrowLeft, Zap, ShieldQuestion } from "lucide-react"
 import { supabase } from "../lib/supabase"
-import { useThème } from "../context/ThèmeContext"
+import { useThème } from "../context/ThemeContext"
 
 const QUESTIONS = [
   "Quel est le nom de ton premier animal de compagnie ?",

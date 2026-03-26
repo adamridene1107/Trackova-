@@ -1,4 +1,4 @@
-import { useThème } from "../context/ThèmeContext"
+import { useThème } from "../context/ThemeContext"
 
 export default function ContactPage() {
   const { thème } = useThème()

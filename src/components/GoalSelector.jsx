@@ -1,5 +1,5 @@
 ﻿import { GOALS } from "../lib/goals"
-import { useThème } from "../context/ThèmeContext"
+import { useThème } from "../context/ThemeContext"
 
 export default function GoalSelector({ onSelect }) {
   const { thème } = useThème()

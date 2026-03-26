@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import LangSwitcher from "./LangSwitcher"
 import { Globe } from "lucide-react"
-import { useThème } from "../context/ThèmeContext"
+import { useThème } from "../context/ThemeContext"
 import { User, Bell, Palette, Target, Shield, CreditCard, ChevronRight, Check, Download, Trash2, X, LogOut } from "lucide-react"
 
 

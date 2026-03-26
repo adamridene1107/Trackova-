@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import LangSwitcher from "./LangSwitcher"
-import { useThème } from "../context/ThèmeContext"
+import { useThème } from "../context/ThemeContext"
 import { Zap, Target, BookOpen, ArrowRight, CheckCircle2, Flame, Star, Shield, Dumbbell, Lightbulb, ListTodo, ChevronRight, Play } from "lucide-react"
 
 const FEATURES = [
