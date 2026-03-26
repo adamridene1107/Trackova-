@@ -104,6 +104,14 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
     toast_("Mot de passe mis à jour")
   }
 
+  const requestNotifPermission = async () => {
+    if ("Notification" in window) {
+      const perm = await Notification.requestPermission()
+      if (perm === "granted") toast_("Notifications activées !")
+      else toast_("Notifications refusées")
+    }
+  }
+
   const saveNotifs = () => {
     saveSettings({ ...getSettings(), notifDaily, notifHour, notifWeekly, notifStreak })
     toast_("Notifications sauvegardées")
@@ -229,6 +237,9 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                     </div>
                     <Toggle checked={notifStreak} onChange={setNotifStreak} />
                   </div>
+                  <button onClick={requestNotifPermission} className="btn-outline text-sm py-2 px-4">
+                    Activer les notifications navigateur
+                  </button>
                   <button onClick={saveNotifs} className="btn-primary text-sm py-2 px-4">Sauvegarder</button>
                 </div>
               </Section>

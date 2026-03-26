@@ -13,6 +13,8 @@ const MesFichiers = lazy(() => import("./components/MesFichiers"))
 const Gamification = lazy(() => import("./components/Gamification"))
 import Seance from "./components/Seance"
 const SettingsPage = lazy(() => import("./components/SettingsPage"))
+const HistoryPage = lazy(() => import("./components/HistoryPage"))
+const Onboarding = lazy(() => import("./components/Onboarding"))
 import Idees from "./components/Idees"
 import { useGamification } from "./hooks/useGamification"
 import { getGoalById } from "./lib/goals"
@@ -29,6 +31,7 @@ const TABS_BY_GOAL = {
     { id:"stats",     label:"Stats",       icon:BarChart2 },
     { id:"fichiers",  label:"Fichiers",    icon:FolderOpen },
     { id:"xp",        label:"XP",          icon:Zap },
+    { id:"history",   label:"Historique",  icon:Calendar },
   ],
   sport: [
     { id:"seance",    label:"Séance",        icon:Dumbbell },
@@ -37,7 +40,8 @@ const TABS_BY_GOAL = {
     { id:"calendar",  label:"Calendrier",    icon:Calendar },
     { id:"stats",     label:"Stats",         icon:BarChart2 },
     { id:"fichiers",  label:"Fichiers",      icon:FolderOpen },
-    { id:"xp",        label:"XP",            icon:Zap },
+    { id:"xp",        label:"XP",          icon:Zap },
+    { id:"history",   label:"Historique",  icon:Calendar },
   ],
   creative: [
     { id:"today",     label:"Aujourd'hui", icon:CheckSquare },
@@ -47,7 +51,8 @@ const TABS_BY_GOAL = {
     { id:"calendar",  label:"Calendrier",   icon:Calendar },
     { id:"stats",     label:"Stats",        icon:BarChart2 },
     { id:"fichiers",  label:"Fichiers",     icon:FolderOpen },
-    { id:"xp",        label:"XP",           icon:Zap },
+    { id:"xp",        label:"XP",          icon:Zap },
+    { id:"history",   label:"Historique",  icon:Calendar },
   ],
   organization: [
     { id:"today",     label:"Aujourd'hui", icon:CheckSquare },
@@ -57,7 +62,8 @@ const TABS_BY_GOAL = {
     { id:"calendar",  label:"Calendrier",   icon:Calendar },
     { id:"stats",     label:"Stats",        icon:BarChart2 },
     { id:"fichiers",  label:"Fichiers",     icon:FolderOpen },
-    { id:"xp",        label:"XP",           icon:Zap },
+    { id:"xp",        label:"XP",          icon:Zap },
+    { id:"history",   label:"Historique",  icon:Calendar },
   ],
 }
 
@@ -76,6 +82,9 @@ export default function App({ user, onLogout }) {
   const [tab, setTab] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
   const [confetti, setConfetti] = useState([])
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    try { return !localStorage.getItem("gt_onboarded") } catch { return false }
+  })
 
   const spawnConfetti = useCallback(() => {
     const colors = ["#8b5cf6","#6366f1","#a78bfa","#818cf8","#f472b6","#34d399","#fbbf24"]
@@ -154,8 +163,14 @@ export default function App({ user, onLogout }) {
         <div className={activeTab === "stats"     ? "" : "hidden"}><ProgressChart data={data} /></div>
         <div className={activeTab === "fichiers"  ? "" : "hidden"}><MesFichiers goalId={data.goal} /></div>
         <div className={activeTab === "xp"        ? "" : "hidden"}><Gamification /></div>
+        <div className={activeTab === "history"  ? "" : "hidden"}><HistoryPage data={data} /></div>
       </Suspense></main>
 
+      {showOnboarding && (
+        <Suspense fallback={null}>
+          <Onboarding onDone={() => { localStorage.setItem("gt_onboarded","1"); setShowOnboarding(false) }} />
+        </Suspense>
+      )}
       {showSettings && (
         <Suspense fallback={null}>
           <SettingsPage

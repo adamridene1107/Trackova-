@@ -4,6 +4,7 @@ import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { CheckCircle2, Circle, Trophy, Lightbulb, Zap, Flame, Plus, Trash2, Clock, ChevronUp, ChevronDown } from "lucide-react"
 import Pomodoro from "./Pomodoro"
+import PomodoroWidget from "./PomodoroWidget"
 
 const HOURS = Array.from({ length: 17 }, (_, i) => `${(i + 7).toString().padStart(2, "0")}:00`)
 const PRIOS = [
@@ -106,7 +107,8 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
         </div>
       </div>
 
-      {/* Pomodoro */}      {showPomodoro && <Pomodoro onFocusComplete={onFocusComplete} />}
+      {/* Pomodoro */}      {showPomodoro && <PomodoroWidget onFocusComplete={onFocusComplete} />}
+      {showPomodoro && false && <Pomodoro onFocusComplete={onFocusComplete} />}
 
       {/* Objectif du jour */}
       <div className="card">
