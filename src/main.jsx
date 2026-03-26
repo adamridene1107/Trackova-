@@ -14,6 +14,7 @@ const AuthPage = lazy(() => import("./components/AuthPage"))
 const LegalPage = lazy(() => import("./components/LegalPage"))
 const ContactPage = lazy(() => import("./components/ContactPage"))
 const NotFound = lazy(() => import("./components/NotFound"))
+const ProfilePage = lazy(() => import("./components/ProfilePage"))
 
 const Spinner = () => (
   <div className="min-h-screen flex items-center justify-center" style={{ background:"#0A0A0F" }}>
@@ -45,6 +46,7 @@ function Root() {
   if (path === "/privacy") return <Suspense fallback={<Spinner />}><LegalPage type="privacy" /></Suspense>
   if (path === "/cgu") return <Suspense fallback={<Spinner />}><LegalPage type="cgu" /></Suspense>
   if (path === "/contact") return <Suspense fallback={<Spinner />}><ContactPage /></Suspense>
+  if (path.startsWith("/profile/")) return <Suspense fallback={<Spinner />}><ProfilePage /></Suspense>
 
   // Loading session
   if (session === undefined) return <Spinner />

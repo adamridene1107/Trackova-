@@ -1,4 +1,5 @@
 import { useState } from "react"
+import AnimatedCheckbox from "./AnimatedCheckbox"
 import { Plus, Trash2, CheckCircle2, Circle, Timer, Flame, ChevronDown, ChevronUp, Zap, RotateCcw, FileText } from "lucide-react"
 
 const TYPES = [

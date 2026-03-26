@@ -189,7 +189,10 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                     <label className="text-white/40 text-xs mb-1.5 block">Email</label>
                     <input value={email} disabled className="input w-full opacity-40 cursor-not-allowed" />
                   </div>
+                  <div className="flex gap-2">
                   <button onClick={saveProfil} className="btn-primary text-sm py-2 px-4">Sauvegarder</button>
+                  <button onClick={() => { navigator.clipboard.writeText("https://trackova.vercel.app/profile/" + (user?.id||"")); toast_("Lien copié !") }} className="btn-outline text-sm py-2 px-4">Partager mon profil</button>
+                </div>
                 </div>
                 <div className="space-y-3 pt-4" style={{ borderTop:"1px solid rgba(255,255,255,0.06)" }}>
                   <p className="text-white/40 text-xs font-medium">Changer le mot de passe</p>
