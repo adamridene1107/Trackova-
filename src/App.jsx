@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, lazy, Suspense } from "react" // trakova
-import { useGoalTracker } from "./hooks/useGoalTracker"
+import { useSupabaseData } from "./hooks/useSupabaseData"
 import { useTheme } from "./context/ThemeContext"
 import GoalSelector from "./components/GoalSelector"
 const DailyCheck = lazy(() => import("./components/DailyCheck"))
@@ -79,7 +79,7 @@ function ConfettiParticle({ x, y, color, delay, size, round }) {
 
 export default function App({ user, onLogout }) {
   const { theme } = useTheme()
-  const { data, today, setGoal, resetGoal, getTodayEntry, updateEntry, toggleTask, updateMissions, updateNotifications, updateDevoirs } = useGoalTracker()
+  const { data, today, setGoal, resetGoal, getTodayEntry, updateEntry, toggleTask, updateMissions, updateNotifications, updateDevoirs, loading } = useSupabaseData(user?.id)
   const { g, onTaskComplete, onFocusComplete } = useGamification()
   const [tab, setTab] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
@@ -109,6 +109,7 @@ export default function App({ user, onLogout }) {
     spawnConfetti()
   }, [onTaskComplete, spawnConfetti])
 
+  if (loading) return <div className="min-h-screen flex items-center justify-center" style={{ background:"#0A0A0F" }}><div className="w-8 h-8 border-2 border-white/20 border-t-white/60 rounded-full animate-spin"/></div>
   if (!data.goal) return <GoalSelector onSelect={setGoal} />
 
   const goal = getGoalById(data.goal)
