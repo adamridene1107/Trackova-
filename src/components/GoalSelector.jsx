@@ -18,8 +18,8 @@ export default function GoalSelector({ onSelect }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg fade-in">
         {GOALS.map((goal, i) => (
           <button key={goal.id} onClick={() => onSelect(goal.id)}
-            style={{ animationDelay: `${i * 50}ms` }}
-            className="group relative overflow-hidden rounded-2xl p-5 text-left bg-[#111111] border border-white/[0.06] hover:border-white/20 active:scale-[0.98] transition-all duration-200 fade-in">
+            style={{ animationDelay: `${i * 50}ms`, background: cardBg, border: `1px solid ${cardBorder}` }}
+            className="group relative overflow-hidden rounded-2xl p-5 text-left active:scale-[0.98] transition-all duration-200 fade-in">
             <div className="text-3xl mb-3">{goal.emoji}</div>
             <h3 style={{ color: textColor }} className="text-base font-semibold">{goal.label}</h3>
             <p style={{ color: mutedColor }} className="text-xs mt-1 line-clamp-1">{goal.tasks.join(" · ")}</p>

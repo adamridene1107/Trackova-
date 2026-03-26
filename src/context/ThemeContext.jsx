@@ -24,4 +24,11 @@ export function ThemeProvider({ children }) {
   return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>
 }
 
-export const useTheme = () => useContext(ThemeContext)
+export const useTheme = () => {
+  const ctx = useContext(ThemeContext)
+  if (!ctx) {
+    const t = (() => { try { return JSON.parse(localStorage.getItem("gt_settings")||"{}").theme||"dark" } catch { return "dark" } })()
+    return { theme: t, setTheme: () => {} }
+  }
+  return ctx
+}
