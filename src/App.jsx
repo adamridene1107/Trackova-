@@ -134,7 +134,18 @@ export default function App({ user, onLogout }) {
             <button onClick={() => setShowSettings(true)} className="btn-ghost"><Settings size={16} /></button>
           </div>
         </div>
-        <nav className="max-w-2xl mx-auto flex overflow-x-auto gap-0 -mb-px scrollbar-hide">
+        <nav className="max-w-2xl mx-auto flex overflow-x-auto gap-0 -mb-px scrollbar-hide"
+          style={{ cursor: "grab", WebkitOverflowScrolling: "touch" }}
+          onMouseDown={e => {
+            const el = e.currentTarget
+            el.style.cursor = "grabbing"
+            const startX = e.pageX - el.offsetLeft
+            const scrollLeft = el.scrollLeft
+            const onMove = mv => { el.scrollLeft = scrollLeft - (mv.pageX - el.offsetLeft - startX) }
+            const onUp = () => { el.style.cursor = "grab"; window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp) }
+            window.addEventListener("mousemove", onMove)
+            window.addEventListener("mouseup", onUp)
+          }}>
           {tabs.map(t => {
             const Icon = t.icon
             const active = activeTab === t.id
