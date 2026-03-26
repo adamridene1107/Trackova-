@@ -72,7 +72,7 @@ export default function AuthPage({ onAuth }) {
       users2[email] = { name: name.trim(), password, q1, a1: a1.trim().toLowerCase(), q2, a2: a2.trim().toLowerCase() }
       saveUsers(users2)
       localStorage.setItem("gt_session", JSON.stringify({ email, name: name.trim() }))
-      onAuth({ email, name: name.trim() })
+      onAuth({ email, name: name.trim() }, true)
 
     } else if (mode === "forgot") {
       if (!email.trim()) { setLoading(false); return setError("Entre ton email") }

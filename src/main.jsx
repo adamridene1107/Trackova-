@@ -41,7 +41,10 @@ function Root() {
        path === "/admin" ? <AdminPage /> :
        path === "/privacy" ? <LegalPage type="privacy" /> :
        path === "/cgu" ? <LegalPage type="cgu" /> :
-       path === "/login" ? <AuthPage onAuth={(u) => { setSession(u); window.location.href = "/" }} /> :
+       path === "/login" ? <AuthPage onAuth={(u, isNew) => {
+         if (isNew) { window.location.href = "/subscribe" }
+         else { setSession(u); window.location.href = "/" }
+       }} /> :
        !session ? <LandingPage onGetStarted={() => { window.location.href = "/login" }} /> :
        <App user={session} onLogout={() => { localStorage.removeItem("gt_session"); setSession(null) }} />}
     </Suspense>
