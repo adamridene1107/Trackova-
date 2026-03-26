@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useTheme } from "../context/ThemeContext"
 import { User, Bell, Palette, Target, Shield, CreditCard, ChevronRight, Check, Download, Trash2, X, LogOut } from "lucide-react"
 
 
@@ -56,7 +57,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
   const [notifWeekly, setNotifWeekly] = useState(settings.notifWeekly ?? false)
   const [notifStreak, setNotifStreak] = useState(settings.notifStreak ?? true)
 
-  const [theme, setTheme] = useState(settings.theme || "dark")
+  const { theme, setTheme } = useTheme()
   const [streakGoal, setStreakGoal] = useState(settings.streakGoal || 7)
 
   const [deleteConfirm, setDeleteConfirm] = useState(0)
@@ -108,19 +109,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
     toast_("Notifications sauvegardées")
   }
 
-  const applyTheme = (t) => {
-    setTheme(t)
-    saveSettings({ ...getSettings(), theme: t })
-    document.documentElement.setAttribute("data-theme", t)
-    if (t === "light") {
-      document.documentElement.style.setProperty("--bg", "#f8f8ff")
-      document.body.style.background = "#f8f8ff"
-    } else {
-      document.documentElement.style.setProperty("--bg", "#0A0A0F")
-      document.body.style.background = "#0A0A0F"
-    }
-    toast_(t === "dark" ? "Thème sombre activé" : "Thème clair activé")
-  }
+  const applyTheme = (t) => { setTheme(t); toast_(t === "dark" ? "Thème sombre activé" : "Thème clair activé") }
 
   const saveObjectifs = () => {
     saveSettings({ ...getSettings(), streakGoal })

@@ -108,11 +108,11 @@ export default function App({ user, onLogout }) {
   const streakBig = data.streak >= 7
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0F" }}>
+    <div className="min-h-screen" style={{ background: "var(--app-bg, #0A0A0F)" }}>
       {confetti.map(p => <ConfettiParticle key={p.id} {...p} />)}
 
       <header className="sticky top-0 z-40 px-4 pt-4 pb-0"
-        style={{ background: "rgba(12,12,20,0.95)", borderBottom: "1px solid rgba(139,92,246,0.1)", backdropFilter: "blur(20px)" }}>
+        style={{ background: "var(--header-bg, rgba(12,12,20,0.95))", borderBottom: "1px solid var(--border-color, rgba(139,92,246,0.1))", backdropFilter: "blur(20px)" }}>
         <div className="max-w-2xl mx-auto flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
             <img src="/logo.svg" alt="Trakova" style={{ height:"60px", width:"auto" }} className="flex-shrink-0" />
