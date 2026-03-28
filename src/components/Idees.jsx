@@ -75,7 +75,7 @@ export default function Idees() {
 
       {filtered.length === 0 ? (
         <div className="card text-center py-10 text-white/40 text-sm">
-          {idees.length === 0 ? "Aucune idée pour l'instant. Inspire-toi !" : "Aucune idée dans cette catégorie."}
+          {idees.length === 0 ? "Aucune idée pour l'instant. Inspire-toi !" : "Aucune idée dans cette categorie."}
         </div>
       ) : (
         <div className="space-y-2">

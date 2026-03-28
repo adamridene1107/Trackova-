@@ -88,7 +88,7 @@ const RESOURCES_BY_GOAL = {
         { id:"ms4", title:"Jeff Nippard", desc:"Programmes basés sur la science", url:"https://www.youtube.com/@JeffNippard", type:"tuto" },
       ]},
       { id:"yoga", label:"Yoga & Stretching", emoji:"🧘", resources:[
-        { id:"y1", title:"Yoga with Adriene", desc:"Séances yoga gratuites YouTube", url:"https://www.youtube.com/@yogawithadriene", type:"tuto" },
+        { id:"y1", title:"Yoga with Adriene", desc:"Seances yoga gratuites YouTube", url:"https://www.youtube.com/@yogawithadriene", type:"tuto" },
         { id:"y2", title:"Down Dog", desc:"App yoga personnalisée", url:"https://www.downdogapp.com/", type:"programme" },
         { id:"y3", title:"Stretching Daily", desc:"Routines d'étirements guidées", url:"https://www.youtube.com/results?search_query=stretching+daily+routine", type:"tuto" },
       ]},

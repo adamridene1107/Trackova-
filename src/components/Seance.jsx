@@ -52,9 +52,9 @@ const TEMPLATES = [
 
 const MET = { cardio:7, muscu:5, hiit:9, yoga:3, natation:8, sport:6, autre:5 }
 
-export default function Séance({ data, updateEntry, getTodayEntry }) {
+export default function Seance({ data, updateEntry, getTodayEntry }) {
   const entry = getTodayEntry()
-  const séances = entry.séances || []
+  const seances = entry.seances || []
   const [form, setForm] = useState({ type:"muscu", nom:"", durée:"", séries:"", reps:"", poids:"", note:"" })
   const [showForm, setShowForm] = useState(false)
   const [showTemplates, setShowTemplates] = useState(false)
@@ -63,27 +63,27 @@ export default function Séance({ data, updateEntry, getTodayEntry }) {
   const add = () => {
     if (!form.nom.trim()) return
     const s = { id: Date.now(), ...form, nom: form.nom.trim(), done: false }
-    updateEntry({ séances: [...séances, s] })
+    updateEntry({ seances: [...seances, s] })
     setForm({ type:"muscu", nom:"", durée:"", séries:"", reps:"", poids:"", note:"" })
     setShowForm(false)
   }
 
   const loadTemplate = (tpl) => {
     const news = tpl.exercices.map((e, i) => ({ id: Date.now() + i, ...e, done: false, note:"" }))
-    updateEntry({ séances: [...séances, ...news] })
+    updateEntry({ seances: [...seances, ...news] })
     setShowTemplates(false)
   }
 
-  const toggle = id => updateEntry({ séances: séances.map(s => s.id===id ? {...s, done:!s.done} : s) })
-  const remove = id => updateEntry({ séances: séances.filter(s => s.id!==id) })
-  const updateNote = (id, note) => updateEntry({ séances: séances.map(s => s.id===id ? {...s, note} : s) })
-  const reset = () => updateEntry({ séances: [] })
+  const toggle = id => updateEntry({ seances: seances.map(s => s.id===id ? {...s, done:!s.done} : s) })
+  const remove = id => updateEntry({ seances: seances.filter(s => s.id!==id) })
+  const updateNote = (id, note) => updateEntry({ seances: seances.map(s => s.id===id ? {...s, note} : s) })
+  const reset = () => updateEntry({ seances: [] })
 
-  const done = séances.filter(s => s.done).length
-  const totalMin = séances.filter(s => s.done && s.durée).reduce((a,s) => a + parseInt(s.durée||0), 0)
-  const totalVolume = séances.filter(s => s.done && s.séries && s.reps && s.poids)
+  const done = seances.filter(s => s.done).length
+  const totalMin = seances.filter(s => s.done && s.durée).reduce((a,s) => a + parseInt(s.durée||0), 0)
+  const totalVolume = seances.filter(s => s.done && s.séries && s.reps && s.poids)
     .reduce((a,s) => a + (parseInt(s.séries||0) * parseInt(s.reps||0) * parseFloat(s.poids||0)), 0)
-  const calories = séances.filter(s => s.done).reduce((a,s) => {
+  const calories = seances.filter(s => s.done).reduce((a,s) => {
     const met = MET[s.type] || 5
     const min = parseInt(s.durée||0) || (s.séries && s.reps ? parseInt(s.séries||0) * parseInt(s.reps||0) * 0.05 : 0)
     return a + Math.round(met * 70 * min / 60)
@@ -93,18 +93,18 @@ export default function Séance({ data, updateEntry, getTodayEntry }) {
     <div className="space-y-3 fade-in">
       <div className="card">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-white font-bold text-lg">Séance du jour</h2>
+          <h2 className="text-white font-bold text-lg">Seance du jour</h2>
           <div className="flex items-center gap-2">
             {totalMin > 0 && <span className="flex items-center gap-1 text-white/50 text-xs"><Timer size={11}/> {totalMin} min</span>}
             {calories > 0 && <span className="flex items-center gap-1 text-orange-400/70 text-xs"><Flame size={11}/> ~{calories} kcal</span>}
-            <span className="text-white/50 text-xs">{done}/{séances.length}</span>
+            <span className="text-white/50 text-xs">{done}/{seances.length}</span>
           </div>
         </div>
 
-        {séances.length > 0 && (
+        {seances.length > 0 && (
           <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden mb-4">
             <div className="h-full bg-white rounded-full transition-all duration-700"
-              style={{ width: `${Math.round((done/séances.length)*100)}%` }} />
+              style={{ width: `${Math.round((done/seances.length)*100)}%` }} />
           </div>
         )}
 
@@ -123,7 +123,7 @@ export default function Séance({ data, updateEntry, getTodayEntry }) {
             className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors">
             <Zap size={14}/> Templates
           </button>
-          {séances.length > 0 && (
+          {seances.length > 0 && (
             <button onClick={reset} className="flex items-center gap-1 text-xs text-white/30 hover:text-red-400 transition-colors">
               <RotateCcw size={12}/> Reset
             </button>
@@ -172,11 +172,11 @@ export default function Séance({ data, updateEntry, getTodayEntry }) {
         )}
       </div>
 
-      {séances.length === 0 ? (
-        <div className="card text-center py-10 text-white/40 text-sm">Aucun exercice. Ajoute ta séance ou choisis un template !</div>
+      {seances.length === 0 ? (
+        <div className="card text-center py-10 text-white/40 text-sm">Aucun exercice. Ajoute ta seance ou choisis un template !</div>
       ) : (
         <div className="space-y-2">
-          {séances.map(s => {
+          {seances.map(s => {
             const t = TYPES.find(t => t.v===s.type) || TYPES[6]
             return (
               <div key={s.id} className={`card transition-all ${s.done ? "opacity-50" : ""}`}>
@@ -220,9 +220,9 @@ export default function Séance({ data, updateEntry, getTodayEntry }) {
         </div>
       )}
 
-      {done === séances.length && séances.length > 0 && (
+      {done === seances.length && seances.length > 0 && (
         <div className="card text-center py-4" style={{ border:"1px solid rgba(139,92,246,0.2)" }}>
-          <p className="text-white/70 text-sm">🔥 Séance complète !</p>
+          <p className="text-white/70 text-sm">🔥 Seance complète !</p>
           <p className="text-white/40 text-xs mt-1">
             {totalMin > 0 && `${totalMin} min · `}
             {totalVolume > 0 && `${Math.round(totalVolume).toLocaleString()} kg de volume · `}

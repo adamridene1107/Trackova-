@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import LangSwitcher from "./LangSwitcher"
 import { Globe } from "lucide-react"
-import { useThème } from "../context/ThemeContext"
+import { useTheme } from "../context/ThemeContext"
 import { User, Bell, Palette, Target, Shield, CreditCard, ChevronRight, Check, Download, Trash2, X, LogOut } from "lucide-react"
 
 
@@ -59,7 +59,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
   const [notifWeekly, setNotifWeekly] = useState(settings.notifWeekly ?? false)
   const [notifStreak, setNotifStreak] = useState(settings.notifStreak ?? true)
 
-  const { thème, setThème } = useThème()
+  const { thème, setTheme } = useTheme()
   const [streakGoal, setStreakGoal] = useState(settings.streakGoal || 7)
 
   const [deleteConfirm, setDeleteConfirm] = useState(0)
@@ -119,7 +119,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
     toast_("Notifications sauvegardées")
   }
 
-  const applyThème = (t) => { setThème(t); toast_(t === "dark" ? "Thème sombre activé" : "Thème clair activé") }
+  const applyThème = (t) => { setTheme(t); toast_(t === "dark" ? "Thème sombre activé" : "Thème clair activé") }
 
   const saveObjectifs = () => {
     saveSettings({ ...getSettings(), streakGoal })
@@ -218,7 +218,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-white/70 text-sm">Rappel quotidien</p>
-                      <p className="text-white/30 text-xs mt-0.5">Rappel pour faire ta séance du jour</p>
+                      <p className="text-white/30 text-xs mt-0.5">Rappel pour faire ta seance du jour</p>
                     </div>
                     <Toggle checked={notifDaily} onChange={setNotifDaily} />
                   </div>

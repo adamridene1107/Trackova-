@@ -39,7 +39,7 @@ export const T = {
     level: "Niveau",
     tasks: "Tâches",
     addTask: "Ajouter une tâche",
-    noTasks: "Aucune tâche. Ajoute ta séance !",
+    noTasks: "Aucune tâche. Ajoute ta seance !",
     welcome: "Bon retour 👋",
     welcomeSub: "Content de te revoir !",
     createAccount: "Crée ton compte",

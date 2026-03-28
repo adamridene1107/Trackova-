@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Lock, Mail, User, Eye, EyeOff, ArrowLeft, Zap, ShieldQuestion } from "lucide-react"
 import { supabase } from "../lib/supabase"
-import { useThème } from "../context/ThemeContext"
+import { useTheme } from "../context/ThemeContext"
 
 const QUESTIONS = [
   "Quel est le nom de ton premier animal de compagnie ?",
@@ -15,7 +15,7 @@ const QUESTIONS = [
 ]
 
 export default function AuthPage({ onAuth }) {
-  const { thème } = useThème()
+  const { thème } = useTheme()
   const isDark = thème !== "light"
   const pageBg = isDark ? "#0A0A0F" : "#f0f0f5"
   const cardBg = isDark ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.95)"

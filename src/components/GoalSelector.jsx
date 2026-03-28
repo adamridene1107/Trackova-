@@ -1,8 +1,8 @@
 ﻿import { GOALS } from "../lib/goals"
-import { useThème } from "../context/ThemeContext"
+import { useTheme } from "../context/ThemeContext"
 
 export default function GoalSelector({ onSelect }) {
-  const { thème } = useThème()
+  const { thème } = useTheme()
   const bg = thème === "light" ? "#f0f0f5" : "#080808"
   const cardBg = thème === "light" ? "rgba(255,255,255,0.9)" : "#111111"
   const cardBorder = thème === "light" ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.06)"

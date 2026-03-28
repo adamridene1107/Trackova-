@@ -1,6 +1,6 @@
 ﻿import { useState } from "react"
 import { Plus, Trash2, CheckCircle2, Clock, Circle, ChevronDown, ChevronUp, Minus } from "lucide-react"
-import { getCatégoriesForGoal } from "../lib/categories"
+import { getCategoriesForGoal } from "../lib/categories"
 
 const ST = [
   { v:"todo",       l:"A faire",  Icon:Circle,       c:"text-white/40",  bg:"bg-white/[0.07] text-white/40 border-white/[0.06]" },
@@ -10,10 +10,10 @@ const ST = [
 // CATS est maintenant dynamique selon goalId
 
 export default function Missions({ data, updateMissions }) {
-  const CATS = getCatégoriesForGoal(data.goal || "homework").map(c => c.l)
+  const CATS = getCategoriesForGoal(data.goal || "homework").map(c => c.l)
   const missions = data.missions || []
   const [txt, setTxt] = useState("")
-  const [cat, setCat] = useState(() => getCatégoriesForGoal(data.goal || "homework")[0].l)
+  const [cat, setCat] = useState(() => getCategoriesForGoal(data.goal || "homework")[0].l)
   const [target, setTarget] = useState("")
   const [open, setOpen] = useState(null)
 

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
 import LangSwitcher from "./LangSwitcher"
-import { useThème } from "../context/ThemeContext"
+import { useTheme } from "../context/ThemeContext"
 import { Zap, Target, BookOpen, ArrowRight, CheckCircle2, Flame, Star, Shield, Dumbbell, Lightbulb, ListTodo, ChevronRight, Play } from "lucide-react"
 
 const FEATURES = [
   { emoji: "📚", title: "Études", desc: "Devoirs, révisions, Pomodoro. Ne rate plus jamais une deadline.", color: "rgba(139,92,246,0.12)", border: "rgba(139,92,246,0.2)" },
-  { emoji: "💪", title: "Sport", desc: "Séances, exercices, nutrition. Suis ta progression physique.", color: "rgba(59,130,246,0.12)", border: "rgba(59,130,246,0.2)" },
+  { emoji: "💪", title: "Sport", desc: "Seances, exercices, nutrition. Suis ta progression physique.", color: "rgba(59,130,246,0.12)", border: "rgba(59,130,246,0.2)" },
   { emoji: "🎨", title: "Projet perso", desc: "Idées, missions créatives, inspiration. Concrétise tes projets.", color: "rgba(236,72,153,0.12)", border: "rgba(236,72,153,0.2)" },
   { emoji: "🗂️", title: "Organisation", desc: "Tâches, projets, outils. Garde le contrôle de ton quotidien.", color: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.2)" },
 ]
@@ -13,7 +13,7 @@ const FEATURES = [
 const TESTIMONIALS = [
   { name: "Lucas M.", role: "Étudiant en médecine", text: "Mon streak est à 47 jours. Je n'aurais jamais cru tenir aussi longtemps.", avatar: "L", bg: "#8b5cf6" },
   { name: "Sarah K.", role: "Freelance créative", text: "Le système XP m'a rendu accro à ma propre productivité. C'est dingue.", avatar: "S", bg: "#6366f1" },
-  { name: "Thomas R.", role: "Sportif amateur", text: "Je suis mes séances depuis 3 mois. Les stats ne mentent pas.", avatar: "T", bg: "#ec4899" },
+  { name: "Thomas R.", role: "Sportif amateur", text: "Je suis mes seances depuis 3 mois. Les stats ne mentent pas.", avatar: "T", bg: "#ec4899" },
 ]
 
 const STATS = [
@@ -30,7 +30,7 @@ function Confetti({ items }) {
 }
 
 export default function LandingPage({ onGetStarted }) {
-  const { thème } = useThème()
+  const { thème } = useTheme()
   const isDark = thème !== "light"
   const pageBg = isDark ? "#0A0A0F" : "#f0f0f5"
   const textPrimary = isDark ? "#ffffff" : "#1a1a2e"
@@ -124,7 +124,7 @@ export default function LandingPage({ onGetStarted }) {
           <div className="text-center mb-14">
             <p className="text-violet-400 text-xs font-semibold uppercase tracking-widest mb-3">4 piliers</p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white">Un outil pour chaque objectif</h2>
-            <p className="text-white/40 mt-3 max-w-md mx-auto text-sm">Chaque mode est pensé pour son domaine. Onglets, catégories et outils adaptés.</p>
+            <p className="text-white/40 mt-3 max-w-md mx-auto text-sm">Chaque mode est pensé pour son domaine. Onglets, categories et outils adaptés.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {FEATURES.map((f, i) => (
@@ -246,7 +246,7 @@ export default function LandingPage({ onGetStarted }) {
           {[
             { q:"Comment s'organiser quand on'est étudiant ?", a:"Trackova centralise tes devoirs, révisions et objectifs. Tu crées des tâches quotidiennes, suis ta progression et maintiens un streak de travail régulier pour rester motivé." },
             { q:"Quelle est la meilleure app de productivité gratuite ?", a:"Trackova propose un essai gratuit de 7 jours sans carte bancaire avec toutes les fonctionnalités : suivi d'objectifs, gamification XP, calendrier et gestion de fichiers." },
-            { q:"Comment suivre ses objectifs sportifs efficacement ?", a:"Le mode Sport de Trackova te permet de planifier tes séances avec des templates (Push/Pull/Legs, HIIT, Yoga), suivre ton volume et tes calories, et accéder à des ressources nutrition." },
+            { q:"Comment suivre ses objectifs sportifs efficacement ?", a:"Le mode Sport de Trackova te permet de planifier tes seances avec des templates (Push/Pull/Legs, HIIT, Yoga), suivre ton volume et tes calories, et accéder à des ressources nutrition." },
             { q:"Comment rester motivé sur un projet personnel ?", a:"Trackova utilise des streaks et des points XP pour te garder motivé. Plus tu travailles régulièrement, plus tu montes en niveau. Les badges de récompense rendent chaque victoire satisfaisanté." },
             { q:"Peut-on gérer plusieurs objectifs avec Trackova ?", a:"Oui, 4 modes disponibles : Études, Sport, Projet créatif et Organisation. Chaque mode a ses propres outils adaptés à tes besoins spécifiques." },
           ].map((item, i) => (

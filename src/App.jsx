@@ -38,7 +38,7 @@ const TABS_BY_GOAL = {
     { id:"history",   label:"Historique",  icon:Calendar },
   ],
   sport: [
-    { id:"seance",    label:"Séance",        icon:Dumbbell },
+    { id:"seance",    label:"Seance",        icon:Dumbbell },
     { id:"missions",  label:"Entraînements", icon:Target },
     { id:"resources", label:"Nutrition",     icon:Apple },
     { id:"calendar",  label:"Calendrier",    icon:Calendar },

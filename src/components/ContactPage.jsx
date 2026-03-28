@@ -1,7 +1,7 @@
-import { useThème } from "../context/ThemeContext"
+import { useTheme } from "../context/ThemeContext"
 
 export default function ContactPage() {
-  const { thème } = useThème()
+  const { thème } = useTheme()
   const isDark = thème !== "light"
   const bg = isDark ? "#0A0A0F" : "#f0f0f5"
   const textPrimary = isDark ? "#ffffff" : "#1a1a2e"

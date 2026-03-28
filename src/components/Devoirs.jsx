@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from "react"
 import { Plus, Trash2, CheckCircle2, Circle, Calendar, ChevronDown, ChevronUp, Pencil, Bell, Flag } from "lucide-react"
-import { getCatégoriesForGoal } from "../lib/categories"
+import { getCategoriesForGoal } from "../lib/categories"
 import { format, isPast, isToday, isTomorrow, parseISO, differenceInDays } from "date-fns"
 import { fr } from "date-fns/locale"
 
@@ -44,9 +44,9 @@ function getDateInfo(dateStr, done) {
 const getEmpty = (cats) => ({ title:"", desc:"", date:"", priority:"medium", matiere: cats[cats.length-1].v })
 
 export default function Devoirs({ devoirs, updateDevoirs, goalId = "homework" }) {
-  const MATIERES = getCatégoriesForGoal(goalId)
+  const MATIERES = getCategoriesForGoal(goalId)
   const defaultCat = MATIERES[MATIERES.length - 1].v
-  const [form, setForm] = useState(() => getEmpty(getCatégoriesForGoal(goalId)))
+  const [form, setForm] = useState(() => getEmpty(getCategoriesForGoal(goalId)))
   const [showForm, setShowForm] = useState(false)
   const [editId, setEditId] = useState(null)
   const [filter, setFilter] = useState("all")
@@ -196,7 +196,7 @@ export default function Devoirs({ devoirs, updateDevoirs, goalId = "homework" })
       {/* Liste */}
       {filtered.length === 0 ? (
         <div className="card text-center py-10 text-white/40 text-sm">
-          {devoirs.length===0 ? "Aucun devoir pour l instant." : "Aucun devoir dans cette catégorie."}
+          {devoirs.length===0 ? "Aucun devoir pour l instant." : "Aucun devoir dans cette categorie."}
         </div>
       ) : (
         <div className="space-y-2">
