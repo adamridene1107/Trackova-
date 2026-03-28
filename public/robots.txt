@@ -3,5 +3,6 @@ Allow: /
 Disallow: /admin
 Disallow: /success
 Disallow: /trial-expired
+Disallow: /profile/
 
 Sitemap: https://trackova.vercel.app/sitemap.xml

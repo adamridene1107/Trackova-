@@ -3,6 +3,7 @@
   <url><loc>https://trackova.vercel.app/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://trackova.vercel.app/subscribe</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://trackova.vercel.app/login</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://trackova.vercel.app/contact</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://trackova.vercel.app/cgu</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://trackova.vercel.app/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>
