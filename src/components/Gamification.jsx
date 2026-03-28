@@ -125,7 +125,7 @@ export default function Gamification() {
         </div>
         <div className="card text-center py-3">
           <CheckSquare size={18} className="text-white/40 mx-auto mb-1" />
-          <p className="text-white font-bold text-lg">{g.tasksComplèted}</p>
+          <p className="text-white font-bold text-lg">{g.tasksCompleted}</p>
           <p className="text-white/40 text-[10px]">Tâches</p>
         </div>
         <div className="card text-center py-3">

@@ -30,8 +30,8 @@ function Confetti({ items }) {
 }
 
 export default function LandingPage({ onGetStarted }) {
-  const { thème } = useTheme()
-  const isDark = thème !== "light"
+  const { theme } = useTheme()
+  const isDark = theme !== "light"
   const pageBg = isDark ? "#0A0A0F" : "#f0f0f5"
   const textPrimary = isDark ? "#ffffff" : "#1a1a2e"
   const textMuted = isDark ? "rgba(255,255,255,0.5)" : "rgba(26,26,46,0.5)"
@@ -267,7 +267,7 @@ export default function LandingPage({ onGetStarted }) {
           </div>
           <p className="text-white/25 text-xs">© 2026 Trakova</p>
           <div className="flex items-center gap-4 text-white/30 text-xs">
-            <a href="/subscribe" className="hover:text-white/60 transition-colors">Abonnément</a>
+            <a href="/subscribe" className="hover:text-white/60 transition-colors">Abonnement</a>
             <a href="/contact" className="hover:text-white/60 transition-colors">Contact</a>
             <a href="/cgu" className="hover:text-white/60 transition-colors">CGU</a>
             <a href="/privacy" className="hover:text-white/60 transition-colors">Confidentialité</a>

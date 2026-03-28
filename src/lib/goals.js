@@ -84,7 +84,7 @@ export const GOALS = [
       "Crée quelque chose en 5 minutes : quantite avant qualité.",
       "Explore un style artistique que tu n'as jamais essaye.",
       "Transforme une vieille creation en quelque chose de nouveau.",
-      "Crée une série de 3 pieces sur le même thème.",
+      "Crée une série de 3 pieces sur le même theme.",
     ],
   },
   {

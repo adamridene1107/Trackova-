@@ -15,8 +15,8 @@ const QUESTIONS = [
 ]
 
 export default function AuthPage({ onAuth }) {
-  const { thème } = useTheme()
-  const isDark = thème !== "light"
+  const { theme } = useTheme()
+  const isDark = theme !== "light"
   const pageBg = isDark ? "#0A0A0F" : "#f0f0f5"
   const cardBg = isDark ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.95)"
   const textPrimary = isDark ? "#ffffff" : "#1a1a2e"
@@ -30,7 +30,7 @@ export default function AuthPage({ onAuth }) {
   const [newPassword, setNewPassword] = useState("")
   const [show, setShow] = useState(false)
   const [error, setError] = useState("")
-  const [succèss, setSuccèss] = useState("")
+  const [success, setSuccess] = useState("")
   const [loading, setLoading] = useState(false)
   const [acceptTerms, setAcceptTerms] = useState(false)
   const [q1, setQ1] = useState(QUESTIONS[0])
@@ -42,7 +42,7 @@ export default function AuthPage({ onAuth }) {
   const [forgotA1, setForgotA1] = useState("")
   const [forgotA2, setForgotA2] = useState("")
 
-  const goTo = (m) => { setMode(m); setError(""); setSuccèss("") }
+  const goTo = (m) => { setMode(m); setError(""); setSuccess("") }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -68,7 +68,7 @@ export default function AuthPage({ onAuth }) {
       })
       if (error) { setError(error.message) }
       else if (data.user) {
-        // Envoyér email de bienvenue
+        // Envoyer email de bienvenue
       fetch("/api/welcome-email", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ email, name: name.trim() }) }).catch(()=>{})
       onAuth({ id: data.user.id, email: data.user.email, name: name.trim() }, true)
       }
@@ -78,13 +78,13 @@ export default function AuthPage({ onAuth }) {
         redirectTo: "https://trackova.vercel.app/reset-password"
       })
       if (error) setError(error.message)
-      else { setSuccèss("Email envoyé ! Vérifie ta boite mail."); goTo("verify") }
+      else { setSuccess("Email envoyé ! Vérifie ta boite mail."); goTo("verify") }
 
     } else if (mode === "reset") {
       if (newPassword.length < 6) { setLoading(false); return setError("Mot de passe trop court") }
       const { error } = await supabase.auth.updateUser({ password: newPassword })
       if (error) setError(error.message)
-      else { setSuccèss("Mot de passe mis à jour !"); setTimeout(() => goTo("login"), 1500) }
+      else { setSuccess("Mot de passe mis à jour !"); setTimeout(() => goTo("login"), 1500) }
     }
 
     setLoading(false)
@@ -191,14 +191,14 @@ export default function AuthPage({ onAuth }) {
               </div>
             )}
             {error && <div className="px-3 py-2 rounded-xl text-xs text-red-400" style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.15)" }}>{error}</div>}
-            {succèss && <div className="px-3 py-2 rounded-xl text-xs text-emerald-400" style={{ background:"rgba(52,211,153,0.08)", border:"1px solid rgba(52,211,153,0.15)" }}>{succèss}</div>}
+            {success && <div className="px-3 py-2 rounded-xl text-xs text-emerald-400" style={{ background:"rgba(52,211,153,0.08)", border:"1px solid rgba(52,211,153,0.15)" }}>{success}</div>}
             {mode !== "verify" && (
               <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 text-sm mt-2">
                 {loading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> :
                   mode === "login" ? "Se connectér" :
                   mode === "signup" ? "Continuer" :
                   mode === "questions" ? "Créer mon compte" :
-                  mode === "forgot" ? "Envoyér le lien" : "Réinitialiser"}
+                  mode === "forgot" ? "Envoyer le lien" : "Réinitialiser"}
               </button>
             )}
           </form>

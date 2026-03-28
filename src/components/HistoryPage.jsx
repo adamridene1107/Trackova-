@@ -50,7 +50,7 @@ export default function HistoryPage({ data }) {
   const currentStreak = data.streak || 0
 
   // Historique des tâches complétées
-  const complètedTasks = useMemo(() => {
+  const completedTasks = useMemo(() => {
     const entries = data.entries || {}
     const list = []
     Object.entries(entries).sort((a,b) => b[0].localeCompare(a[0])).slice(0, 30).forEach(([date, entry]) => {
@@ -68,7 +68,7 @@ export default function HistoryPage({ data }) {
     <div className="space-y-4 fade-in">
       <div className="card">
         <h2 className="text-white font-bold text-lg mb-1">Historique</h2>
-        <p className="text-white/40 text-xs">Ton'activité sur les 52 dernières semaines</p>
+        <p className="text-white/40 text-xs">Ton activité sur les 52 dernières semaines</p>
       </div>
 
       {/* Stats */}
@@ -116,9 +116,9 @@ export default function HistoryPage({ data }) {
       </div>
 
       {/* Liste des jours */}
-      {complètedTasks.length === 0 ? (
+      {completedTasks.length === 0 ? (
         <div className="card text-center py-10 text-white/40 text-sm">Aucune activité enregistrée.</div>
-      ) : complètedTasks.map(({ date, tasks }) => (
+      ) : completedTasks.map(({ date, tasks }) => (
         <div key={date} className="card">
           <p className="text-white/50 text-xs font-medium mb-2 capitalize">
             {format(parseISO(date), "EEEE d MMMM yyyy", { locale: fr })}

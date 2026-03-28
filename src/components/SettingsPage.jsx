@@ -59,7 +59,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
   const [notifWeekly, setNotifWeekly] = useState(settings.notifWeekly ?? false)
   const [notifStreak, setNotifStreak] = useState(settings.notifStreak ?? true)
 
-  const { thème, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const [streakGoal, setStreakGoal] = useState(settings.streakGoal || 7)
 
   const [deleteConfirm, setDeleteConfirm] = useState(0)
@@ -82,7 +82,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
         if (!res.ok) { toast_(data.error || "Erreur"); setCancelStatus(""); return }
         setCancelEndDate(data.endDate)
         setCancelStatus("done")
-        toast_("Abonnément résilié — actif jusqu'au " + data.endDate)
+        toast_("Abonnement résilié — actif jusqu'au " + data.endDate)
       } catch(e) { toast_("Erreur réseau"); setCancelStatus("") }
     }
   }
@@ -119,7 +119,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
     toast_("Notifications sauvegardées")
   }
 
-  const applyThème = (t) => { setTheme(t); toast_(t === "dark" ? "Thème sombre activé" : "Thème clair activé") }
+  const applyTheme = (t) => { setTheme(t); toast_(t === "dark" ? "Theme sombre activé" : "Theme clair activé") }
 
   const saveObjectifs = () => {
     saveSettings({ ...getSettings(), streakGoal })
@@ -150,7 +150,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
     { id:"apparence", label:"Apparence",        icon:Palette },
     { id:"objectifs", label:"Objectifs",        icon:Target },
     { id:"privacy",   label:"Confidentialité",  icon:Shield },
-    { id:"abo",       label:"Abonnément",       icon:CreditCard },
+    { id:"abo",       label:"Abonnement",       icon:CreditCard },
   ]
 
   return (
@@ -206,7 +206,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                 <div className="pt-4" style={{ borderTop:"1px solid rgba(255,255,255,0.06)" }}>
                   <button onClick={onLogout} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm text-red-400/70 hover:text-red-400 transition-colors"
                     style={{ border:"1px solid rgba(239,68,68,0.15)", background:"rgba(239,68,68,0.05)" }}>
-                    <LogOut size={14}/> Se déconnectér
+                    <LogOut size={14}/> Se deconnecter
                   </button>
                 </div>
               </Section>
@@ -253,17 +253,17 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
             {section === "apparence" && (
               <Section icon={Palette} title="Apparence">
                 <div>
-                  <p className="text-white/40 text-xs mb-3">Thème</p>
+                  <p className="text-white/40 text-xs mb-3">Theme</p>
                   <div className="flex gap-3">
-                    <button onClick={() => applyThème("dark")}
+                    <button onClick={() => applyTheme("dark")}
                       className="flex-1 flex flex-col items-center gap-2 p-4 rounded-xl transition-all"
-                      style={{ border: thème==="dark" ? "2px solid #8b5cf6" : "2px solid rgba(255,255,255,0.08)", background: thème==="dark" ? "rgba(139,92,246,0.1)" : "rgba(255,255,255,0.03)" }}>
+                      style={{ border: theme==="dark" ? "2px solid #8b5cf6" : "2px solid rgba(255,255,255,0.08)", background: theme==="dark" ? "rgba(139,92,246,0.1)" : "rgba(255,255,255,0.03)" }}>
                       <div className="w-10 h-7 rounded-lg" style={{ background:"#0A0A0F", border:"1px solid rgba(255,255,255,0.1)" }}/>
                       <span className="text-white/60 text-xs">Sombre</span>
                     </button>
-                    <button onClick={() => applyThème("light")}
+                    <button onClick={() => applyTheme("light")}
                       className="flex-1 flex flex-col items-center gap-2 p-4 rounded-xl transition-all"
-                      style={{ border: thème==="light" ? "2px solid #8b5cf6" : "2px solid rgba(255,255,255,0.08)", background: thème==="light" ? "rgba(139,92,246,0.1)" : "rgba(255,255,255,0.03)" }}>
+                      style={{ border: theme==="light" ? "2px solid #8b5cf6" : "2px solid rgba(255,255,255,0.08)", background: theme==="light" ? "rgba(139,92,246,0.1)" : "rgba(255,255,255,0.03)" }}>
                       <div className="w-10 h-7 rounded-lg" style={{ background:"#f8f8ff", border:"1px solid rgba(0,0,0,0.1)" }}/>
                       <span className="text-white/60 text-xs">Clair</span>
                     </button>
@@ -299,7 +299,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                 <div className="space-y-3">
                   <button onClick={exportData} className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm text-white/60 hover:text-white transition-all"
                     style={{ border:"1px solid rgba(255,255,255,0.08)", background:"rgba(255,255,255,0.02)" }}>
-                    <span className="flex items-center gap-2"><Download size={14}/> Exportér mes données (JSON)</span>
+                    <span className="flex items-center gap-2"><Download size={14}/> Exporter mes données (JSON)</span>
                     <ChevronRight size={14}/>
                   </button>
                   <a href="/cgu" target="_blank" className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm text-white/60 hover:text-white transition-all"
@@ -333,7 +333,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
               </Section>
             )}
             {section === "abo" && (
-              <Section icon={CreditCard} title="Abonnément">
+              <Section icon={CreditCard} title="Abonnement">
                 <div className="space-y-4">
                   <div className="px-4 py-3 rounded-xl" style={{ background:"rgba(139,92,246,0.08)", border:"1px solid rgba(139,92,246,0.15)" }}>
                     <p className="text-violet-400 text-xs font-medium mb-1">Plan'actuel</p>
@@ -342,7 +342,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                   </div>
                   {cancelStatus === "done" ? (
                     <div className="px-4 py-3 rounded-xl text-sm text-amber-400" style={{ background:"rgba(251,191,36,0.08)", border:"1px solid rgba(251,191,36,0.2)" }}>
-                      Abonnément résilié — accès jusqu'au {cancelEndDate}
+                      Abonnement résilié — accès jusqu'au {cancelEndDate}
                     </div>
                   ) : (
                     <div className="space-y-2">
@@ -350,11 +350,11 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                         className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm transition-all"
                         style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", color:"#f87171" }}>
                         {cancelStatus === "loading" ? <span className="w-4 h-4 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin"/> :
-                         cancelStatus === "confirm" ? "Confirmer la résiliation" : "Résilier mon'abonnément"}
+                         cancelStatus === "confirm" ? "Confirmer la résiliation" : "Résilier mon'abonnement"}
                       </button>
                       {cancelStatus === "confirm" && (
                         <div className="flex gap-2">
-                          <p className="text-white/30 text-xs flex-1">Ton'accès reste actif jusqu'à la fin de la période en cours.</p>
+                          <p className="text-white/30 text-xs flex-1">Ton accès reste actif jusqu'à la fin de la période en cours.</p>
                           <button onClick={() => setCancelStatus("")} className="text-white/30 text-xs hover:text-white/60">Annuler</button>
                         </div>
                       )}

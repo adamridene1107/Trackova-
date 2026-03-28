@@ -2,7 +2,7 @@ import { useState } from "react"
 import { X, Zap } from "lucide-react"
 import PomodoroWidget from "./PomodoroWidget"
 
-export default function FocusMode({ data, getTodayEntry, toggleTask, updateEntry, onClose, onFocusComplète }) {
+export default function FocusMode({ data, getTodayEntry, toggleTask, updateEntry, onClose, onFocusComplete }) {
   const entry = getTodayEntry()
   const tasks = [
     ...(data.goal ? [] : []),
@@ -44,7 +44,7 @@ export default function FocusMode({ data, getTodayEntry, toggleTask, updateEntry
           </div>
         )}
 
-        <PomodoroWidget onFocusComplète={onFocusComplète} />
+        <PomodoroWidget onFocusComplete={onFocusComplete} />
 
         {tasks.length > 1 && (
           <div className="flex gap-1 justify-center">

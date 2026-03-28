@@ -1,8 +1,8 @@
 import { useTheme } from "../context/ThemeContext"
 
 export default function ContactPage() {
-  const { thème } = useTheme()
-  const isDark = thème !== "light"
+  const { theme } = useTheme()
+  const isDark = theme !== "light"
   const bg = isDark ? "#0A0A0F" : "#f0f0f5"
   const textPrimary = isDark ? "#ffffff" : "#1a1a2e"
   const textMuted = isDark ? "rgba(255,255,255,0.5)" : "rgba(26,26,46,0.5)"
@@ -36,7 +36,7 @@ export default function ContactPage() {
           <h3 className="text-white/80 font-semibold text-sm mb-3">❓ FAQ rapide</h3>
           <div className="space-y-3">
             {[
-              { q:"Comment annuler mon'abonnément ?", a:"Va dans Paramètres → Abonnément → Résilier." },
+              { q:"Comment annuler mon'abonnement ?", a:"Va dans Paramètres → Abonnement → Résilier." },
               { q:"Mes donnees sont-elles sauvegardees ?", a:"Oui, tes donnees sont sauvegardees dans le cloud via Supabase et accèssibles sur tous tes appareils." },
               { q:"J ai oublie mon mot de passe", a:"Sur la page de connexion, clique sur Mot de passe oublie pour recevoir un lien de réinitialisation." },
               { q:"L app fonctionne-t-elle hors ligne ?", a:"Les donnees sont synchronisees quand tu es connecté. Une connexion internet est recommandee." },
