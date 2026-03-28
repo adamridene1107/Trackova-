@@ -4,6 +4,8 @@ import { LangProvider } from "./context/LangContext"
 import { supabase } from "./lib/supabase"
 import ReactDOM from "react-dom/client"
 import "./index.css"
+import { inject } from "@vercel/analytics"
+inject()
 
 const App = lazy(() => import("./App"))
 const Subscription = lazy(() => import("./components/Subscription"))
