@@ -11,9 +11,9 @@ const FEATURES = [
 ]
 
 const TESTIMONIALS = [
-  { name: "Lucas M.", role: "Étudiant en médecine", text: "Mon streak est à 47 jours. Je n'aurais jamais cru tenir aussi longtemps.", avatar: "L", bg: "#8b5cf6" },
-  { name: "Sarah K.", role: "Freelance créative", text: "Le système XP m'a rendu accro à ma propre productivité. C'est dingue.", avatar: "S", bg: "#6366f1" },
-  { name: "Thomas R.", role: "Sportif amateur", text: "Je suis mes seances depuis 3 mois. Les stats ne mentent pas.", avatar: "T", bg: "#ec4899" },
+  { name: "Lucas M.", role: "Étudiant en médecine", text: "Franchement j'étais sceptique au début. Mais là j'en suis à 47 jours de streak et je révise tous les soirs sans même y penser. C'est devenu une habitude.", avatar: "L", bg: "#8b5cf6" },
+  { name: "Sarah K.", role: "Graphiste freelance", text: "Le truc qui m'a surprise c'est le système XP. Je sais pas pourquoi mais gagner des points pour mes tâches ça m'a complètement motivée. Je check l'app avant même mon café.", avatar: "S", bg: "#6366f1" },
+  { name: "Thomas R.", role: "Passionné de sport", text: "J'avais essayé plein d'autres apps mais j'abandonnais toujours après 2 semaines. Là ça fait 3 mois que je log mes séances. Les graphiques de progression c'est trop satisfaisant.", avatar: "T", bg: "#ec4899" },
 ]
 
 const STATS = [
