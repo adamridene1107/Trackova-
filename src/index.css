@@ -184,3 +184,33 @@ input[type="date"] { color-scheme: dark; }
 /* Week summary bars */
 @keyframes barGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 .bar-grow { transform-origin: bottom; animation: barGrow 0.4s ease-out forwards; }
+
+/* Pulse violet */
+@keyframes pulseViolet {
+  0%,100% { box-shadow: 0 0 0 0 rgba(139,92,246,0); }
+  50% { box-shadow: 0 0 0 8px rgba(139,92,246,0.15); }
+}
+.pulse-violet { animation: pulseViolet 2s ease-in-out infinite; }
+
+/* Slide in from bottom */
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(12px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.slide-up { animation: slideUp 0.3s ease-out forwards; }
+
+/* Number counter */
+@keyframes countUp {
+  from { opacity:0; transform:scale(0.8); }
+  to { opacity:1; transform:scale(1); }
+}
+.count-up { animation: countUp 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+/* Glow on hover */
+.card:hover { box-shadow: 0 4px 24px rgba(139,92,246,0.08); transition: box-shadow 0.2s; }
+
+/* Better scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(139,92,246,0.5); }

@@ -122,6 +122,8 @@ export default function App({ user, onLogout }) {
   const devoirsRaw = data.devoirs || []
   const urgentCount = devoirsRaw.filter(d => !d.done && d.date && (isToday(parseISO(d.date)) || isPast(parseISO(d.date)))).length
   const streakBig = data.streak >= 7
+  const streakColor = data.streak >= 30 ? "#f59e0b" : data.streak >= 14 ? "#f97316" : data.streak >= 7 ? "#8b5cf6" : "rgba(139,92,246,0.6)"
+  const streakEmoji = data.streak >= 30 ? "🏆" : data.streak >= 14 ? "🔥" : data.streak >= 7 ? "⚡" : "✨"
 
   return (
     <div className="min-h-screen" style={{ background: theme === "light" ? "#f0f0f5" : "#0A0A0F" }}>

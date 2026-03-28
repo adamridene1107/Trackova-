@@ -17,10 +17,10 @@ const TESTIMONIALS = [
 ]
 
 const STATS = [
-  { value: "12k+", label: "Utilisateurs actifs" },
-  { value: "94%", label: "Taux de rétention" },
-  { value: "2.1M", label: "Tâches complétées" },
-  { value: "4.9★", label: "Note moyenne" },
+  { value: "15k+", label: "Utilisateurs actifs", emoji: "👥" },
+  { value: "91%", label: "Taux de rétention", emoji: "📈" },
+  { value: "3.2M", label: "Tâches complétées", emoji: "✅" },
+  { value: "4.9★", label: "Note moyenne", emoji: "⭐" },
 ]
 
 function Confetti({ items }) {
@@ -93,7 +93,7 @@ export default function LandingPage({ onGetStarted }) {
             <span className="gradient-text">en habitudes.</span>
           </h1>
           <p className="text-white/50 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-            Études, sport, projets, organisation — un seul outil pour tout tracker, gamifier et accomplir.
+            Études, sport, projets, organisation — un seul outil pour tout tracker, gamifier et célébrer et accomplir.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button onClick={spawn} className="btn-primary flex items-center gap-2 text-base px-8 py-4">

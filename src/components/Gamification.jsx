@@ -57,6 +57,14 @@ function XPToast({ lastXP }) {
   )
 }
 
+const MOTIVATION_MSGS = [
+  "Continue comme ça, tu es sur la bonne voie ! 💪",
+  "Chaque tâche complétée te rapproche de ton objectif. 🎯",
+  "La régularité est la clé du succès. Tu le prouveras ! 🔑",
+  "Tu es dans le top des utilisateurs les plus actifs ! 🏆",
+  "Incroyable progression ! Garde ce rythme. 🚀",
+]
+
 export default function Gamification() {
   const { g, addReward, unlockReward, removeReward, setDailyGoal } = useGamification()
   const level = getLevel(g.xp)

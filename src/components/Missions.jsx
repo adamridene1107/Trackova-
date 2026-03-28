@@ -44,6 +44,7 @@ export default function Missions({ data, updateMissions }) {
   const remove = id => save(missions.filter(m => m.id !== id))
 
   const done = missions.filter(m => m.status === "done").length
+  const totalPct = missions.length > 0 ? Math.round((done / missions.length) * 100) : 0
   const grouped = CATS.reduce((a, c) => {
     const items = missions.filter(m => m.category === c)
     if (items.length) a[c] = items
@@ -54,7 +55,18 @@ export default function Missions({ data, updateMissions }) {
     <div className="space-y-3 fade-in">
       <div className="card">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-white font-bold text-lg">Missions</h2>
+          {missions.length > 0 && (
+          <div className="mb-3">
+            <div className="flex justify-between text-xs text-white/40 mb-1">
+              <span>{done}/{missions.length} missions</span>
+              <span>{totalPct}%</span>
+            </div>
+            <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
+              <div className="h-full rounded-full transition-all duration-700" style={{ width: totalPct + "%", background: "linear-gradient(90deg,#8b5cf6,#6366f1)" }} />
+            </div>
+          </div>
+        )}
+        <h2 className="text-white font-bold text-lg">Missions</h2>
           {missions.length > 0 && (
             <span className="text-white/50 text-xs">{done}/{missions.length} accomplies</span>
           )}
