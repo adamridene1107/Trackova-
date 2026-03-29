@@ -71,7 +71,12 @@ export default function AdminPage() {
         await supabase.from("goal_data").update({ settings: newSettings }).eq("id", goalData.id)
         setGiftMsg(`✅ ${giftMonths} mois gratuit${giftMonths > 1 ? "s" : ""} accordé${giftMonths > 1 ? "s" : ""} à ${giftEmail} jusqu'au ${expiry.toLocaleDateString("fr-FR")}`)
       } else {
-        setGiftMsg("Utilisateur trouvé mais pas de données de jeu. Il doit se connecter d abord.")
+        // Creer une ligne goal_data pour cet utilisateur
+        const expiry2 = new Date()
+        expiry2.setMonth(expiry2.getMonth() + parseInt(giftMonths))
+        const newSettings2 = { freeUntil: expiry2.toISOString(), giftedMonths: giftMonths }
+        await supabase.from("goal_data").insert({ user_id: userId, settings: newSettings2 })
+        setGiftMsg(`✅ ${giftMonths} mois gratuit${giftMonths > 1 ? "s" : ""} accordé${giftMonths > 1 ? "s" : ""} à ${giftEmail} jusqu'au ${expiry2.toLocaleDateString("fr-FR")}`)
       }
     } catch(e) { setGiftMsg("Erreur: " + e.message) }
     setGiftLoading(false)
