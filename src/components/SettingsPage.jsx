@@ -50,6 +50,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
   const settings = getSettings()
   const [name, setName] = useState(user?.name || "")
   const [email] = useState(user?.email || "")
+  const [currentPwd, setCurrentPwd] = useState("")
   const [newPwd, setNewPwd] = useState("")
   const [confirmPwd, setConfirmPwd] = useState("")
   const [pwdError, setPwdError] = useState("")
@@ -96,13 +97,18 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
     toast_("Profil mis à jour")
   }
 
-  const savePassword = () => {
+  const savePassword = async () => {
     setPwdError("")
+    if (!currentPwd) return setPwdError("Entre ton mot de passe actuel")
     if (newPwd.length < 6) return setPwdError("6 caractères minimum")
     if (newPwd !== confirmPwd) return setPwdError("Les mots de passe ne correspondent pas")
-    const users = getUsers()
-    if (users[email]) { users[email].password = newPwd; saveUsers(users) }
-    setNewPwd(""); setConfirmPwd("")
+    // Verifier l ancien mdp via Supabase
+    const { supabase } = await import("../lib/supabase")
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password: currentPwd })
+    if (signInError) return setPwdError("Mot de passe actuel incorrect")
+    const { error } = await supabase.auth.updateUser({ password: newPwd })
+    if (error) return setPwdError(error.message)
+    setCurrentPwd(""); setNewPwd(""); setConfirmPwd("")
     toast_("Mot de passe mis à jour")
   }
 
@@ -198,6 +204,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                 </div>
                 <div className="space-y-3 pt-4" style={{ borderTop:"1px solid rgba(255,255,255,0.06)" }}>
                   <p className="text-white/40 text-xs font-medium">Changer le mot de passe</p>
+                  <input type="password" value={currentPwd} onChange={e => setCurrentPwd(e.target.value)} className="input w-full" placeholder="Mot de passe actuel" />
                   <input type="password" value={newPwd} onChange={e => setNewPwd(e.target.value)} className="input w-full" placeholder="Nouveau mot de passe" />
                   <input type="password" value={confirmPwd} onChange={e => setConfirmPwd(e.target.value)} className="input w-full" placeholder="Confirmer" />
                   {pwdError && <p className="text-red-400 text-xs">{pwdError}</p>}
