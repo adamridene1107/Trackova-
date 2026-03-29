@@ -139,7 +139,12 @@ export default function LandingPage({ onGetStarted }) {
           <button
             onClick={() => {
               if (videoRef.current) {
-                videoRef.current.muted = !videoRef.current.muted
+                if (videoRef.current.muted) {
+                  videoRef.current.muted = false
+                  videoRef.current.volume = 0.33
+                } else {
+                  videoRef.current.muted = true
+                }
                 setVideoMuted(videoRef.current.muted)
               }
             }}
