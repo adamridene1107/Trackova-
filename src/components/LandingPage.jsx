@@ -147,13 +147,7 @@ export default function LandingPage({ onGetStarted }) {
             style={{ background:"rgba(0,0,0,0.6)", backdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.15)" }}>
             {videoMuted ? "🔇" : "🔊"}
           </button>
-          <iframe
-            src="/outro.html"
-            className="w-full"
-            style={{ height:"520px", border:"none", background:"#07070F" }}
-            scrolling="no"
-            title="Trakova outro"
-          />
+
         </div>
       </section>
 
