@@ -196,7 +196,7 @@ export default function LandingPage({ onGetStarted }) {
             <div className="glow-orb glow-orb-violet w-64 h-64 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20" />
             <div className="card-glass relative overflow-hidden">
               <div className="absolute top-4 right-4">
-                <span className="badge badge-violet text-xs">Le plus populaire</span>
+                <span className="px-2.5 py-1 rounded-full text-xs font-bold animate-pulse" style={{ background:"rgba(239,68,68,0.15)", color:"#f87171", border:"1px solid rgba(239,68,68,0.3)" }}>🔥 Offre à durée limitée</span>
               </div>
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
