@@ -87,16 +87,8 @@ export default function App({ user, onLogout }) {
   const [tab, setTab] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
   const [showFocus, setShowFocus] = useState(false)
-  const [giftMsg, setGiftMsg] = useState(() => {
-    // Verifier si l utilisateur a recu des mois gratuits non vus
-    try {
-      const settings = data?.settings || {}
-      if (settings.freeUntil && !localStorage.getItem("gift_seen_" + (settings.freeUntil || ""))) {
-        return settings.giftedMonths || null
-      }
-    } catch {}
-    return null
-  })
+  const [giftMsg, setGiftMsg] = useState(null)
+  const [giftSeen, setGiftSeen] = useState(false)
   const [confetti, setConfetti] = useState([])
   const [showOnboarding, setShowOnboarding] = useState(() => {
     try { return !localStorage.getItem("gt_onboarded") } catch { return false }
@@ -118,14 +110,15 @@ export default function App({ user, onLogout }) {
     setTimeout(() => setConfetti([]), 1400)
   }, [])
 
-  // Detecter cadeau apres chargement
+  // Detecter cadeau apres chargement des donnees
   useEffect(() => {
-    if (!data?.settings?.freeUntil) return
+    if (!data?.settings?.freeUntil || giftSeen) return
     const key = "gift_seen_" + data.settings.freeUntil
     if (!localStorage.getItem(key)) {
       setGiftMsg(data.settings.giftedMonths || 1)
+      setGiftSeen(true)
     }
-  }, [data?.settings?.freeUntil])
+  }, [data?.settings?.freeUntil, data?.settings?.giftedMonths])
 
   const handleTaskComplete = useCallback(() => {
     onTaskComplete?.()
