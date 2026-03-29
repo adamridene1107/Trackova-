@@ -52,20 +52,26 @@ export default function AdminPage() {
     setGiftLoading(true)
     setGiftMsg("")
     try {
-      // Chercher l utilisateur dans Supabase
-      const { data: profile } = await supabase.from("profiles").select("id").eq("email", giftEmail.trim()).single()
-      if (!profile) { setGiftMsg("Utilisateur introuvable"); setGiftLoading(false); return }
+      // Chercher dans profiles (email stocke lors de l inscription)
+      let userId = null
+      const { data: profiles } = await supabase.from("profiles").select("id, email")
+      const found = (profiles || []).find(p => p.email?.toLowerCase() === giftEmail.trim().toLowerCase())
+      if (found) userId = found.id
+
+      if (!userId) { setGiftMsg("Utilisateur introuvable. Verifie que l email est correct et que l utilisateur s est inscrit."); setGiftLoading(false); return }
 
       // Calculer la date d expiration
       const expiry = new Date()
       expiry.setMonth(expiry.getMonth() + parseInt(giftMonths))
 
-      // Mettre a jour les settings de l utilisateur
-      const { data: goalData } = await supabase.from("goal_data").select("id, settings").eq("user_id", profile.id).single()
+      // Mettre a jour les settings
+      const { data: goalData } = await supabase.from("goal_data").select("id, settings").eq("user_id", userId).single()
       if (goalData) {
         const newSettings = { ...(goalData.settings || {}), freeUntil: expiry.toISOString(), giftedMonths: giftMonths }
         await supabase.from("goal_data").update({ settings: newSettings }).eq("id", goalData.id)
         setGiftMsg(`✅ ${giftMonths} mois gratuit${giftMonths > 1 ? "s" : ""} accordé${giftMonths > 1 ? "s" : ""} à ${giftEmail} jusqu'au ${expiry.toLocaleDateString("fr-FR")}`)
+      } else {
+        setGiftMsg("Utilisateur trouvé mais pas de données de jeu. Il doit se connecter d abord.")
       }
     } catch(e) { setGiftMsg("Erreur: " + e.message) }
     setGiftLoading(false)
