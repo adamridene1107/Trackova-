@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, lazy, Suspense } from "react" // trakova
+import { useState, useCallback, useMemo, lazy, Suspense, useEffect } from "react" // trakova
 import { useSupabaseData } from "./hooks/useSupabaseData"
 import { useTheme } from "./context/ThemeContext"
 import GoalSelector from "./components/GoalSelector"
@@ -87,6 +87,16 @@ export default function App({ user, onLogout }) {
   const [tab, setTab] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
   const [showFocus, setShowFocus] = useState(false)
+  const [giftMsg, setGiftMsg] = useState(() => {
+    // Verifier si l utilisateur a recu des mois gratuits non vus
+    try {
+      const settings = data?.settings || {}
+      if (settings.freeUntil && !localStorage.getItem("gift_seen_" + (settings.freeUntil || ""))) {
+        return settings.giftedMonths || null
+      }
+    } catch {}
+    return null
+  })
   const [confetti, setConfetti] = useState([])
   const [showOnboarding, setShowOnboarding] = useState(() => {
     try { return !localStorage.getItem("gt_onboarded") } catch { return false }
@@ -107,6 +117,15 @@ export default function App({ user, onLogout }) {
     setConfetti(items)
     setTimeout(() => setConfetti([]), 1400)
   }, [])
+
+  // Detecter cadeau apres chargement
+  useEffect(() => {
+    if (!data?.settings?.freeUntil) return
+    const key = "gift_seen_" + data.settings.freeUntil
+    if (!localStorage.getItem(key)) {
+      setGiftMsg(data.settings.giftedMonths || 1)
+    }
+  }, [data?.settings?.freeUntil])
 
   const handleTaskComplete = useCallback(() => {
     onTaskComplete?.()
@@ -194,6 +213,23 @@ export default function App({ user, onLogout }) {
         <div className={activeTab === "history" ? "tab-content" : "hidden"}><HistoryPage data={data} /></div>
       </Suspense></main>
 
+      {giftMsg && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6" style={{ background:"rgba(0,0,0,0.85)", backdropFilter:"blur(12px)" }}>
+          <div className="w-full max-w-sm fade-up text-center" style={{ background:"rgba(18,18,26,0.98)", border:"1px solid rgba(139,92,246,0.3)", borderRadius:"1.5rem", padding:"2rem", boxShadow:"0 32px 80px rgba(0,0,0,0.7)" }}>
+            <div className="text-5xl mb-4">🎁</div>
+            <h2 className="text-white font-bold text-xl mb-2">Cadeau reçu !</h2>
+            <p className="text-white/60 text-sm mb-1">Tu as reçu</p>
+            <p className="text-white font-bold text-3xl mb-1" style={{ color:"#a78bfa" }}>{giftMsg} mois gratuit{giftMsg > 1 ? "s" : ""}</p>
+            <p className="text-white/40 text-xs mb-6">Profite de toutes les fonctionnalités sans frais !</p>
+            <button onClick={() => {
+              localStorage.setItem("gift_seen_" + data.settings.freeUntil, "1")
+              setGiftMsg(null)
+            }} className="btn-primary w-full py-3 text-sm">
+              Super, merci ! 🙌
+            </button>
+          </div>
+        </div>
+      )}
       {showFocus && (
         <Suspense fallback={null}>
           <FocusMode data={data} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} onClose={() => setShowFocus(false)} onFocusComplete={onFocusComplete} />
