@@ -201,7 +201,10 @@ export default function LandingPage({ onGetStarted }) {
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-white/50 text-sm">Accès complet</p>
+                  <div className="flex items-center gap-2">
                   <span className="px-2.5 py-1 rounded-full text-sm font-bold" style={{ background:"rgba(16,185,129,0.15)", color:"#34d399", border:"1px solid rgba(16,185,129,0.3)" }}>-40%</span>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold animate-pulse" style={{ background:"rgba(239,68,68,0.15)", color:"#f87171", border:"1px solid rgba(239,68,68,0.3)" }}>🔥 Durée limitée</span>
+                </div>
                 </div>
                 <div className="flex items-end gap-2">
                   <span className="text-white/30 text-2xl line-through mr-1">10€</span>
