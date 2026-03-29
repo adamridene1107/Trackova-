@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import LangSwitcher from "./LangSwitcher"
 import { useTheme } from "../context/ThemeContext"
-import { Zap, Target, BookOpen, ArrowRight, CheckCircle2, Flame, Star, Shield, Dumbbell, Lightbulb, ListTodo, ChevronRight, Play } from "lucide-react"
+import { Zap, Target, BookOpen, ArrowRight, CheckCircle2, Flame, Star, Shield, Dumbbell, Lightbulb, ListTodo, ChevronRight, Play, Gift } from "lucide-react"
 
 const FEATURES = [
   { emoji: "📚", title: "Études", desc: "Devoirs, révisions, Pomodoro. Ne rate plus jamais une deadline.", color: "rgba(139,92,246,0.12)", border: "rgba(139,92,246,0.2)" },
