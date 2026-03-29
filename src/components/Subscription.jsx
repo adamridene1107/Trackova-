@@ -48,6 +48,7 @@ export default function Subscription() {
             <span className="text-white/30 text-lg line-through mr-2">10€</span>
             <span className="text-5xl font-bold gradient-text">6€</span>
             <span className="text-white/40 text-sm mb-2">/mois</span>
+            <span className="px-2.5 py-1 rounded-full text-base font-black ml-2" style={{ background:"rgba(16,185,129,0.2)", color:"#34d399", border:"1px solid rgba(16,185,129,0.4)" }}>-40%</span>
           </div>
           <div className="flex items-center gap-2 mt-2">
             <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background:"rgba(16,185,129,0.15)", color:"#34d399", border:"1px solid rgba(16,185,129,0.3)" }}>-40%</span>
