@@ -164,78 +164,44 @@ export default function LandingPage({ onGetStarted }) {
             <h2 className="text-3xl sm:text-4xl font-bold text-white">Un outil pour chaque objectif</h2>
             <p className="text-white/40 mt-3 max-w-md mx-auto text-sm">Chaque mode est pensé pour son domaine. Onglets, categories et outils adaptés.</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
-            {FEATURES.map((f, i) => (
-              <div key={i} onClick={() => setActiveFeature(i)}
-                className={`card cursor-pointer transition-all duration-300 ${activeFeature === i ? "card-glow" : ""}`}>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
-                    style={{ background: f.color, border: "1px solid " + f.border }}>
-                    {f.emoji}
+          <div className="card-glass relative overflow-hidden">
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-white/50 text-sm">Accès complet</p>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-1 rounded-full text-sm font-bold" style={{ background:"rgba(16,185,129,0.15)", color:"#34d399", border:"1px solid rgba(16,185,129,0.3)" }}>-40%</span>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-bold animate-pulse" style={{ background:"rgba(239,68,68,0.15)", color:"#f87171", border:"1px solid rgba(239,68,68,0.3)" }}>🔥 Durée limitée</span>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-white font-semibold text-base mb-1">{f.title}</h3>
-                    <p className="text-white/50 text-sm leading-relaxed">{f.desc}</p>
-                  </div>
-                  {activeFeature === i && <ChevronRight size={16} className="text-violet-400 flex-shrink-0 mt-1" />}
                 </div>
+                <div className="flex items-end gap-2">
+                  <span className="text-white/30 text-2xl line-through mr-1">10€</span>
+                  <span className="text-5xl font-bold gradient-text">6€</span>
+                  <span className="text-white/40 text-sm mb-2">/mois</span>
+                </div>
+                <p className="text-white/30 text-xs mt-1">ou <span className="text-violet-400 font-medium">64€/an</span> <span className="text-white/20 line-through text-xs">72€</span> — économise 8€</p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PRICING */}
-      <section className="py-20 px-6">
-        <div className="max-w-md mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-violet-400 text-xs font-semibold uppercase tracking-widest mb-3">Tarif</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white">Simple et transparent</h2>
-          </div>
-          <div className="relative">
-            <div className="glow-orb glow-orb-violet w-64 h-64 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Mensuel */}
-              <div className="card-glass relative overflow-hidden flex flex-col">
-                <div className="mb-4 flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-white/50 text-sm">Mensuel</p>
-                    <div className="flex items-center gap-1.5">
-                      <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background:"rgba(16,185,129,0.15)", color:"#34d399", border:"1px solid rgba(16,185,129,0.3)" }}>-40%</span>
-                      <span className="px-2 py-0.5 rounded-full text-xs font-bold animate-pulse" style={{ background:"rgba(239,68,68,0.15)", color:"#f87171", border:"1px solid rgba(239,68,68,0.3)" }}>🔥 Limité</span>
-                    </div>
-                  </div>
-                  <div className="flex items-end gap-2">
-                    <span className="text-white/30 text-base line-through">10€</span>
-                    <span className="text-4xl font-bold gradient-text">6€</span>
-                    <span className="text-white/40 text-sm mb-1">/mois</span>
-                  </div>
-                </div>
-                <a href="/subscribe" className="btn-primary w-full flex items-center justify-center gap-2 py-3 text-sm">
-                  <Zap size={14} /> Essai 7 jours gratuit
+              <div className="flex items-center gap-2 mb-6 px-3 py-2 rounded-xl" style={{ background:"rgba(139,92,246,0.1)", border:"1px solid rgba(139,92,246,0.15)" }}>
+                <Gift size={12} className="text-violet-400 flex-shrink-0" />
+                <span className="text-white/60 text-xs">7 jours gratuits — aucun débit immédiat</span>
+              </div>
+              <ul className="space-y-3 mb-6">
+                {["4 modes : Études, Sport, Créatif, Organisation","Système XP, niveaux et streaks","Devoirs, missions, fichiers illimités","Pomodoro et planning journalier","Statistiques et calendrier de progression","Toutes les futures fonctionnalités"].map((f,i) => (
+                  <li key={i} className="flex items-center gap-3 text-white/70 text-sm">
+                    <CheckCircle2 size={15} className="text-violet-400 flex-shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <div className="space-y-2">
+                <a href="/subscribe" className="btn-primary w-full flex items-center justify-center gap-2 py-4 text-sm font-semibold">
+                  <Zap size={14} /> Commencer l'essai gratuit
                 </a>
-                <p className="text-white/25 text-xs text-center mt-2">Sans carte bancaire</p>
-              </div>
-
-              {/* Annuel */}
-              <div className="card-glass relative overflow-hidden flex flex-col" style={{ border:"1px solid rgba(139,92,246,0.3)" }}>
-                <div className="absolute top-3 right-3">
-                  <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background:"rgba(139,92,246,0.2)", color:"#a78bfa", border:"1px solid rgba(139,92,246,0.4)" }}>Meilleure offre</span>
-                </div>
-                <div className="mb-4 flex-1">
-                  <p className="text-white/50 text-sm mb-2">Annuel</p>
-                  <div className="flex items-end gap-2">
-                    <span className="text-white/30 text-base line-through">72€</span>
-                    <span className="text-4xl font-bold gradient-text">64€</span>
-                    <span className="text-white/40 text-sm mb-1">/an</span>
-                  </div>
-                  <p className="text-emerald-400 text-xs mt-1">Soit 5,33€/mois · Économise 8€</p>
-                </div>
-                <a href="/subscribe?plan=yearly" className="btn-primary w-full flex items-center justify-center gap-2 py-3 text-sm" style={{ background:"linear-gradient(135deg,#8b5cf6,#6366f1)" }}>
-                  <Zap size={14} /> Choisir l'annuel
+                <a href="/subscribe?plan=yearly" className="w-full flex items-center justify-center gap-2 py-3 text-sm rounded-xl transition-all" style={{ border:"1px solid rgba(139,92,246,0.3)", color:"#a78bfa" }}>
+                  Choisir l'annuel — 64€/an
                 </a>
-                <p className="text-white/25 text-xs text-center mt-2">Essai 7 jours inclus</p>
               </div>
+              <p className="text-white/25 text-xs text-center mt-3">Paiement sécurisé par Stripe · Annulable à tout moment</p>
+            </div>
             </div>
           </div>
         </div>
