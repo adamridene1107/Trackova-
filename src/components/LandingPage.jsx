@@ -199,8 +199,12 @@ export default function LandingPage({ onGetStarted }) {
                 <span className="badge badge-violet text-xs">Le plus populaire</span>
               </div>
               <div className="mb-6">
-                <p className="text-white/50 text-sm mb-2">Accès complet</p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-white/50 text-sm">Accès complet</p>
+                  <span className="px-2.5 py-1 rounded-full text-sm font-bold" style={{ background:"rgba(16,185,129,0.15)", color:"#34d399", border:"1px solid rgba(16,185,129,0.3)" }}>-40%</span>
+                </div>
                 <div className="flex items-end gap-2">
+                  <span className="text-white/30 text-2xl line-through mr-1">10€</span>
                   <span className="text-5xl font-bold gradient-text">6€</span>
                   <span className="text-white/40 text-sm mb-2">/mois</span>
                 </div>
