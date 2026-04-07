@@ -1,26 +1,68 @@
 import { useState, useEffect, useRef } from "react"
-import LangSwitcher from "./LangSwitcher"
 import { useTheme } from "../context/ThemeContext"
-import { Zap, Target, BookOpen, ArrowRight, CheckCircle2, Flame, Star, Shield, Dumbbell, Lightbulb, ListTodo, ChevronRight, Play, Gift } from "lucide-react"
+import { ArrowRight, CheckCircle2, Flame, Star, Zap, Gift, BookOpen, Dumbbell, Palette, Layout, Timer, BarChart2, FolderOpen, ChevronDown } from "lucide-react"
+
+const CATEGORIES = [
+  {
+    icon: BookOpen,
+    label: "Études",
+    desc: "Devoirs, révisions, Pomodoro. Ne rate plus jamais une deadline.",
+    color: "#6366f1",
+    bg: "rgba(99,102,241,0.1)",
+    border: "rgba(99,102,241,0.2)",
+  },
+  {
+    icon: Dumbbell,
+    label: "Sport",
+    desc: "Séances, exercices, nutrition. Suis ta progression physique.",
+    color: "#3b82f6",
+    bg: "rgba(59,130,246,0.1)",
+    border: "rgba(59,130,246,0.2)",
+  },
+  {
+    icon: Palette,
+    label: "Projet créatif",
+    desc: "Idées, missions créatives, inspiration. Concrétise tes projets.",
+    color: "#a855f7",
+    bg: "rgba(168,85,247,0.1)",
+    border: "rgba(168,85,247,0.2)",
+  },
+  {
+    icon: Layout,
+    label: "Organisation",
+    desc: "Tâches, projets, outils. Garde le contrôle de ton quotidien.",
+    color: "#10b981",
+    bg: "rgba(16,185,129,0.1)",
+    border: "rgba(16,185,129,0.2)",
+  },
+]
 
 const FEATURES = [
-  { emoji: "📚", title: "Études", desc: "Devoirs, révisions, Pomodoro. Ne rate plus jamais une deadline.", color: "rgba(139,92,246,0.12)", border: "rgba(139,92,246,0.2)" },
-  { emoji: "💪", title: "Sport", desc: "Seances, exercices, nutrition. Suis ta progression physique.", color: "rgba(59,130,246,0.12)", border: "rgba(59,130,246,0.2)" },
-  { emoji: "🎨", title: "Projet perso", desc: "Idées, missions créatives, inspiration. Concrétise tes projets.", color: "rgba(236,72,153,0.12)", border: "rgba(236,72,153,0.2)" },
-  { emoji: "🗂️", title: "Organisation", desc: "Tâches, projets, outils. Garde le contrôle de ton quotidien.", color: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.2)" },
+  { icon: Zap,       label: "Gamification XP",     desc: "Gagne des points, monte de niveau, maintiens ton streak quotidien." },
+  { icon: Timer,     label: "Pomodoro intégré",     desc: "Sessions de travail chronométrées avec pauses intelligentes." },
+  { icon: BarChart2, label: "Stats & Calendrier",   desc: "Visualise ta progression sur les 30, 60 ou 90 derniers jours." },
+  { icon: FolderOpen,label: "Fichiers & Ressources",desc: "Stocke tes fichiers et accède aux meilleures ressources par catégorie." },
 ]
 
 const TESTIMONIALS = [
-  { name: "Lucas M.", role: "Étudiant en médecine", text: "Franchement j'étais sceptique au début. Mais là j'en suis à 47 jours de streak et je révise tous les soirs sans même y penser. C'est devenu une habitude.", avatar: "L", bg: "#8b5cf6" },
-  { name: "Sarah K.", role: "Graphiste freelance", text: "Le truc qui m'a surprise c'est le système XP. Je sais pas pourquoi mais gagner des points pour mes tâches ça m'a complètement motivée. Je check l'app avant même mon café.", avatar: "S", bg: "#6366f1" },
-  { name: "Thomas R.", role: "Passionné de sport", text: "J'avais essayé plein d'autres apps mais j'abandonnais toujours après 2 semaines. Là ça fait 3 mois que je log mes séances. Les graphiques de progression c'est trop satisfaisant.", avatar: "T", bg: "#ec4899" },
+  { name: "Lucas M.", role: "Étudiant en médecine", text: "J'en suis à 47 jours de streak et je révise tous les soirs sans même y penser. C'est devenu une habitude.", avatar: "L", color: "#6366f1" },
+  { name: "Sarah K.", role: "Graphiste freelance",  text: "Le système XP m'a complètement motivée. Je check l'app avant même mon café du matin.", avatar: "S", color: "#a855f7" },
+  { name: "Thomas R.", role: "Passionné de sport",  text: "Ça fait 3 mois que je log mes séances. Les graphiques de progression c'est trop satisfaisant.", avatar: "T", color: "#3b82f6" },
 ]
 
 const STATS = [
-  { value: "15k+", label: "Utilisateurs actifs", emoji: "👥" },
-  { value: "91%", label: "Taux de rétention", emoji: "📈" },
-  { value: "3.2M", label: "Tâches complétées", emoji: "✅" },
-  { value: "4.9★", label: "Note moyenne", emoji: "⭐" },
+  { value: "15k+", label: "Utilisateurs actifs" },
+  { value: "91%",  label: "Taux de rétention" },
+  { value: "3.2M", label: "Tâches complétées" },
+  { value: "4.9★", label: "Note moyenne" },
+]
+
+const FAQ = [
+  { q: "Comment s'organiser quand on est étudiant ?", a: "Trakova centralise tes devoirs, révisions et objectifs. Tu crées des tâches quotidiennes, suis ta progression et maintiens un streak de travail régulier." },
+  { q: "Quelle est la meilleure app de productivité ?", a: "Trakova propose un essai gratuit de 7 jours sans carte bancaire avec toutes les fonctionnalités : suivi d'objectifs, gamification XP, calendrier et gestion de fichiers." },
+  { q: "Comment suivre ses objectifs sportifs ?", a: "Le mode Sport te permet de planifier tes séances avec des templates (Push/Pull/Legs, HIIT, Yoga), suivre ton volume et accéder à des ressources nutrition." },
+  { q: "Peut-on gérer plusieurs objectifs ?", a: "4 modes disponibles : Études, Sport, Projet créatif et Organisation. Chaque mode a ses propres outils adaptés à tes besoins spécifiques." },
+  { q: "Comment rester motivé sur le long terme ?", a: "Les streaks, points XP et badges de récompense créent une boucle de motivation. Plus tu travailles régulièrement, plus tu montes en niveau." },
 ]
 
 function Confetti({ items }) {
@@ -32,24 +74,15 @@ function Confetti({ items }) {
 export default function LandingPage({ onGetStarted }) {
   const { theme } = useTheme()
   const isDark = theme !== "light"
-  const pageBg = isDark ? "#0A0A0F" : "#f0f0f5"
-  const textPrimary = isDark ? "#ffffff" : "#1a1a2e"
-  const textMuted = isDark ? "rgba(255,255,255,0.5)" : "rgba(26,26,46,0.5)"
   const [faqOpen, setFaqOpen] = useState(null)
   const [videoMuted, setVideoMuted] = useState(true)
   const videoRef = useRef(null)
   const [confetti, setConfetti] = useState([])
-  const [activeFeature, setActiveFeature] = useState(0)
-
-  useEffect(() => {
-    const t = setInterval(() => setActiveFeature(i => (i + 1) % FEATURES.length), 3000)
-    return () => clearInterval(t)
-  }, [])
 
   const spawn = (e) => {
     const r = e.currentTarget.getBoundingClientRect()
     const cx = r.left + r.width / 2, cy = r.top + r.height / 2
-    const colors = ["#8b5cf6","#6366f1","#a78bfa","#818cf8","#f472b6","#34d399","#fbbf24"]
+    const colors = ["#6366f1","#818cf8","#a5b4fc","#c7d2fe","#f472b6","#34d399","#fbbf24"]
     const items = Array.from({ length: 22 }, (_, i) => ({
       id: Date.now() + i,
       x: cx + (Math.random() - 0.5) * 140,
@@ -64,166 +97,187 @@ export default function LandingPage({ onGetStarted }) {
     onGetStarted()
   }
 
+  const bg      = isDark ? "#070710" : "#f4f4f9"
+  const surface = isDark ? "#0e0e1c" : "#ffffff"
+  const border  = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)"
+  const text    = isDark ? "#ededf8" : "#16162a"
+  const muted   = isDark ? "rgba(237,237,248,0.45)" : "rgba(22,22,42,0.5)"
+  const faint   = isDark ? "rgba(237,237,248,0.2)" : "rgba(22,22,42,0.28)"
+
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: pageBg }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: bg, color: text }}>
       <Confetti items={confetti} />
 
-      {/* NAV */}
+      {/* ── NAV ───────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
-        style={{ background: "rgba(10,10,15,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(139,92,246,0.1)" }}>
-        <div className="flex items-center gap-2">
-          <img src="/logo.svg" alt="Trakova" className="h-8 w-8" />
-          <span className="font-bold text-white text-sm tracking-tight">Trakova</span>
+        style={{ background: isDark ? "rgba(7,7,16,0.9)" : "rgba(244,244,249,0.95)", backdropFilter: "blur(20px)", borderBottom: `1px solid ${border}` }}>
+        <div className="flex items-center gap-2.5">
+          <img src="/logo.svg" alt="Trakova" className="h-8 w-auto" />
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={onGetStarted} className="text-white/50 text-sm hover:text-white transition-colors hidden sm:block">Connexion</button>
+          <button onClick={onGetStarted} className="text-sm transition-colors hidden sm:block" style={{ color: muted }}>Connexion</button>
           <button onClick={spawn} className="btn-primary text-xs px-4 py-2">Essai gratuit</button>
         </div>
       </nav>
 
-      {/* HERO */}
-      <section className="relative pt-32 pb-20 px-6 text-center overflow-hidden">
-        <div className="glow-orb glow-orb-violet w-96 h-96 -top-20 left-1/2 -translate-x-1/2 opacity-50" />
-        <div className="glow-orb glow-orb-indigo w-64 h-64 top-40 right-10 opacity-30" />
+      {/* ── HERO ──────────────────────────────────────── */}
+      <section className="relative pt-36 pb-24 px-6 text-center overflow-hidden">
+        {/* Background grid */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: `radial-gradient(${isDark ? "rgba(99,102,241,0.1)" : "rgba(99,102,241,0.07)"} 1px, transparent 1px)`,
+          backgroundSize: "32px 32px",
+          maskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%)",
+        }} />
+        {/* Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.2) 0%, transparent 70%)" }} />
+
         <div className="relative max-w-3xl mx-auto fade-up">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 text-xs font-medium"
-            style={{ background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.2)", color: "#a78bfa" }}>
-            <Flame size={12} /> Productivité gamifiée — Essai 7 jours gratuit
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 text-xs font-semibold" style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.22)", color: "#a5b4fc", letterSpacing: "0.02em" }}>
+            <Flame size={11} />
+            ESSAI 7 JOURS GRATUIT · SANS CARTE
           </div>
-          <h1 className="text-5xl sm:text-6xl font-bold text-white leading-tight mb-6 tracking-tight">
+
+          <h1 className="text-5xl sm:text-6xl font-bold leading-tight mb-6" style={{ color: text, letterSpacing: "-0.03em" }}>
             Transforme tes objectifs<br />
             <span className="gradient-text">en habitudes.</span>
           </h1>
-          <p className="text-white/50 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-            Études, sport, projets, organisation — un seul outil pour tout tracker, gamifier et célébrer et accomplir.
+
+          <p className="text-lg mb-10 max-w-xl mx-auto leading-relaxed" style={{ color: muted }}>
+            Études, sport, projets, organisation — un seul outil pour tout tracker, gamifier et célébrer chaque victoire.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button onClick={spawn} className="btn-primary flex items-center gap-2 text-base px-8 py-4">
-              Commencer gratuitement <ArrowRight size={16} />
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
+            <button onClick={spawn} className="btn-primary flex items-center gap-2 text-sm px-7 py-3.5">
+              Commencer gratuitement <ArrowRight size={15} />
             </button>
-            <button className="flex items-center gap-2 text-white/50 text-sm hover:text-white transition-colors">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.2)" }}>
-                <Play size={12} className="text-violet-400 ml-0.5" />
+            <button className="flex items-center gap-2 text-sm transition-colors" style={{ color: muted }} onClick={onGetStarted}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(99,102,241,0.1)", border: `1px solid ${border}` }}>
+                <span className="text-xs ml-0.5">▶</span>
               </div>
               Voir la démo
             </button>
           </div>
-          <p className="text-white/25 text-xs mt-5">7 jours gratuits · Puis <span style={{textDecoration:"line-through",opacity:0.4,marginRight:"4px"}}>10€</span>6€/mois <span style={{background:"rgba(16,185,129,0.2)",color:"#34d399",padding:"1px 6px",borderRadius:"999px",fontSize:"11px",fontWeight:"700"}}>-40%</span> · Annulable à tout moment</p>
+
+          <p className="text-xs" style={{ color: faint }}>
+            7 jours gratuits · Puis <span style={{ textDecoration: "line-through", marginRight: "4px", opacity: 0.5 }}>10€</span>
+            <span style={{ fontWeight: 600, color: "#818cf8" }}>6€/mois</span>
+            <span style={{ background: "rgba(16,185,129,0.15)", color: "#34d399", padding: "1px 8px", borderRadius: "999px", fontSize: "10px", fontWeight: 700, marginLeft: "6px" }}>-40%</span>
+            &nbsp;· Annulable à tout moment
+          </p>
         </div>
+
+        {/* Stats bar */}
         <div className="relative max-w-2xl mx-auto mt-16 grid grid-cols-2 sm:grid-cols-4 gap-3">
           {STATS.map((s, i) => (
-            <div key={i} className="card-glass text-center py-4 px-3">
-              <p className="text-2xl font-bold gradient-text">{s.value}</p>
-              <p className="text-white/40 text-xs mt-1">{s.label}</p>
+            <div key={i} className="text-center py-4 px-3 rounded-2xl" style={{ background: surface, border: `1px solid ${border}` }}>
+              <p className="text-2xl font-bold gradient-text" style={{ letterSpacing: "-0.03em" }}>{s.value}</p>
+              <p className="text-xs mt-1" style={{ color: faint }}>{s.label}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Demo Video */}
-      <section className="px-4 py-12 max-w-4xl mx-auto">
-        <div className="relative rounded-2xl overflow-hidden" style={{ border:"1px solid rgba(139,92,246,0.2)", boxShadow:"0 24px 64px rgba(0,0,0,0.5)" }}>
+      {/* ── DEMO VIDEO ────────────────────────────────── */}
+      <section className="px-4 py-8 max-w-4xl mx-auto">
+        <div className="relative rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(99,102,241,0.2)", boxShadow: "0 24px 64px rgba(0,0,0,0.45)" }}>
           <video
             ref={videoRef}
             src="/demo.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
+            autoPlay muted loop playsInline
             disablePictureInPicture
             controlsList="nodownload nofullscreen noremoteplayback"
             onContextMenu={e => e.preventDefault()}
-            className="w-full"
-            style={{ display:"block" }}
+            className="w-full block"
           />
           <button
             onClick={() => {
-              if (videoRef.current) {
-                if (videoRef.current.muted) {
-                  videoRef.current.muted = false
-                  videoRef.current.volume = 0.33
-                } else {
-                  videoRef.current.muted = true
-                }
-                setVideoMuted(videoRef.current.muted)
-              }
+              if (!videoRef.current) return
+              videoRef.current.muted = !videoRef.current.muted
+              if (!videoRef.current.muted) videoRef.current.volume = 0.33
+              setVideoMuted(videoRef.current.muted)
             }}
-            className="absolute bottom-3 right-3 flex items-center justify-center w-9 h-9 rounded-full transition-all"
-            style={{ background:"rgba(0,0,0,0.6)", backdropFilter:"blur(8px)", border:"1px solid rgba(255,255,255,0.15)" }}>
+            className="absolute bottom-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all"
+            style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.15)" }}>
             {videoMuted ? "🔇" : "🔊"}
           </button>
-
         </div>
       </section>
 
-      {/* FEATURES */}
+      {/* ── 4 CATEGORIES ──────────────────────────────── */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-violet-400 text-xs font-semibold uppercase tracking-widest mb-3">4 piliers</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white">Un outil pour chaque objectif</h2>
-            <p className="text-white/40 mt-3 max-w-md mx-auto text-sm">Chaque mode est pensé pour son domaine. Onglets, categories et outils adaptés.</p>
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#818cf8", letterSpacing: "0.12em" }}>4 MODES</p>
+            <h2 className="text-3xl sm:text-4xl font-bold" style={{ color: text }}>Un outil pour chaque objectif</h2>
+            <p className="mt-3 max-w-md mx-auto text-sm" style={{ color: muted }}>Chaque mode est pensé pour son domaine. Onglets, catégories et outils adaptés.</p>
           </div>
-          <div className="card-glass relative overflow-hidden">
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-white/50 text-sm">Accès complet</p>
-                  <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-1 rounded-full text-sm font-bold" style={{ background:"rgba(16,185,129,0.15)", color:"#34d399", border:"1px solid rgba(16,185,129,0.3)" }}>-40%</span>
-                    <span className="px-2 py-0.5 rounded-full text-xs font-bold animate-pulse" style={{ background:"rgba(239,68,68,0.15)", color:"#f87171", border:"1px solid rgba(239,68,68,0.3)" }}>🔥 Durée limitée</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {CATEGORIES.map((c, i) => {
+              const Icon = c.icon
+              return (
+                <div key={i} className="rounded-2xl p-6 transition-all cursor-default group" style={{ background: surface, border: `1px solid ${border}` }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.boxShadow = `0 8px 32px rgba(0,0,0,0.2)` }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = border; e.currentTarget.style.boxShadow = "none" }}>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style={{ background: c.bg, border: `1px solid ${c.border}` }}>
+                    <Icon size={18} style={{ color: c.color }} />
                   </div>
+                  <h3 className="font-semibold mb-2" style={{ color: text, letterSpacing: "-0.02em" }}>{c.label}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: muted }}>{c.desc}</p>
                 </div>
-                <div className="flex items-end gap-2">
-                  <span className="text-white/30 text-2xl line-through mr-1">10€</span>
-                  <span className="text-5xl font-bold gradient-text">6€</span>
-                  <span className="text-white/40 text-sm mb-2">/mois</span>
-                </div>
-                <p className="text-white/30 text-xs mt-1">ou <span className="text-violet-400 font-medium">64€/an</span> <span className="text-white/20 line-through text-xs">72€</span> — économise 8€</p>
-              </div>
-              <div className="flex items-center gap-2 mb-6 px-3 py-2 rounded-xl" style={{ background:"rgba(139,92,246,0.1)", border:"1px solid rgba(139,92,246,0.15)" }}>
-                <Gift size={12} className="text-violet-400 flex-shrink-0" />
-                <span className="text-white/60 text-xs">7 jours gratuits — aucun débit immédiat</span>
-              </div>
-              <ul className="space-y-3 mb-6">
-                {["4 modes : Études, Sport, Créatif, Organisation","Système XP, niveaux et streaks","Devoirs, missions, fichiers illimités","Pomodoro et planning journalier","Statistiques et calendrier de progression","Toutes les futures fonctionnalités"].map((f,i) => (
-                  <li key={i} className="flex items-center gap-3 text-white/70 text-sm">
-                    <CheckCircle2 size={15} className="text-violet-400 flex-shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <div className="space-y-2">
-                <a href="/subscribe" className="btn-primary w-full flex items-center justify-center gap-2 py-4 text-sm font-semibold">
-                  <Zap size={14} /> Commencer l'essai gratuit
-                </a>
-                <a href="/subscribe?plan=yearly" className="w-full flex items-center justify-center gap-2 py-3 text-sm rounded-xl transition-all" style={{ border:"1px solid rgba(139,92,246,0.3)", color:"#a78bfa" }}>
-                  Choisir l'annuel — 64€/an
-                </a>
-              </div>
-              <p className="text-white/25 text-xs text-center mt-3">Paiement sécurisé par Stripe · Annulable à tout moment</p>
-            </div>
+              )
+            })}
           </div>
+        </div>
       </section>
 
-      {/* TESTIMONIALS */}
+      {/* ── FEATURES ──────────────────────────────────── */}
+      <section className="py-20 px-6" style={{ background: isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.02)" }}>
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-14">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#818cf8", letterSpacing: "0.12em" }}>FONCTIONNALITÉS</p>
+            <h2 className="text-3xl sm:text-4xl font-bold" style={{ color: text }}>Tout ce dont tu as besoin</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {FEATURES.map((f, i) => {
+              const Icon = f.icon
+              return (
+                <div key={i} className="flex items-start gap-4 p-5 rounded-2xl" style={{ background: surface, border: `1px solid ${border}` }}>
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)" }}>
+                    <Icon size={16} style={{ color: "#818cf8" }} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm mb-1" style={{ color: text }}>{f.label}</h3>
+                    <p className="text-sm leading-relaxed" style={{ color: muted }}>{f.desc}</p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ──────────────────────────────── */}
       <section className="py-20 px-6">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-violet-400 text-xs font-semibold uppercase tracking-widest mb-3">Témoignages</p>
-            <h2 className="text-3xl font-bold text-white">Ils ont changé leurs habitudes</h2>
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#818cf8", letterSpacing: "0.12em" }}>TÉMOIGNAGES</p>
+            <h2 className="text-3xl font-bold" style={{ color: text }}>Ils ont changé leurs habitudes</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="card">
-                <div className="flex items-center gap-1 mb-3">
-                  {[1,2,3,4,5].map(s => <Star key={s} size={12} className="text-violet-400 fill-violet-400" />)}
+              <div key={i} className="p-5 rounded-2xl" style={{ background: surface, border: `1px solid ${border}` }}>
+                <div className="flex items-center gap-0.5 mb-3">
+                  {[1,2,3,4,5].map(s => <Star key={s} size={12} fill="#818cf8" style={{ color: "#818cf8" }} />)}
                 </div>
-                <p className="text-white/70 text-sm leading-relaxed mb-4">"{t.text}"</p>
+                <p className="text-sm leading-relaxed mb-4" style={{ color: muted }}>"{t.text}"</p>
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ background: t.bg }}>{t.avatar}</div>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ background: t.color }}>
+                    {t.avatar}
+                  </div>
                   <div>
-                    <p className="text-white text-xs font-semibold">{t.name}</p>
-                    <p className="text-white/40 text-xs">{t.role}</p>
+                    <p className="text-xs font-semibold" style={{ color: text }}>{t.name}</p>
+                    <p className="text-xs" style={{ color: faint }}>{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -232,56 +286,112 @@ export default function LandingPage({ onGetStarted }) {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* ── PRICING ───────────────────────────────────── */}
       <section className="py-20 px-6">
-        <div className="max-w-xl mx-auto text-center relative">
-          <div className="glow-orb glow-orb-violet w-80 h-80 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15" />
-          <div className="relative">
-            <h2 className="text-4xl font-bold text-white mb-4">Prêt à passer au niveau supérieur ?</h2>
-            <p className="text-white/40 mb-8 text-sm">Rejoins des milliers d'utilisateurs qui ont transformé leur quotidien.</p>
-            <button onClick={spawn} className="btn-primary flex items-center gap-2 mx-auto text-base px-8 py-4">
-              Commencer gratuitement <ArrowRight size={16} />
-            </button>
-            <p className="text-white/25 text-xs mt-4">7 jours gratuits · Puis <span style={{textDecoration:"line-through",opacity:0.4,marginRight:"4px"}}>10€</span>6€/mois <span style={{background:"rgba(16,185,129,0.2)",color:"#34d399",padding:"1px 6px",borderRadius:"999px",fontSize:"11px",fontWeight:"700"}}>-40%</span> · Annulable à tout moment</p>
+        <div className="max-w-md mx-auto">
+          <div className="text-center mb-10">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#818cf8", letterSpacing: "0.12em" }}>TARIFS</p>
+            <h2 className="text-3xl font-bold" style={{ color: text }}>Simple et transparent</h2>
+          </div>
+
+          <div className="rounded-2xl p-7" style={{ background: surface, border: "1px solid rgba(99,102,241,0.25)", boxShadow: "0 24px 64px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.05) inset" }}>
+            {/* Price */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm" style={{ color: muted }}>Accès complet</span>
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold" style={{ background: "rgba(16,185,129,0.12)", color: "#34d399", border: "1px solid rgba(16,185,129,0.25)" }}>-40%</span>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold animate-pulse" style={{ background: "rgba(239,68,68,0.1)", color: "#f87171", border: "1px solid rgba(239,68,68,0.2)" }}>Durée limitée</span>
+                </div>
+              </div>
+              <div className="flex items-end gap-2">
+                <span className="text-2xl line-through" style={{ color: faint }}>10€</span>
+                <span className="text-5xl font-bold gradient-text" style={{ letterSpacing: "-0.04em" }}>6€</span>
+                <span className="text-sm mb-2" style={{ color: muted }}>/mois</span>
+              </div>
+              <p className="text-xs mt-1" style={{ color: faint }}>ou <span style={{ color: "#818cf8", fontWeight: 600 }}>64€/an</span> <span style={{ textDecoration: "line-through", opacity: 0.4 }}>72€</span> — économise 8€</p>
+            </div>
+
+            {/* Trial badge */}
+            <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl mb-6" style={{ background: "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.16)" }}>
+              <Gift size={13} style={{ color: "#818cf8", flexShrink: 0 }} />
+              <span className="text-xs" style={{ color: muted }}>7 jours gratuits — aucun débit immédiat</span>
+            </div>
+
+            {/* Features list */}
+            <ul className="space-y-2.5 mb-7">
+              {["4 modes : Études, Sport, Créatif, Organisation","Système XP, niveaux et streaks quotidiens","Devoirs, missions, fichiers illimités","Pomodoro et planning journalier intelligent","Statistiques et calendrier de progression","Toutes les futures fonctionnalités incluses"].map((f, i) => (
+                <li key={i} className="flex items-center gap-3 text-sm" style={{ color: muted }}>
+                  <CheckCircle2 size={14} style={{ color: "#6366f1", flexShrink: 0 }} />
+                  {f}
+                </li>
+              ))}
+            </ul>
+
+            {/* CTAs */}
+            <div className="space-y-2.5">
+              <a href="/subscribe" className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 text-sm">
+                <Zap size={14} /> Commencer l'essai gratuit
+              </a>
+              <a href="/subscribe?plan=yearly" className="w-full flex items-center justify-center gap-2 py-3 text-sm rounded-xl transition-all" style={{ border: "1px solid rgba(99,102,241,0.28)", color: "#a5b4fc" }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(99,102,241,0.08)"}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                Choisir l'annuel — 64€/an
+              </a>
+            </div>
+            <p className="text-xs text-center mt-4" style={{ color: faint }}>Paiement sécurisé par Stripe · Annulable à tout moment</p>
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
-
-      {/* FAQ */}
-      <section className="px-6 py-20 max-w-2xl mx-auto">
-        <h2 className="text-2xl font-bold text-white text-center mb-2">Questions fréquentes</h2>
-        <p className="text-white/40 text-sm text-center mb-10">Tout ce que tu veux savoir sur Trackova</p>
-        <div className="space-y-3">
-          {[
-            { q:"Comment s'organiser quand on'est étudiant ?", a:"Trackova centralise tes devoirs, révisions et objectifs. Tu crées des tâches quotidiennes, suis ta progression et maintiens un streak de travail régulier pour rester motivé." },
-            { q:"Quelle est la meilleure app de productivité gratuite ?", a:"Trackova propose un essai gratuit de 7 jours sans carte bancaire avec toutes les fonctionnalités : suivi d'objectifs, gamification XP, calendrier et gestion de fichiers." },
-            { q:"Comment suivre ses objectifs sportifs efficacement ?", a:"Le mode Sport de Trackova te permet de planifier tes seances avec des templates (Push/Pull/Legs, HIIT, Yoga), suivre ton volume et tes calories, et accéder à des ressources nutrition." },
-            { q:"Comment rester motivé sur un projet personnel ?", a:"Trackova utilise des streaks et des points XP pour te garder motivé. Plus tu travailles régulièrement, plus tu montes en niveau. Les badges de récompense rendent chaque victoire satisfaisanté." },
-            { q:"Peut-on gérer plusieurs objectifs avec Trackova ?", a:"Oui, 4 modes disponibles : Études, Sport, Projet créatif et Organisation. Chaque mode a ses propres outils adaptés à tes besoins spécifiques." },
-          ].map((item, i) => (
-            <div key={i} className="rounded-xl overflow-hidden" style={{ border:"1px solid rgba(139,92,246,0.15)", background:"rgba(139,92,246,0.04)" }}>
-              <button onClick={() => setFaqOpen(faqOpen===i ? null : i)} className="w-full flex items-center justify-between px-5 py-4 text-left">
-                <h3 className="text-white/80 text-sm font-medium pr-4">{item.q}</h3>
-                <span className="text-violet-400 flex-shrink-0 text-lg leading-none">{faqOpen===i ? "−" : "+"}</span>
+      {/* ── FAQ ───────────────────────────────────────── */}
+      <section className="px-6 py-16 max-w-2xl mx-auto">
+        <div className="text-center mb-10">
+          <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#818cf8", letterSpacing: "0.12em" }}>FAQ</p>
+          <h2 className="text-2xl font-bold" style={{ color: text }}>Questions fréquentes</h2>
+        </div>
+        <div className="space-y-2">
+          {FAQ.map((item, i) => (
+            <div key={i} className="rounded-xl overflow-hidden transition-all" style={{ border: `1px solid ${faqOpen === i ? "rgba(99,102,241,0.25)" : border}`, background: surface }}>
+              <button onClick={() => setFaqOpen(faqOpen === i ? null : i)} className="w-full flex items-center justify-between px-5 py-4 text-left">
+                <h3 className="text-sm font-medium pr-4" style={{ color: text }}>{item.q}</h3>
+                <ChevronDown size={16} style={{ color: muted, flexShrink: 0, transform: faqOpen === i ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }} />
               </button>
-              {faqOpen===i && <div className="px-5 pb-4"><p className="text-white/50 text-sm leading-relaxed">{item.a}</p></div>}
+              {faqOpen === i && (
+                <div className="px-5 pb-4">
+                  <p className="text-sm leading-relaxed" style={{ color: muted }}>{item.a}</p>
+                </div>
+              )}
             </div>
           ))}
         </div>
       </section>
-      <footer className="px-6 py-8" style={{ borderTop: "1px solid rgba(139,92,246,0.1)" }}>
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <img src="/logo.svg" alt="Trakova" style={{ height:"28px", width:"auto" }} />
+
+      {/* ── CTA FINAL ─────────────────────────────────── */}
+      <section className="py-20 px-6">
+        <div className="max-w-xl mx-auto text-center relative">
+          <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(99,102,241,0.12) 0%, transparent 70%)" }} />
+          <div className="relative">
+            <h2 className="text-4xl font-bold mb-4" style={{ color: text, letterSpacing: "-0.03em" }}>Prêt à passer<br />au niveau supérieur ?</h2>
+            <p className="mb-8 text-sm" style={{ color: muted }}>Rejoins des milliers d'utilisateurs qui ont transformé leur quotidien.</p>
+            <button onClick={spawn} className="btn-primary flex items-center gap-2 mx-auto text-sm px-7 py-3.5">
+              Commencer gratuitement <ArrowRight size={15} />
+            </button>
+            <p className="text-xs mt-4" style={{ color: faint }}>7 jours gratuits · Puis 6€/mois · Annulable à tout moment</p>
           </div>
-          <p className="text-white/25 text-xs">© 2026 Trakova</p>
-          <div className="flex items-center gap-4 text-white/30 text-xs">
-            <a href="/subscribe" className="hover:text-white/60 transition-colors">Abonnement</a>
-            <a href="/contact" className="hover:text-white/60 transition-colors">Contact</a>
-            <a href="/cgu" className="hover:text-white/60 transition-colors">CGU</a>
-            <a href="/privacy" className="hover:text-white/60 transition-colors">Confidentialité</a>
+        </div>
+      </section>
+
+      {/* ── FOOTER ────────────────────────────────────── */}
+      <footer className="px-6 py-8" style={{ borderTop: `1px solid ${border}` }}>
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <img src="/logo.svg" alt="Trakova" style={{ height: "28px", width: "auto" }} />
+          <p className="text-xs" style={{ color: faint }}>© 2026 Trakova</p>
+          <div className="flex items-center gap-5 text-xs" style={{ color: faint }}>
+            <a href="/subscribe" className="hover:text-white transition-colors">Abonnement</a>
+            <a href="/contact"   className="hover:text-white transition-colors">Contact</a>
+            <a href="/cgu"       className="hover:text-white transition-colors">CGU</a>
+            <a href="/privacy"   className="hover:text-white transition-colors">Confidentialité</a>
           </div>
         </div>
       </footer>

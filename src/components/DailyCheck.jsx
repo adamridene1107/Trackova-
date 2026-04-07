@@ -1,10 +1,10 @@
-﻿import { useState } from "react"
+import { useState } from "react"
 import { getGoalById, getDailyContent } from "../lib/goals"
 import { getDailyQuote } from "../lib/quotes"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import AnimatedCheckbox from "./AnimatedCheckbox"
-import { CheckCircle2, Circle, Trophy, Lightbulb, Zap, Flame, Plus, Trash2, Clock, ChevronUp, ChevronDown } from "lucide-react"
+import { CheckCircle2, Circle, Lightbulb, Zap, Plus, Trash2, ChevronUp, ChevronDown } from "lucide-react"
 import Pomodoro from "./Pomodoro"
 import PomodoroWidget from "./PomodoroWidget"
 
@@ -14,6 +14,14 @@ const PRIOS = [
   { v:"medium", l:"Moyenne", c:"bg-amber-500/10 text-amber-400 border-amber-500/20" },
   { v:"low",    l:"Basse",   c:"bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
 ]
+
+function SectionLabel({ children }) {
+  return (
+    <p className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--text-faint)", letterSpacing: "0.1em" }}>
+      {children}
+    </p>
+  )
+}
 
 export default function DailyCheck({ data, today, getTodayEntry, toggleTask, updateEntry, onTaskComplete, onFocusComplete, showPomodoro = true }) {
   const goal = getGoalById(data.goal)
@@ -29,25 +37,21 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
 
   if (!goal) return null
 
-  const fixedDone = (entry.tasks || []).filter(Boolean).length
+  const fixedDone  = (entry.tasks || []).filter(Boolean).length
   const fixedTotal = goal.tasks.length
-  const freeTasks = entry.freeTasks || []
-  const freeDone = freeTasks.filter(t => t.done).length
-  const allTotal = fixedTotal + freeTasks.length + (entry.customTasks || []).length
-  const allDone = fixedDone + freeDone + (entry.customTasks || []).filter(t => t.done).length
-  const totalPct = allTotal > 0 ? Math.round((allDone / allTotal) * 100) : 0
+  const freeTasks  = entry.freeTasks || []
+  const freeDone   = freeTasks.filter(t => t.done).length
+  const allTotal   = fixedTotal + freeTasks.length + (entry.customTasks || []).length
+  const allDone    = fixedDone + freeDone + (entry.customTasks || []).filter(t => t.done).length
+  const totalPct   = allTotal > 0 ? Math.round((allDone / allTotal) * 100) : 0
 
   const addFixedTask = () => {
     const text = newFixedTask.trim()
     if (!text) return
-    const custom = entry.customTasks || []
-    updateEntry({ customTasks: [...custom, { id: Date.now(), text, done: false }] })
+    updateEntry({ customTasks: [...(entry.customTasks || []), { id: Date.now(), text, done: false }] })
     setNewFixedTask("")
   }
-  const toggleCustom = (id) => {
-    const custom = (entry.customTasks || []).map(t => t.id === id ? { ...t, done: !t.done } : t)
-    updateEntry({ customTasks: custom })
-  }
+  const toggleCustom = (id) => updateEntry({ customTasks: (entry.customTasks || []).map(t => t.id === id ? { ...t, done: !t.done } : t) })
   const removeCustom = (id) => updateEntry({ customTasks: (entry.customTasks || []).filter(t => t.id !== id) })
 
   const addFreeTask = () => {
@@ -58,8 +62,8 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
   }
   const toggleFree = (id) => updateEntry({ freeTasks: freeTasks.map(t => t.id === id ? { ...t, done: !t.done } : t) })
   const removeFree = (id) => updateEntry({ freeTasks: freeTasks.filter(t => t.id !== id) })
-  const moveFree = (i, d) => {
-    const sorted = [...freeTasks].sort((a,b) => a.hour.localeCompare(b.hour))
+  const moveFree   = (i, d) => {
+    const sorted = [...freeTasks].sort((a, b) => a.hour.localeCompare(b.hour))
     const j = i + d
     if (j < 0 || j >= sorted.length) return
     ;[sorted[i], sorted[j]] = [sorted[j], sorted[i]]
@@ -71,84 +75,91 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
   return (
     <div className="space-y-3 fade-in">
 
-      {/* Citation du jour */}
-      <div className="card" style={{ borderLeft:"3px solid rgba(139,92,246,0.5)" }}>
-        <p className="text-white/60 text-sm italic leading-relaxed">"{quote}"</p>
+      {/* Quote */}
+      <div className="px-4 py-3.5 rounded-2xl" style={{ background: "rgba(99,102,241,0.07)", borderLeft: "2px solid rgba(99,102,241,0.4)" }}>
+        <p className="text-sm italic leading-relaxed" style={{ color: "var(--text-muted)" }}>"{quote}"</p>
       </div>
 
-      {/* Hero */}
+      {/* Hero card */}
       <div className="card">
-        <div className="flex items-start justify-between mb-4">
+        <div className="flex items-start justify-between mb-5">
           <div>
-            <p className="text-white/50 text-xs capitalize">
+            <p className="text-xs capitalize mb-0.5" style={{ color: "var(--text-faint)" }}>
               {format(new Date(), "EEEE d MMMM yyyy", { locale: fr })}
             </p>
-            <h2 className="text-white font-bold text-lg mt-0.5">{goal.label}</h2>
+            <h2 className="font-bold text-lg" style={{ color: "var(--text)", letterSpacing: "-0.025em" }}>
+              {goal.label}
+            </h2>
           </div>
-          <div className="flex items-center gap-1.5 bg-white/[0.06] rounded-full px-3 py-1.5">
-            <Flame size={12} className="text-white/50" />
-            <span className="text-white/60 text-xs font-medium">{data.streak}j</span>
+          <div className="text-right">
+            <p className="text-2xl font-bold gradient-text" style={{ letterSpacing: "-0.03em" }}>{totalPct}%</p>
+            <p className="text-xs" style={{ color: "var(--text-faint)" }}>{allDone}/{allTotal} tâches</p>
           </div>
         </div>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-white/50 text-xs">{allDone}/{allTotal} taches</span>
-          <span className="text-white/50 text-xs font-semibold">{totalPct}%</span>
-        </div>
-        <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
-          <div className="h-full bg-white rounded-full transition-all duration-700" style={{ width: `${totalPct}%` }} />
+        <div className="progress-bar">
+          <div className="progress-fill" style={{ width: `${totalPct}%` }} />
         </div>
       </div>
 
-      {/* Humeur */}
+      {/* Mood */}
       <div className="card">
-        <p className="text-white/40 text-xs mb-3">Comment tu te sens ?</p>
-        <div className="flex gap-2 justify-around">
-          {[["😴","Fatigue"],["😐","Moyen"],["🙂","Bien"],["😄","Super"],["🔥","En feu"]].map(([e,l]) => (
-            <button key={e} onClick={() => { setHumeur(e); updateEntry({ humeur: e }) }}
-              className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${
-                humeur===e ? "bg-white/10 ring-1 ring-white/20 scale-110" : "hover:bg-white/[0.07]"
-              }`}>
-              <span className="text-xl">{e}</span>
-              <span className="text-[10px] text-white/50">{l}</span>
+        <SectionLabel>Comment tu te sens ?</SectionLabel>
+        <div className="flex gap-1 justify-between">
+          {[["😴","Fatigué"],["😐","Moyen"],["🙂","Bien"],["😄","Super"],["🔥","En feu"]].map(([e, l]) => (
+            <button key={e}
+              onClick={() => { setHumeur(e); updateEntry({ humeur: e }) }}
+              className="flex flex-col items-center gap-1.5 py-2.5 px-3 rounded-xl flex-1 transition-all"
+              style={{
+                background: humeur === e ? "var(--primary-dim)" : "transparent",
+                border: `1px solid ${humeur === e ? "rgba(99,102,241,0.28)" : "transparent"}`,
+                transform: humeur === e ? "scale(1.05)" : "scale(1)",
+              }}>
+              <span className="text-lg">{e}</span>
+              <span className="text-[10px]" style={{ color: humeur === e ? "var(--primary-light)" : "var(--text-faint)" }}>{l}</span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Pomodoro */}      {showPomodoro && <PomodoroWidget onFocusComplete={onFocusComplete} />}
-      {showPomodoro && false && <Pomodoro onFocusComplete={onFocusComplete} />}
+      {/* Pomodoro */}
+      {showPomodoro && <PomodoroWidget onFocusComplete={onFocusComplete} />}
 
-      {/* Objectif du jour */}
+      {/* Fixed tasks */}
       <div className="card">
-        <h3 className="text-white/60 text-xs font-medium uppercase tracking-wider mb-3">Objectif du jour</h3>
+        <SectionLabel>Objectif du jour</SectionLabel>
         <div className="space-y-1.5">
-          {goal.tasks.map((task, i) => (
-            <button key={i} onClick={() => { if (!entry.tasks?.[i]) onTaskComplete?.(); toggleTask(i) }}
-              className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
-                entry.tasks?.[i]
-                  ? "bg-white/[0.07] border-white/[0.08]"
-                  : "bg-transparent border-white/[0.06] hover:border-white/[0.12]"
-              }`}>
-              {entry.tasks?.[i]
-                ? <CheckCircle2 size={17} className="text-white/40 flex-shrink-0" />
-                : <Circle size={17} className="text-white/40 flex-shrink-0" />}
-              <span className={`text-sm ${entry.tasks?.[i] ? "line-through text-white/40" : "text-white/70"}`}>
-                {task}
-              </span>
-            </button>
-          ))}
+          {goal.tasks.map((task, i) => {
+            const done = !!entry.tasks?.[i]
+            return (
+              <button key={i}
+                onClick={() => { if (!done) onTaskComplete?.(); toggleTask(i) }}
+                className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all"
+                style={{
+                  background: done ? "rgba(99,102,241,0.06)" : "rgba(255,255,255,0.02)",
+                  border: `1px solid ${done ? "rgba(99,102,241,0.15)" : "var(--border)"}`,
+                }}>
+                {done
+                  ? <CheckCircle2 size={16} style={{ color: "var(--primary-light)", flexShrink: 0 }} />
+                  : <Circle      size={16} style={{ color: "var(--text-faint)",     flexShrink: 0 }} />}
+                <span className="text-sm" style={{ color: done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: done ? "line-through" : "none" }}>
+                  {task}
+                </span>
+              </button>
+            )
+          })}
 
           {(entry.customTasks || []).map(t => (
-            <div key={t.id} className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${
-              t.done ? "bg-white/[0.07] border-white/[0.08]" : "border-white/[0.06]"
-            }`}>
+            <div key={t.id} className="flex items-center gap-3 p-3 rounded-xl transition-all"
+              style={{ background: t.done ? "rgba(99,102,241,0.06)" : "rgba(255,255,255,0.02)", border: `1px solid ${t.done ? "rgba(99,102,241,0.15)" : "var(--border)"}` }}>
               <button onClick={() => { if (!t.done) onTaskComplete?.(); toggleCustom(t.id) }} className="flex-shrink-0">
                 {t.done
-                  ? <CheckCircle2 size={17} className="text-white/40" />
-                  : <Circle size={17} className="text-white/40" />}
+                  ? <CheckCircle2 size={16} style={{ color: "var(--primary-light)" }} />
+                  : <Circle      size={16} style={{ color: "var(--text-faint)" }} />}
               </button>
-              <span className={`flex-1 text-sm ${t.done ? "line-through text-white/40" : "text-white/70"}`}>{t.text}</span>
-              <button onClick={() => removeCustom(t.id)} className="text-white/40 hover:text-white/50 transition-colors flex-shrink-0">
+              <span className="flex-1 text-sm" style={{ color: t.done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: t.done ? "line-through" : "none" }}>{t.text}</span>
+              <button onClick={() => removeCustom(t.id)} className="flex-shrink-0 transition-colors" style={{ color: "var(--text-faint)" }}
+                onMouseEnter={e => e.currentTarget.style.color = "var(--text-muted)"}
+                onMouseLeave={e => e.currentTarget.style.color = "var(--text-faint)"}>
                 <Trash2 size={13} />
               </button>
             </div>
@@ -158,7 +169,7 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
         <div className="flex gap-2 mt-3">
           <input value={newFixedTask} onChange={e => setNewFixedTask(e.target.value)}
             onKeyDown={e => e.key === "Enter" && addFixedTask()}
-            placeholder="Ajouter une tache..."
+            placeholder="Ajouter une tâche…"
             className="input flex-1 text-sm" />
           <button onClick={addFixedTask} className="btn-primary px-3 flex-shrink-0">
             <Plus size={14} />
@@ -166,22 +177,20 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
         </div>
       </div>
 
-      {/* Taches libres */}
+      {/* Free tasks */}
       <div className="card">
-        <h3 className="text-white/60 text-xs font-medium uppercase tracking-wider mb-3">Taches du jour</h3>
+        <SectionLabel>Tâches du jour</SectionLabel>
         <div className="flex gap-2 flex-wrap mb-3">
-          <select value={newTaskHour} onChange={e => setNewTaskHour(e.target.value)}
-            className="input w-24 flex-shrink-0">
+          <select value={newTaskHour} onChange={e => setNewTaskHour(e.target.value)} className="input w-24 flex-shrink-0 text-sm">
             {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
           </select>
-          <select value={newTaskPrio} onChange={e => setNewTaskPrio(e.target.value)}
-            className="input flex-shrink-0 w-28">
+          <select value={newTaskPrio} onChange={e => setNewTaskPrio(e.target.value)} className="input flex-shrink-0 w-28 text-sm">
             {PRIOS.map(p => <option key={p.v} value={p.v}>{p.l}</option>)}
           </select>
           <input value={newTask} onChange={e => setNewTask(e.target.value)}
             onKeyDown={e => e.key === "Enter" && addFreeTask()}
-            placeholder="Nouvelle tache..."
-            className="input flex-1 min-w-0" />
+            placeholder="Nouvelle tâche…"
+            className="input flex-1 min-w-0 text-sm" />
           <button onClick={addFreeTask} className="btn-primary px-3 flex-shrink-0">
             <Plus size={14} />
           </button>
@@ -189,27 +198,31 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
 
         {freeTasks.length > 0 && (
           <>
-            <div className="h-px bg-white/[0.06] mb-3" />
+            <div className="h-px mb-3" style={{ background: "var(--border)" }} />
             <div className="space-y-1.5">
-              {[...freeTasks].sort((a,b) => a.hour.localeCompare(b.hour)).map((t, i) => {
+              {[...freeTasks].sort((a, b) => a.hour.localeCompare(b.hour)).map((t, i) => {
                 const pr = PRIOS.find(p => p.v === t.priority) || PRIOS[1]
                 return (
-                  <div key={t.id} className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${
-                    t.done ? "border-white/[0.08] opacity-40" : "border-white/[0.06] hover:border-white/[0.12]"
-                  }`}>
+                  <div key={t.id} className="flex items-center gap-2 p-2.5 rounded-xl transition-all"
+                    style={{
+                      border: `1px solid var(--border)`,
+                      opacity: t.done ? 0.45 : 1,
+                    }}>
                     <div className="flex flex-col flex-shrink-0">
-                      <button onClick={() => moveFree(i,-1)} className="text-white/40 hover:text-white/50"><ChevronUp size={11}/></button>
-                      <button onClick={() => moveFree(i,1)} className="text-white/40 hover:text-white/50"><ChevronDown size={11}/></button>
+                      <button onClick={() => moveFree(i,-1)} style={{ color: "var(--text-faint)" }}><ChevronUp size={11}/></button>
+                      <button onClick={() => moveFree(i, 1)} style={{ color: "var(--text-faint)" }}><ChevronDown size={11}/></button>
                     </div>
-                    <span className="text-xs font-mono text-white/50 w-10 flex-shrink-0">{t.hour}</span>
+                    <span className="text-xs font-mono w-10 flex-shrink-0" style={{ color: "var(--text-muted)" }}>{t.hour}</span>
                     <button onClick={() => { if (!t.done) onTaskComplete?.(); toggleFree(t.id) }} className="flex-shrink-0">
                       {t.done
-                        ? <CheckCircle2 size={16} className="text-white/40" />
-                        : <Circle size={16} className="text-white/40" />}
+                        ? <CheckCircle2 size={15} style={{ color: "var(--primary-light)" }} />
+                        : <Circle      size={15} style={{ color: "var(--text-faint)" }} />}
                     </button>
-                    <span className={`flex-1 text-sm ${t.done ? "line-through text-white/40" : "text-white/70"}`}>{t.text}</span>
+                    <span className="flex-1 text-sm" style={{ color: t.done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: t.done ? "line-through" : "none" }}>{t.text}</span>
                     <span className={`badge border text-[10px] flex-shrink-0 ${pr.c}`}>{pr.l}</span>
-                    <button onClick={() => removeFree(t.id)} className="text-white/40 hover:text-white/50 transition-colors flex-shrink-0">
+                    <button onClick={() => removeFree(t.id)} className="flex-shrink-0 transition-colors" style={{ color: "var(--text-faint)" }}
+                      onMouseEnter={e => e.currentTarget.style.color = "var(--text-muted)"}
+                      onMouseLeave={e => e.currentTarget.style.color = "var(--text-faint)"}>
                       <Trash2 size={13} />
                     </button>
                   </div>
@@ -220,48 +233,52 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
         )}
       </div>
 
-      {/* Planning */}
+      {/* Planning timeline */}
       <div className="card">
-        <h3 className="text-white/60 text-xs font-medium uppercase tracking-wider mb-1">Planning</h3>
-        <p className="text-white/40 text-xs mb-4">Taches et missions heure par heure</p>
+        <SectionLabel>Planning</SectionLabel>
+        <p className="text-xs mb-4 -mt-1" style={{ color: "var(--text-faint)" }}>Tâches et missions heure par heure</p>
         <div className="relative">
-          <div className="absolute left-10 top-0 bottom-0 w-px bg-white/[0.07]" />
+          <div className="absolute left-10 top-0 bottom-0 w-px" style={{ background: "var(--border)" }} />
           <div className="space-y-0">
             {HOURS.map(hour => {
-              const slots = freeTasks.filter(t => t.hour === hour)
+              const slots  = freeTasks.filter(t => t.hour === hour)
               const mSlots = missions.filter(m => (entry.missionHours || {})[m.id] === hour)
               const hasContent = slots.length > 0 || mSlots.length > 0
               const isNow = format(new Date(), "HH:00") === hour
               return (
                 <div key={hour} className={`flex gap-3 min-h-[36px] ${hasContent ? "py-2" : "py-1"}`}>
-                  <div className={`w-10 flex-shrink-0 text-right text-xs font-mono pt-0.5 ${isNow ? "text-white/70" : "text-white/40"}`}>
+                  <div className={`w-10 flex-shrink-0 text-right text-xs font-mono pt-0.5`}
+                    style={{ color: isNow ? "var(--text)" : "var(--text-faint)" }}>
                     {hour}
                   </div>
                   <div className="flex-shrink-0 flex flex-col items-center pt-1.5">
-                    <div className={`w-1.5 h-1.5 rounded-full z-10 ${
-                      isNow ? "bg-white ring-2 ring-white/20" : hasContent ? "bg-white/30" : "bg-white/10"
-                    }`} />
+                    <div className="w-2 h-2 rounded-full z-10 transition-all" style={{
+                      background: isNow ? "var(--primary-light)" : hasContent ? "var(--primary-dim)" : "var(--border)",
+                      boxShadow: isNow ? "0 0 0 3px rgba(99,102,241,0.2)" : "none",
+                    }} />
                   </div>
                   <div className="flex-1 min-w-0">
                     {slots.map(t => {
                       const pr = PRIOS.find(p => p.v === t.priority) || PRIOS[1]
                       return (
                         <div key={t.id} onClick={() => toggleFree(t.id)}
-                          className={`mb-1 flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-all text-sm border ${
-                            t.done
-                              ? "border-white/[0.08] text-white/40 line-through"
-                              : "border-white/[0.08] text-white/70 hover:border-white/20"
-                          }`}>
+                          className="mb-1 flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-all text-sm"
+                          style={{
+                            border: `1px solid var(--border)`,
+                            color: t.done ? "var(--text-faint)" : "var(--text-muted)",
+                            textDecoration: t.done ? "line-through" : "none",
+                          }}>
                           <span className="truncate flex-1">{t.text}</span>
                           <span className={`badge border text-[10px] flex-shrink-0 ${pr.c}`}>{pr.l}</span>
                         </div>
                       )
                     })}
                     {mSlots.map(m => (
-                      <div key={m.id} className="mb-1 flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm border border-white/[0.08] text-white/50">
-                        <span className="text-white/50 flex-shrink-0">◎</span>
+                      <div key={m.id} className="mb-1 flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm"
+                        style={{ border: `1px solid var(--border)`, color: "var(--text-faint)" }}>
+                        <span className="flex-shrink-0" style={{ color: "var(--primary-dim)", fontSize: "10px" }}>◎</span>
                         <span className="truncate">{m.text}</span>
-                        <span className="ml-auto text-[10px] text-white/40 flex-shrink-0">mission</span>
+                        <span className="ml-auto text-[10px] flex-shrink-0" style={{ color: "var(--text-faint)" }}>mission</span>
                       </div>
                     ))}
                   </div>
@@ -270,13 +287,14 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
             })}
           </div>
         </div>
+
         {missions.length > 0 && (
-          <div className="mt-4 pt-4 border-t border-white/[0.06]">
-            <p className="text-white/50 text-xs font-medium uppercase tracking-wider mb-3">Placer mes missions</p>
+          <div className="mt-4 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
+            <SectionLabel>Placer mes missions</SectionLabel>
             <div className="space-y-2">
               {missions.map(m => (
                 <div key={m.id} className="flex items-center gap-2">
-                  <span className="flex-1 text-sm text-white/60 truncate">{m.text}</span>
+                  <span className="flex-1 text-sm truncate" style={{ color: "var(--text-muted)" }}>{m.text}</span>
                   <select
                     value={(entry.missionHours || {})[m.id] || ""}
                     onChange={e => {
@@ -295,32 +313,38 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
         )}
       </div>
 
-      {/* Victoire */}
+      {/* Victory */}
       <div className="card">
-        <h3 className="text-white/60 text-xs font-medium uppercase tracking-wider mb-3">Ma victoire du jour</h3>
-        <textarea value={victory}
+        <SectionLabel>Ma victoire du jour</SectionLabel>
+        <textarea
+          value={victory}
           onChange={e => setVictory(e.target.value)}
           onBlur={() => updateEntry({ victory })}
-          placeholder="Qu est-ce que tu as accompli aujourd hui ?"
-          className="input resize-none" rows={3} />
+          placeholder="Qu'est-ce que tu as accompli aujourd'hui ?"
+          className="input resize-none text-sm"
+          rows={3} />
       </div>
 
-      {/* Coach */}
+      {/* Coach tips */}
       {daily && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="card">
-            <div className="flex items-center gap-2 mb-2">
-              <Lightbulb size={14} className="text-white/40" />
-              <span className="text-white/40 text-xs font-medium uppercase tracking-wider">Astuce</span>
+            <div className="flex items-center gap-2 mb-2.5">
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: "rgba(99,102,241,0.1)" }}>
+                <Lightbulb size={12} style={{ color: "var(--primary-light)" }} />
+              </div>
+              <span className="text-xs font-semibold" style={{ color: "var(--text-faint)", letterSpacing: "0.08em" }}>ASTUCE</span>
             </div>
-            <p className="text-white/60 text-sm leading-relaxed">{daily.tip}</p>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{daily.tip}</p>
           </div>
           <div className="card">
-            <div className="flex items-center gap-2 mb-2">
-              <Zap size={14} className="text-white/40" />
-              <span className="text-white/40 text-xs font-medium uppercase tracking-wider">Defi</span>
+            <div className="flex items-center gap-2 mb-2.5">
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: "rgba(99,102,241,0.1)" }}>
+                <Zap size={12} style={{ color: "var(--primary-light)" }} />
+              </div>
+              <span className="text-xs font-semibold" style={{ color: "var(--text-faint)", letterSpacing: "0.08em" }}>DÉFI</span>
             </div>
-            <p className="text-white/60 text-sm leading-relaxed">{daily.challenge}</p>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{daily.challenge}</p>
           </div>
         </div>
       )}
