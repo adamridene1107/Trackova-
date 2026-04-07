@@ -39,7 +39,12 @@ export default function GoalSelector({ onSelect }) {
             className="group relative overflow-hidden rounded-2xl p-5 text-left active:scale-[0.98] transition-all duration-200 fade-in">
             <div className="text-3xl mb-3">{goal.emoji}</div>
             <h3 style={{ color: textColor }} className="text-base font-semibold">{goal.label}</h3>
-            <p style={{ color: mutedColor }} className="text-xs mt-1 line-clamp-1">{goal.tasks.join(" · ")}</p>
+            <p style={{ color: mutedColor }} className="text-xs mt-1 line-clamp-2">
+              {goal.id === "homework" && "Devoirs, révisions, fiches — reste régulier et monte en niveau"}
+              {goal.id === "sport" && "Séances, nutrition, récupération — suis ta progression sportive"}
+              {goal.id === "creative" && "Idées, projets, inspirations — donne vie à ta créativité"}
+              {goal.id === "organization" && "Planning, tâches, priorités — maîtrise ton temps et ton espace"}
+            </p>
             <div className="mt-4 flex items-center gap-1 text-xs transition-colors" style={{ color: "#a78bfa" }}>
               Commencer <span className="group-hover:translate-x-1 transition-transform inline-block ml-1">→</span>
             </div>

@@ -18,6 +18,7 @@ const AmbientSound = lazy(() => import("./components/AmbientSound"))
 const FocusMode = lazy(() => import("./components/FocusMode"))
 const SettingsPage = lazy(() => import("./components/SettingsPage"))
 const HistoryPage = lazy(() => import("./components/HistoryPage"))
+const ReferralPage = lazy(() => import("./components/ReferralPage"))
 const Onboarding = lazy(() => import("./components/Onboarding"))
 import Idees from "./components/Idees"
 import { useGamification } from "./hooks/useGamification"
@@ -36,6 +37,7 @@ const TABS_BY_GOAL = {
     { id:"fichiers",  label:"Fichiers",    icon:FolderOpen },
     { id:"xp",        label:"XP",          icon:Zap },
     { id:"history",   label:"Historique",  icon:Calendar },
+    { id:"referral",  label:"Parrainage",  icon:Gift },
   ],
   sport: [
     { id:"seance",    label:"Séance",        icon:Dumbbell },
@@ -45,7 +47,8 @@ const TABS_BY_GOAL = {
     { id:"stats",     label:"Stats",         icon:BarChart2 },
     { id:"fichiers",  label:"Fichiers",      icon:FolderOpen },
     { id:"xp",        label:"XP",            icon:Zap },
-    { id:"history",   label:"Historique",    icon:Calendar },
+    { id:"history",   label:"Historique",  icon:Calendar },
+    { id:"referral",  label:"Parrainage",  icon:Gift },
   ],
   creative: [
     { id:"today",     label:"Aujourd'hui", icon:CheckSquare },
@@ -56,7 +59,8 @@ const TABS_BY_GOAL = {
     { id:"stats",     label:"Stats",        icon:BarChart2 },
     { id:"fichiers",  label:"Fichiers",     icon:FolderOpen },
     { id:"xp",        label:"XP",           icon:Zap },
-    { id:"history",   label:"Historique",   icon:Calendar },
+    { id:"history",   label:"Historique",  icon:Calendar },
+    { id:"referral",  label:"Parrainage",  icon:Gift },
   ],
   organization: [
     { id:"today",     label:"Aujourd'hui", icon:CheckSquare },
@@ -67,7 +71,8 @@ const TABS_BY_GOAL = {
     { id:"stats",     label:"Stats",        icon:BarChart2 },
     { id:"fichiers",  label:"Fichiers",     icon:FolderOpen },
     { id:"xp",        label:"XP",           icon:Zap },
-    { id:"history",   label:"Historique",   icon:Calendar },
+    { id:"history",   label:"Historique",  icon:Calendar },
+    { id:"referral",  label:"Parrainage",  icon:Gift },
   ],
 }
 
