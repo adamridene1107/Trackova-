@@ -24,7 +24,8 @@ import Idees from "./components/Idees"
 import { useGamification } from "./hooks/useGamification"
 import { getGoalById } from "./lib/goals"
 import { parseISO, isToday, isPast } from "date-fns"
-import { CheckSquare, Target, Calendar, BarChart2, BookOpen, ClipboardList, Settings, Flame, FolderOpen, Zap, LogOut, Dumbbell, Lightbulb, Apple, ListTodo, RefreshCw } from "lucide-react"
+
+import { CheckSquare, Target, Calendar, BarChart2, BookOpen, ClipboardList, Settings, Flame, FolderOpen, Zap, LogOut, Dumbbell, Lightbulb, Apple, ListTodo, RefreshCw, Gift } from "lucide-react"
 
 const TABS_BY_GOAL = {
   homework: [
