@@ -19,6 +19,7 @@ const FocusMode = lazy(() => import("./components/FocusMode"))
 const SettingsPage = lazy(() => import("./components/SettingsPage"))
 const HistoryPage = lazy(() => import("./components/HistoryPage"))
 const ReferralPage = lazy(() => import("./components/ReferralPage"))
+
 const Onboarding = lazy(() => import("./components/Onboarding"))
 import Idees from "./components/Idees"
 import { useGamification } from "./hooks/useGamification"
@@ -242,6 +243,7 @@ export default function App({ user, onLogout }) {
           <div className={activeTab === "fichiers"     ? "tab-content" : "hidden"}><MesFichiers goalId={data.goal} /></div>
           <div className={activeTab === "xp"           ? "tab-content" : "hidden"}><Gamification /></div>
           <div className={activeTab === "history"      ? "tab-content" : "hidden"}><HistoryPage data={data} /></div>
+          <div className={activeTab === "referral"     ? "tab-content" : "hidden"}><ReferralPage user={user} /></div>
         </Suspense>
       </main>
 
