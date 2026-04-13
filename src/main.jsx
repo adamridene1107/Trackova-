@@ -4,8 +4,7 @@ import { LangProvider } from "./context/LangContext"
 import { supabase } from "./lib/supabase"
 import ReactDOM from "react-dom/client"
 import "./index.css"
-import { inject } from "@vercel/analytics"
-inject()
+import { Analytics } from "@vercel/analytics/react"
 
 const App = lazy(() => import("./App"))
 const Subscription = lazy(() => import("./components/Subscription"))
@@ -85,5 +84,5 @@ function Root() {
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode><LangProvider><ThemeProvider><Root /></ThemeProvider></LangProvider></React.StrictMode>
+  <React.StrictMode><LangProvider><ThemeProvider><Root /><Analytics /></ThemeProvider></LangProvider></React.StrictMode>
 )
