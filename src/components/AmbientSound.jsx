@@ -11,7 +11,26 @@ const SOUNDS = [
 
 function createAmbientSound(type, ctx) {
   const nodes = []
-  if (type === "rain" || type === "wind" || type === "forest") {
+  
+  if (type === "lofi") {
+    // Lofi: créer plusieurs oscillateurs pour simuler de la musique
+    const freqs = [220, 277, 330, 440] // notes A3, C#4, E4, A4
+    freqs.forEach((freq, i) => {
+      const osc = ctx.createOscillator()
+      osc.type = "sine"
+      osc.frequency.value = freq
+      const gain = ctx.createGain()
+      gain.gain.value = 0.05 + Math.random() * 0.05
+      osc.connect(gain)
+      nodes.push(osc, gain)
+      setTimeout(() => osc.start(), i * 200)
+    })
+    const merger = ctx.createChannelMerger(1)
+    nodes.forEach(n => n.connect?.(merger))
+    return { nodes, output: merger }
+  }
+  
+  if (type === "rain" || type === "wind" || type === "forest" || type === "cafe") {
     const buf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate)
     const data = buf.getChannelData(0)
     for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (type === "wind" ? 0.15 : 0.08)
@@ -19,16 +38,14 @@ function createAmbientSound(type, ctx) {
     src.buffer = buf; src.loop = true
     const filter = ctx.createBiquadFilter()
     filter.type = type === "wind" ? "lowpass" : "bandpass"
-    filter.frequency.value = type === "rain" ? 3000 : type === "forest" ? 800 : 400
+    filter.frequency.value = type === "rain" ? 3000 : type === "cafe" ? 200 : type === "forest" ? 800 : 400
     src.connect(filter); nodes.push(src, filter)
     return { nodes, output: filter }
   }
-  // Lofi / cafe = oscillateurs
-  const osc = ctx.createOscillator()
-  osc.type = "sine"; osc.frequency.value = type === "lofi" ? 55 : 110
-  nodes.push(osc)
-  return { nodes, output: osc }
+  
+  return { nodes: [], output: ctx.destination }
 }
+
 
 export default function AmbientSound() {
   const [active, setActive] = useState(null)

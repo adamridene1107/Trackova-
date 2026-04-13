@@ -1,23 +1,37 @@
 {
-  "name": "Trackova — App pour s'organiser",
-  "short_name": "Trackova",
-  "description": "Application de suivi d'objectifs pour étudiants, sportifs et créatifs. Organise tes études, ton sport et tes projets.",
+  "name": "Trakova — Suivi d'Objectifs & Productivité",
+  "short_name": "Trakova",
+  "description": "App de suivi d'objectifs pour étudiants, sportifs et créatifs. Gamifie ta productivité avec XP, streaks et statistiques.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0A0A0F",
-  "theme_color": "#8b5cf6",
-  "orientation": "portrait",
+  "background_color": "#070710",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "lang": "fr-FR",
+  "categories": ["productivity", "education", "lifestyle", "utilities"],
+  "screenshots": [
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "label": "Trakova — Dashboard principal"
+    }
+  ],
   "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "/logo.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ],
-  "categories": [
-    "productivity",
-    "education",
-    "lifestyle"
-  ]
+  "related_applications": [],
+  "prefer_related_applications": false
 }

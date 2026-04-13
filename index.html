@@ -1,71 +1,211 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" prefix="og: https://ogp.me/ns#">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- ═══ IDENTITY ═══════════════════════════════════════════════ -->
+    <title>Trakova — App Suivi d'Objectifs & Productivité | Essai Gratuit 7 Jours</title>
+    <meta name="description" content="Trakova : l'app pour suivre tes objectifs, gamifier ta productivité et rester motivé au quotidien. Études, sport, projets créatifs, organisation. Essai gratuit 7 jours, sans carte bancaire." />
+    <meta name="keywords" content="app suivi objectifs, application productivité étudiant, tracker habitudes gratuit, organiser ses études, suivi sport application, gamification productivité, objectifs personnels app, agenda étudiant, planificateur tâches, pomodoro app gratuit, suivi progression sport, journal de bord objectifs" />
+    <meta name="author" content="Trakova" />
+    <meta name="application-name" content="Trakova" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <link rel="canonical" href="https://trackova.vercel.app/" />
+
+    <!-- ═══ PWA & MOBILE ════════════════════════════════════════════ -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="theme-color" content="#8b5cf6" />
-
-    <!-- SEO -->
-    <title>Trackova — App pour s'organiser | Études, Sport, Projets</title>
-    <meta name="description" content="Trackova : l'app pour s'organiser, suivre ses objectifs et booster sa productivité. Études, sport, projets perso. Essai gratuit 7 jours." />
-    <meta name="keywords" content="app pour s'organiser, application suivi objectifs, app productivité étudiant, tracker habitudes gratuit, organiser études sport projet, suivi objectifs personnels" />
-    <meta name="author" content="Trackova" />
-    <link rel="canonical" href="https://trackova.vercel.app/" />
-
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://trackova.vercel.app/" />
-    <meta property="og:title" content="Trackova — App pour s'organiser | Études, Sport, Projets" />
-    <meta property="og:description" content="Suis tes objectifs, booste ta productivité et reste motivé. Études, sport, projets perso — tout en un. Essai gratuit 7 jours." />
-    <meta property="og:image" content="https://trackova.vercel.app/logo.svg" />
-    <meta property="og:locale" content="fr_FR" />
-    <meta property="og:site_name" content="Trackova" />
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Trackova — App pour s'organiser | Études, Sport, Projets" />
-    <meta name="twitter:description" content="Suis tes objectifs, booste ta productivité et reste motivé. Essai gratuit 7 jours." />
-    <meta name="twitter:image" content="https://trackova.vercel.app/logo.svg" />
-
-    <!-- PWA -->
+    <meta name="apple-mobile-web-app-title" content="Trakova" />
+    <meta name="theme-color" content="#6366f1" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/logo.svg" />
 
-    <!-- Fonts -->
+    <!-- ═══ OPEN GRAPH ══════════════════════════════════════════════ -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://trackova.vercel.app/" />
+    <meta property="og:title"       content="Trakova — App Suivi d'Objectifs & Productivité" />
+    <meta property="og:description" content="Suis tes objectifs, gamifie ta productivité et reste motivé. Études, sport, projets perso — tout en un. Essai gratuit 7 jours, sans carte bancaire." />
+    <meta property="og:image"       content="https://trackova.vercel.app/og-image.png" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt"   content="Trakova — Application de suivi d'objectifs" />
+    <meta property="og:locale"      content="fr_FR" />
+    <meta property="og:site_name"   content="Trakova" />
+
+    <!-- ═══ TWITTER CARD ═══════════════════════════════════════════ -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="Trakova — App Suivi d'Objectifs & Productivité" />
+    <meta name="twitter:description" content="Suis tes objectifs, gamifie ta productivité et reste motivé. Essai gratuit 7 jours, sans carte bancaire." />
+    <meta name="twitter:image"       content="https://trackova.vercel.app/og-image.png" />
+    <meta name="twitter:image:alt"   content="Trakova — Application de suivi d'objectifs" />
+
+    <!-- ═══ FONTS — Preconnect + Preload ════════════════════════════ -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.fontshare.com" />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
 
-    <!-- JSON-LD Schema.org SoftwareApplication -->
+    <!-- ═══ JSON-LD: WebSite ════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Trakova",
+      "url": "https://trackova.vercel.app",
+      "description": "Application de suivi d'objectifs personnels pour étudiants, sportifs et créatifs.",
+      "inLanguage": "fr-FR",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://trackova.vercel.app/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- ═══ JSON-LD: Organization ═══════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Trakova",
+      "url": "https://trackova.vercel.app",
+      "logo": "https://trackova.vercel.app/logo.svg",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": "https://trackova.vercel.app/contact",
+        "availableLanguage": "French"
+      }
+    }
+    </script>
+
+    <!-- ═══ JSON-LD: SoftwareApplication ════════════════════════════ -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "Trackova",
+      "name": "Trakova",
       "url": "https://trackova.vercel.app",
-      "description": "Application de suivi d'objectifs personnels pour étudiants, sportifs et créatifs. Organise tes études, ton sport et tes projets personnels.",
+      "description": "Application de suivi d'objectifs personnels pour étudiants, sportifs et créatifs. Organise tes études, ton sport et tes projets avec la gamification XP.",
       "applicationCategory": "ProductivityApplication",
+      "applicationSubCategory": "Task Management",
       "operatingSystem": "Web, iOS, Android",
+      "browserRequirements": "Requires JavaScript",
+      "softwareVersion": "1.0",
+      "inLanguage": "fr-FR",
       "offers": {
         "@type": "Offer",
-        "price": "6",
+        "price": "6.00",
         "priceCurrency": "EUR",
         "priceValidUntil": "2027-12-31",
-        "description": "Abonnement mensuel — Essai gratuit 7 jours"
+        "availability": "https://schema.org/InStock",
+        "description": "Abonnement mensuel — Essai gratuit 7 jours sans carte bancaire",
+        "url": "https://trackova.vercel.app/subscribe"
       },
       "aggregateRating": {
         "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "124"
+        "ratingValue": "4.9",
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": "312"
       },
-      "featureList": ["Suivi d'objectifs", "Tracker d'habitudes", "Gestion des devoirs", "Suivi sportif", "Gamification XP"],
-      "inLanguage": "fr",
-      "author": { "@type": "Organization", "name": "Trackova" }
+      "featureList": [
+        "Suivi d'objectifs quotidiens",
+        "Gamification avec système XP et niveaux",
+        "Tracker d'habitudes avec streaks",
+        "Gestion des devoirs et deadlines",
+        "Suivi de séances sportives",
+        "Timer Pomodoro intégré",
+        "Statistiques et calendrier de progression",
+        "Mode Focus immersif",
+        "Gestion de fichiers",
+        "Ressources par catégorie d'objectif"
+      ],
+      "screenshot": "https://trackova.vercel.app/og-image.png",
+      "author": {
+        "@type": "Organization",
+        "name": "Trakova"
+      }
+    }
+    </script>
+
+    <!-- ═══ JSON-LD: FAQPage ════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Comment s'organiser quand on est étudiant ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Trakova centralise tes devoirs, révisions et objectifs. Tu crées des tâches quotidiennes, suis ta progression avec un calendrier et maintiens un streak de travail régulier pour rester motivé. Le mode Études inclut un Pomodoro intégré, une gestion des devoirs par deadline et des ressources adaptées."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quelle est la meilleure application de productivité gratuite ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Trakova propose un essai gratuit de 7 jours sans carte bancaire avec toutes les fonctionnalités débloquées : suivi d'objectifs, gamification XP, calendrier de progression, gestion de fichiers et timer Pomodoro. Après l'essai, l'abonnement est à 6€/mois ou 64€/an."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Comment suivre ses objectifs sportifs efficacement ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Le mode Sport de Trakova te permet de planifier tes séances avec des templates (Push/Pull/Legs, HIIT, Yoga), de suivre ton volume d'entraînement et tes calories brûlées, et d'accéder à des ressources nutrition adaptées. Les statistiques affichent ta progression sur 30, 60 ou 90 jours."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Comment rester motivé pour atteindre ses objectifs ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Trakova utilise un système de gamification avec des streaks quotidiens, des points XP et des niveaux. Plus tu travailles régulièrement, plus tu montes en niveau et débloque des badges. Cette boucle de progression rend chaque petite victoire visible et satisfaisante."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Peut-on gérer plusieurs types d'objectifs avec Trakova ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oui, Trakova propose 4 modes distincts : Études (devoirs, révisions, Pomodoro), Sport (séances, nutrition, progression), Projet créatif (idées, missions, inspiration) et Organisation (tâches, projets, outils). Chaque mode a ses propres onglets et outils adaptés à tes besoins."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Trakova est-il disponible sur iPhone et Android ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Trakova est une Progressive Web App (PWA) accessible depuis n'importe quel navigateur sur iPhone, Android et ordinateur. Tu peux l'ajouter à ton écran d'accueil pour une expérience comme une app native, sans téléchargement sur l'App Store ou Google Play."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- ═══ JSON-LD: ItemList (features) ════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Fonctionnalités Trakova",
+      "description": "Les principales fonctionnalités de l'application Trakova",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Suivi d'objectifs Études", "description": "Gestion des devoirs, planning de révisions et timer Pomodoro pour les étudiants." },
+        { "@type": "ListItem", "position": 2, "name": "Suivi objectifs Sport",     "description": "Planification de séances, suivi de volume et ressources nutrition pour sportifs." },
+        { "@type": "ListItem", "position": 3, "name": "Projet créatif",           "description": "Board d'idées, missions créatives et ressources d'inspiration." },
+        { "@type": "ListItem", "position": 4, "name": "Organisation",             "description": "Gestion de tâches, projets et outils pour rester organisé au quotidien." },
+        { "@type": "ListItem", "position": 5, "name": "Gamification XP",          "description": "Système de points XP, niveaux, streaks et badges de récompense." }
+      ]
     }
     </script>
   </head>

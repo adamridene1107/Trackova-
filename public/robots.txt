@@ -4,5 +4,26 @@ Disallow: /admin
 Disallow: /success
 Disallow: /trial-expired
 Disallow: /profile/
+Disallow: /reset-password
 
+# Crawl-delay pour éviter la surcharge
+Crawl-delay: 1
+
+# Sitemap
 Sitemap: https://trackova.vercel.app/sitemap.xml
+
+# Google
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /success
+Disallow: /trial-expired
+Disallow: /profile/
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /success
+Disallow: /trial-expired
+Disallow: /profile/
