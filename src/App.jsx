@@ -25,6 +25,7 @@ import Idees from "./components/Idees"
 import { useGamification } from "./hooks/useGamification"
 import { getGoalById } from "./lib/goals"
 import { parseISO, isToday, isPast } from "date-fns"
+import { initNotifications } from "./lib/notifications"
 
 import { CheckSquare, Target, Calendar, BarChart2, BookOpen, ClipboardList, Settings, Flame, FolderOpen, Zap, LogOut, Dumbbell, Lightbulb, Apple, ListTodo, RefreshCw, Gift } from "lucide-react"
 
@@ -116,6 +117,8 @@ export default function App({ user, onLogout }) {
     setConfetti(items)
     setTimeout(() => setConfetti([]), 1400)
   }, [])
+
+  useEffect(() => { initNotifications() }, [])
 
   useEffect(() => {
     if (!data?.settings?.freeUntil || giftSeen) return

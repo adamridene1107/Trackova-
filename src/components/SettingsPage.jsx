@@ -3,6 +3,7 @@ import LangSwitcher from "./LangSwitcher"
 import { Globe } from "lucide-react"
 import { useTheme } from "../context/ThemeContext"
 import { User, Bell, Palette, Target, Shield, CreditCard, ChevronRight, Check, Download, Trash2, X, LogOut } from "lucide-react"
+import { scheduleNotification, cancelNotification } from "../lib/notifications"
 
 
 
@@ -57,8 +58,10 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
 
   const [notifDaily, setNotifDaily] = useState(settings.notifDaily ?? true)
   const [notifHour, setNotifHour] = useState(settings.notifHour || "08:00")
+  const [notifMsg, setNotifMsg] = useState(settings.notifMsg || "")
   const [notifWeekly, setNotifWeekly] = useState(settings.notifWeekly ?? false)
   const [notifStreak, setNotifStreak] = useState(settings.notifStreak ?? true)
+  const [notifPerm, setNotifPerm] = useState(() => "Notification" in window ? Notification.permission : "denied")
 
   const { theme, setTheme } = useTheme()
   const [streakGoal, setStreakGoal] = useState(settings.streakGoal || 7)
@@ -115,14 +118,23 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
   const requestNotifPermission = async () => {
     if ("Notification" in window) {
       const perm = await Notification.requestPermission()
-      if (perm === "granted") toast_("Notifications activées !")
-      else toast_("Notifications refusées")
+      setNotifPerm(perm)
+      if (perm === "granted") {
+        toast_("Notifications activées !")
+        if (notifDaily) scheduleNotification(notifHour, "🔥 Trakova — Rappel du jour", notifMsg || "C'est l'heure de bosser !")
+      } else toast_("Notifications refusées par le navigateur")
     }
   }
 
   const saveNotifs = () => {
-    saveSettings({ ...getSettings(), notifDaily, notifHour, notifWeekly, notifStreak })
-    toast_("Notifications sauvegardées")
+    saveSettings({ ...getSettings(), notifDaily, notifHour, notifMsg, notifWeekly, notifStreak })
+    if (notifDaily && notifPerm === "granted") {
+      scheduleNotification(notifHour, "🔥 Trakova — Rappel du jour", notifMsg || "C'est l'heure de bosser !")
+      toast_("Rappel programmé à " + notifHour + " !")
+    } else {
+      cancelNotification()
+      toast_("Notifications sauvegardées")
+    }
   }
 
   const applyTheme = (t) => { setTheme(t); toast_(t === "dark" ? "Theme sombre activé" : "Theme clair activé") }
@@ -222,26 +234,32 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
             {section === "notifs" && (
               <Section icon={Bell} title="Notifications">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-white/70 text-sm">Rappel quotidien</p>
-                      <p className="text-white/30 text-xs mt-0.5">Rappel pour faire ta seance du jour</p>
-                    </div>
-                    <Toggle checked={notifDaily} onChange={setNotifDaily} />
-                  </div>
-                  {notifDaily && (
-                    <div className="flex items-center gap-3">
-                      <label className="text-white/40 text-xs">Heure</label>
-                      <input type="time" value={notifHour} onChange={e => setNotifHour(e.target.value)} className="input" />
+                  {notifPerm !== "granted" && (
+                    <div className="px-3 py-2.5 rounded-xl text-xs" style={{ background:"rgba(251,191,36,0.08)", border:"1px solid rgba(251,191,36,0.2)", color:"#fbbf24" }}>
+                      ⚠ Autorise les notifications pour recevoir tes rappels
                     </div>
                   )}
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-white/70 text-sm">Récap hebdomadaire</p>
-                      <p className="text-white/30 text-xs mt-0.5">Résumé de ta semaine par email</p>
+                      <p className="text-white/70 text-sm">Rappel quotidien</p>
+                      <p className="text-white/30 text-xs mt-0.5">Notification chaque jour à l'heure choisie</p>
                     </div>
-                    <Toggle checked={notifWeekly} onChange={setNotifWeekly} />
+                    <Toggle checked={notifDaily} onChange={setNotifDaily} />
                   </div>
+                  {notifDaily && (
+                    <div className="space-y-3 pl-1">
+                      <div className="flex items-center gap-3">
+                        <label className="text-white/40 text-xs w-12">Heure</label>
+                        <input type="time" value={notifHour} onChange={e => setNotifHour(e.target.value)} className="input" />
+                      </div>
+                      <div>
+                        <label className="text-white/40 text-xs block mb-1.5">Message personnalisé (optionnel)</label>
+                        <input value={notifMsg} onChange={e => setNotifMsg(e.target.value)}
+                          placeholder="Ex: Séance de sport à 18h, lâche pas !"
+                          className="input w-full text-sm" />
+                      </div>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-white/70 text-sm">Alerte streak</p>
@@ -249,10 +267,14 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                     </div>
                     <Toggle checked={notifStreak} onChange={setNotifStreak} />
                   </div>
-                  <button onClick={requestNotifPermission} className="btn-outline text-sm py-2 px-4">
-                    Activer les notifications navigateur
-                  </button>
-                  <button onClick={saveNotifs} className="btn-primary text-sm py-2 px-4">Sauvegarder</button>
+                  <div className="flex gap-2 pt-1">
+                    {notifPerm !== "granted" && (
+                      <button onClick={requestNotifPermission} className="btn-outline text-sm py-2 px-4">
+                        Autoriser les notifs
+                      </button>
+                    )}
+                    <button onClick={saveNotifs} className="btn-primary text-sm py-2 px-4">Sauvegarder</button>
+                  </div>
                 </div>
               </Section>
             )}
