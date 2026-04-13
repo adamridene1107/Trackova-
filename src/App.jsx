@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, lazy, Suspense, useEffect } from "react" // trakova
+import { useState, useCallback, useMemo, lazy, Suspense, useEffect } from "react"
 import { useSupabaseData } from "./hooks/useSupabaseData"
 import { useTheme } from "./context/ThemeContext"
 import GoalSelector from "./components/GoalSelector"

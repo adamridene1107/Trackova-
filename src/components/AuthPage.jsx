@@ -140,7 +140,7 @@ export default function AuthPage({ onAuth }) {
               <label className="flex items-start gap-2.5 cursor-pointer">
                 <input type="checkbox" checked={acceptTerms} onChange={e => setAcceptTerms(e.target.checked)} className="mt-0.5 flex-shrink-0 accent-violet-500" />
                 <span style={{ color: textMuted }} className="text-xs leading-relaxed">
-                  J accepte les <a href="/cgu" target="_blank" className="text-violet-400 underline">CGU</a> et la <a href="/privacy" target="_blank" className="text-violet-400 underline">politique de confidentialité</a>
+                  J'accepte les <a href="/cgu" target="_blank" className="text-violet-400 underline">CGU</a> et la <a href="/privacy" target="_blank" className="text-violet-400 underline">politique de confidentialité</a>
                 </span>
               </label>
             </>}

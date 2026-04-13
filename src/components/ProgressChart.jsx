@@ -1,5 +1,4 @@
-import { memo, useMemo } from "react"
-﻿import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts"
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts"
 import { format, subDays, parseISO, isToday, isPast } from "date-fns"
 import { fr } from "date-fns/locale"
 

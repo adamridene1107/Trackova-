@@ -17,7 +17,7 @@ const MATIERES = [
   { v:"geo",      l:"Geo",      color:"bg-emerald-500/10 text-emerald-400", emoji:"🌍" },
   { v:"sciences", l:"Sciences", color:"bg-purple-500/10 text-purple-400", emoji:"🔬" },
   { v:"anglais",  l:"Anglais",  color:"bg-sky-500/10 text-sky-400",     emoji:"🇬🇧" },
-  { v:"espagnol", l:"Espagnol", color:"bg-orange-500/10 text-orange-400", emoji:"🇪��" },
+  { v:"espagnol", l:"Espagnol", color:"bg-orange-500/10 text-orange-400", emoji:"🇪🇸" },
   { v:"autre",    l:"Autre",    color:"bg-white/10 text-white/40",      emoji:"📚" },
 ]
 
@@ -160,7 +160,7 @@ export default function Devoirs({ devoirs, updateDevoirs, goalId = "homework" })
               <input type="date" value={form.date} onChange={e => setForm(f=>({...f,date:e.target.value}))} className="input flex-1" />
             </div>
             <div className="flex gap-2">
-              <button onClick={submit} className="btn-primary flex-1">{editId ? "Enregistrér" : "Ajouter"}</button>
+              <button onClick={submit} className="btn-primary flex-1">{editId ? "Enregistrer" : "Ajouter"}</button>
               <button onClick={cancelForm} className="btn-outline">Annuler</button>
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function Devoirs({ devoirs, updateDevoirs, goalId = "homework" })
       {/* Liste */}
       {filtered.length === 0 ? (
         <div className="card text-center py-10 text-white/40 text-sm">
-          {devoirs.length===0 ? "Aucun devoir pour l instant." : "Aucun devoir dans cette categorie."}
+          {devoirs.length===0 ? "Aucun devoir pour l'instant." : "Aucun devoir dans cette catégorie."}
         </div>
       ) : (
         <div className="space-y-2">
@@ -210,7 +210,7 @@ export default function Devoirs({ devoirs, updateDevoirs, goalId = "homework" })
                   <button onClick={() => toggle(d.id)} className="flex-shrink-0 mt-0.5">
                     {d.done
                       ? <CheckCircle2 size={20} className="text-white/40"/>
-                      : <Circlé size={20} className="text-white/40"/>}
+                      : <Circle size={20} className="text-white/40"/>}
                   </button>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
