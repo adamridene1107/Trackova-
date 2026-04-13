@@ -182,7 +182,7 @@ export default function Seance({ data, updateEntry, getTodayEntry }) {
               <div key={s.id} className={`card transition-all ${s.done ? "opacity-50" : ""}`}>
                 <div className="flex items-center gap-3">
                   <button onClick={() => toggle(s.id)} className="flex-shrink-0">
-                    {s.done ? <CheckCircle2 size={20} className="text-white/40"/> : <Circlé size={20} className="text-white/40"/>}
+                    {s.done ? <CheckCircle2 size={20} className="text-white/40"/> : <Circle size={20} className="text-white/40"/>}
                   </button>
                   <div className="flex-1 min-w-0">
                     <span className={`text-sm font-medium ${s.done ? "line-through text-white/40" : "text-white/80"}`}>
