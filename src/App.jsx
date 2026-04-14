@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, lazy, Suspense, useEffect } from "react"
-import { useSupabaseData } from "./hooks/useSupabaseData"
+import { useGoalData } from "./context/GoalDataContext"
 import { useTheme } from "./context/ThemeContext"
 import GoalSelector from "./components/GoalSelector"
 const DailyCheck = lazy(() => import("./components/DailyCheck"))
@@ -90,7 +90,7 @@ function ConfettiParticle({ x, y, color, delay, size, round }) {
 
 export default function App({ user, onLogout }) {
   const { theme } = useTheme()
-  const { data, today, setGoal, resetGoal, getTodayEntry, updateEntry, toggleTask, updateMissions, updateNotifications, updateDevoirs, loading } = useSupabaseData(user?.id)
+  const { data, today, setGoal, resetGoal, getTodayEntry, updateEntry, toggleTask, updateMissions, updateNotifications, updateDevoirs, loading } = useGoalData()
   const { g, onTaskComplete, onFocusComplete } = useGamification()
   const [tab, setTab] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
