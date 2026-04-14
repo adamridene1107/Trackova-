@@ -349,7 +349,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                       <Trash2 size={14}/>
                       {deleteConfirm === 0 ? "Supprimer mon compte" : deleteConfirm === 1 ? "Confirmer la suppression" : "Dernière confirmation — supprimer définitivement"}
                     </button>
-                    {deleteConfirm > 0 && <p className="text-red-400/50 text-xs text-center mt-2">Cette action'est irréversible</p>}
+                    {deleteConfirm > 0 && <p className="text-red-400/50 text-xs text-center mt-2">Cette action est irréversible</p>}
                   </div>
                 </div>
               </Section>
@@ -365,7 +365,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
               <Section icon={CreditCard} title="Abonnement">
                 <div className="space-y-4">
                   <div className="px-4 py-3 rounded-xl" style={{ background:"rgba(139,92,246,0.08)", border:"1px solid rgba(139,92,246,0.15)" }}>
-                    <p className="text-violet-400 text-xs font-medium mb-1">Plan'actuel</p>
+                    <p className="text-violet-400 text-xs font-medium mb-1">Plan actuel</p>
                     <p className="text-white font-bold">Trakova Premium — 6€/mois</p>
                     <p className="text-white/40 text-xs mt-1">Essai gratuit 7 jours · Sans engagement</p>
                   </div>
@@ -379,7 +379,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                         className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm transition-all"
                         style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", color:"#f87171" }}>
                         {cancelStatus === "loading" ? <span className="w-4 h-4 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin"/> :
-                         cancelStatus === "confirm" ? "Confirmer la résiliation" : "Résilier mon'abonnement"}
+                         cancelStatus === "confirm" ? "Confirmer la résiliation" : "Résilier mon abonnement"}
                       </button>
                       {cancelStatus === "confirm" && (
                         <div className="flex gap-2">

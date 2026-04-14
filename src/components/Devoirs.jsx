@@ -25,8 +25,8 @@ const TIPS = [
   "Commence par le devoir le plus difficile quand tu es encore frais.",
   "Fais des pauses de 5 min toutes les 25 min (technique Pomodoro).",
   "Relis tes notes de cours avant de commencer un exercice.",
-  "Un devoir fait a l avance vaut mieux que deux faits a la hate.",
-  "Pose des questions a ton prof si quelque chose n'est pas clair.",
+  "Un devoir fait à l'avance vaut mieux que deux faits à la hâte.",
+  "Pose des questions à ton prof si quelque chose n'est pas clair.",
   "Organise ton bureau avant de travailler pour mieux te concentrer.",
 ]
 

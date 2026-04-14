@@ -9,7 +9,7 @@ const QUESTIONS = [
   "Quel est le prénom de ta mere ?",
   "Quel etait le nom de ton école primaire ?",
   "Quelle est ta couleur preferee ?",
-  "Quel est le prénom de ton meilleur ami d enfance ?",
+  "Quel est le prénom de ton meilleur ami d'enfance ?",
   "Quelle est ta nourriture preferee ?",
   "Quel est le modèle de ta première voiture ?",
 ]
