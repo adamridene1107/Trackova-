@@ -20,9 +20,9 @@ function Toast({ msg, onClose }) {
 function Section({ icon: Icon, title, children }) {
   return (
     <div className="card space-y-4">
-      <div className="flex items-center gap-2 pb-3" style={{ borderBottom:"1px solid rgba(255,255,255,0.06)" }}>
-        <Icon size={15} className="text-violet-400" />
-        <h3 className="text-white/80 font-semibold text-sm">{title}</h3>
+      <div className="flex items-center gap-2 pb-3" style={{ borderBottom:"1px solid var(--border)" }}>
+        <Icon size={15} style={{ color:"var(--primary)" }} />
+        <h3 className="font-semibold text-sm" style={{ color:"var(--text-muted)" }}>{title}</h3>
       </div>
       {children}
     </div>
@@ -64,6 +64,12 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
   const [notifPerm, setNotifPerm] = useState(() => "Notification" in window ? Notification.permission : "denied")
 
   const { theme, setTheme } = useTheme()
+  const isDark = theme !== "light"
+  const modalBg = isDark ? "rgba(12,12,20,0.98)" : "rgba(255,255,255,0.98)"
+  const borderCol = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.08)"
+  const mutedCol = isDark ? "rgba(255,255,255,0.4)" : "rgba(26,26,46,0.5)"
+  const textCol = isDark ? "#fff" : "#1a1a2e"
+  const sectionBg = isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.02)"
   const [streakGoal, setStreakGoal] = useState(settings.streakGoal || 7)
 
   const [deleteConfirm, setDeleteConfirm] = useState(0)
@@ -172,23 +178,23 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
   ]
 
   return (
-    <div className="fixed inset-0 z-50 flex" style={{ background:"rgba(0,0,0,0.8)", backdropFilter:"blur(8px)" }}>
+    <div className="fixed inset-0 z-50 flex" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
       <div className="m-auto w-full max-w-2xl max-h-[90vh] flex flex-col rounded-2xl overflow-hidden fade-up"
-        style={{ background:"rgba(12,12,20,0.98)", border:"1px solid rgba(139,92,246,0.15)", boxShadow:"0 32px 80px rgba(0,0,0,0.7)" }}>
+        style={{ background: modalBg, border:"1px solid rgba(139,92,246,0.15)", boxShadow:"0 32px 80px rgba(0,0,0,0.5)" }}>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 flex-shrink-0" style={{ borderBottom:"1px solid rgba(255,255,255,0.06)" }}>
-          <h2 className="text-white font-bold text-base">Paramètres</h2>
+        <div className="flex items-center justify-between px-5 py-4 flex-shrink-0" style={{ borderBottom:`1px solid ${borderCol}` }}>
+          <h2 className="font-bold text-base" style={{ color: textCol }}>Paramètres</h2>
           <button onClick={onClose} className="btn-ghost"><X size={16}/></button>
         </div>
 
         <div className="flex flex-1 overflow-hidden">
           {/* Sidebar */}
-          <div className="w-44 flex-shrink-0 p-3 space-y-0.5" style={{ borderRight:"1px solid rgba(255,255,255,0.06)" }}>
+          <div className="w-44 flex-shrink-0 p-3 space-y-0.5" style={{ borderRight:`1px solid ${borderCol}` }}>
             {SECTIONS.map(s => (
               <button key={s.id} onClick={() => setSection(s.id)}
                 className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-all text-left"
-                style={{ background: section===s.id ? "rgba(139,92,246,0.15)" : "transparent", color: section===s.id ? "#a78bfa" : "rgba(255,255,255,0.4)" }}>
+                style={{ background: section===s.id ? "rgba(99,102,241,0.12)" : "transparent", color: section===s.id ? "#818cf8" : mutedCol }}>
                 <s.icon size={13}/> {s.label}
               </button>
             ))}
@@ -214,7 +220,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                   <button onClick={() => { navigator.clipboard.writeText("https://trackova.vercel.app/profile/" + (user?.id||"")); toast_("Lien copié !") }} className="btn-outline text-sm py-2 px-4">Partager mon profil</button>
                 </div>
                 </div>
-                <div className="space-y-3 pt-4" style={{ borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+                <div className="space-y-3 pt-4" style={{ borderTop:"1px solid var(--border)" }}>
                   <p className="text-white/40 text-xs font-medium">Changer le mot de passe</p>
                   <input type="password" value={currentPwd} onChange={e => setCurrentPwd(e.target.value)} className="input w-full" placeholder="Mot de passe actuel" />
                   <input type="password" value={newPwd} onChange={e => setNewPwd(e.target.value)} className="input w-full" placeholder="Nouveau mot de passe" />
@@ -222,7 +228,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                   {pwdError && <p className="text-red-400 text-xs">{pwdError}</p>}
                   <button onClick={savePassword} className="btn-outline text-sm py-2 px-4">Mettre à jour</button>
                 </div>
-                <div className="pt-4" style={{ borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+                <div className="pt-4" style={{ borderTop:"1px solid var(--border)" }}>
                   <button onClick={onLogout} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm text-red-400/70 hover:text-red-400 transition-colors"
                     style={{ border:"1px solid rgba(239,68,68,0.15)", background:"rgba(239,68,68,0.05)" }}>
                     <LogOut size={14}/> Se deconnecter
@@ -312,7 +318,7 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
                     </div>
                   </div>
                   <button onClick={saveObjectifs} className="btn-primary text-sm py-2 px-4">Sauvegarder</button>
-                  <div className="pt-4" style={{ borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+                  <div className="pt-4" style={{ borderTop:"1px solid var(--border)" }}>
                     <p className="text-white/40 text-xs mb-3">Réinitialiser la progression</p>
                     <button onClick={() => { if(window.confirm("Réinitialiser toute ta progression ?")) { resetGoal(); onClose() } }}
                       className="btn-outline text-sm py-2 px-4 text-red-400/70 border-red-400/20 hover:border-red-400/40">
@@ -327,21 +333,21 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
               <Section icon={Shield} title="Confidentialité & Compte">
                 <div className="space-y-3">
                   <button onClick={exportData} className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm text-white/60 hover:text-white transition-all"
-                    style={{ border:"1px solid rgba(255,255,255,0.08)", background:"rgba(255,255,255,0.02)" }}>
+                    style={{ border:"1px solid var(--border)", background:"var(--surface-2)" }}>
                     <span className="flex items-center gap-2"><Download size={14}/> Exporter mes données (JSON)</span>
                     <ChevronRight size={14}/>
                   </button>
                   <a href="/cgu" target="_blank" className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm text-white/60 hover:text-white transition-all"
-                    style={{ border:"1px solid rgba(255,255,255,0.08)", background:"rgba(255,255,255,0.02)" }}>
+                    style={{ border:"1px solid var(--border)", background:"var(--surface-2)" }}>
                     <span>Conditions Générales d'Utilisation</span>
                     <ChevronRight size={14}/>
                   </a>
                   <a href="/privacy" target="_blank" className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm text-white/60 hover:text-white transition-all"
-                    style={{ border:"1px solid rgba(255,255,255,0.08)", background:"rgba(255,255,255,0.02)" }}>
+                    style={{ border:"1px solid var(--border)", background:"var(--surface-2)" }}>
                     <span>Politique de confidentialité</span>
                     <ChevronRight size={14}/>
                   </a>
-                  <div className="pt-4" style={{ borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+                  <div className="pt-4" style={{ borderTop:"1px solid var(--border)" }}>
                     <p className="text-white/30 text-xs mb-3">Zone dangereuse</p>
                     <button onClick={deleteAccount}
                       className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium transition-all"
