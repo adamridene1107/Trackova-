@@ -132,23 +132,18 @@ export default function LandingPage({ onGetStarted }) {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.2) 0%, transparent 70%)" }} />
 
         <div className="relative max-w-3xl mx-auto fade-up">
-          {/* Badge app type */}
+          {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 text-xs font-semibold" style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.22)", color: "#a5b4fc", letterSpacing: "0.02em" }}>
-            <Zap size={11} /> APP DE SUIVI D'OBJECTIFS GAMIFIÉE
+            <Flame size={11} /> ESSAI 7 JOURS GRATUIT · SANS CARTE BANCAIRE
           </div>
 
-          <h1 className="text-5xl sm:text-6xl font-bold leading-tight mb-5" style={{ color: text, letterSpacing: "-0.03em" }}>
-            L'app qui te fait<br />
-            <span className="gradient-text">vraiment avancer.</span>
+          <h1 className="text-5xl sm:text-6xl font-bold leading-tight mb-6" style={{ color: text, letterSpacing: "-0.03em" }}>
+            Suis tes objectifs.<br />
+            <span className="gradient-text">Construis tes habitudes.</span>
           </h1>
 
-          {/* Ce que c'est — en une ligne */}
-          <p className="text-xl font-medium mb-4 max-w-lg mx-auto" style={{ color: text }}>
-            Trakova = to-do list + streak + XP + stats
-          </p>
-
-          <p className="text-base mb-10 max-w-xl mx-auto leading-relaxed" style={{ color: muted }}>
-            Tu coches tes tâches du jour, tu gagnes des XP, tu maintiens ton streak. Disponible pour les <strong style={{ color: text }}>études, le sport, les projets créatifs et l'organisation.</strong>
+          <p className="text-lg mb-10 max-w-xl mx-auto leading-relaxed" style={{ color: muted }}>
+            Coche tes tâches, maintiens ton streak, monte en niveau. Trakova gamifie ta productivité pour les <span style={{ color: text, fontWeight: 500 }}>études, le sport, les projets et l'organisation.</span>
           </p>
 
           {/* Social proof avatars */}
