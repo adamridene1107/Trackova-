@@ -1,53 +1,31 @@
 import { useState, useEffect, useRef } from "react"
 import { useTheme } from "../context/ThemeContext"
-import { ArrowRight, CheckCircle2, Flame, Star, Zap, Gift, BookOpen, Dumbbell, Palette, Layout, Timer, BarChart2, FolderOpen, ChevronDown } from "lucide-react"
+import { ArrowRight, CheckCircle2, Flame, Star, Zap, Gift, BookOpen, Dumbbell, Palette, Layout, Timer, BarChart2, FolderOpen, ChevronDown, Shield, Users, TrendingUp, Lock } from "lucide-react"
 
 const CATEGORIES = [
-  {
-    icon: BookOpen,
-    label: "Études",
-    desc: "Devoirs, révisions, Pomodoro. Ne rate plus jamais une deadline.",
-    color: "#6366f1",
-    bg: "rgba(99,102,241,0.1)",
-    border: "rgba(99,102,241,0.2)",
-  },
-  {
-    icon: Dumbbell,
-    label: "Sport",
-    desc: "Séances, exercices, nutrition. Suis ta progression physique.",
-    color: "#3b82f6",
-    bg: "rgba(59,130,246,0.1)",
-    border: "rgba(59,130,246,0.2)",
-  },
-  {
-    icon: Palette,
-    label: "Projet créatif",
-    desc: "Idées, missions créatives, inspiration. Concrétise tes projets.",
-    color: "#a855f7",
-    bg: "rgba(168,85,247,0.1)",
-    border: "rgba(168,85,247,0.2)",
-  },
-  {
-    icon: Layout,
-    label: "Organisation",
-    desc: "Tâches, projets, outils. Garde le contrôle de ton quotidien.",
-    color: "#10b981",
-    bg: "rgba(16,185,129,0.1)",
-    border: "rgba(16,185,129,0.2)",
-  },
+  { icon: BookOpen, label: "Études",           desc: "Devoirs, révisions, Pomodoro. Ne rate plus jamais une deadline.", color: "#6366f1", bg: "rgba(99,102,241,0.1)",  border: "rgba(99,102,241,0.2)" },
+  { icon: Dumbbell, label: "Sport",             desc: "Séances, exercices, nutrition. Suis ta progression physique.",   color: "#3b82f6", bg: "rgba(59,130,246,0.1)",  border: "rgba(59,130,246,0.2)" },
+  { icon: Palette,  label: "Projet créatif",   desc: "Idées, missions créatives, inspiration. Concrétise tes projets.", color: "#a855f7", bg: "rgba(168,85,247,0.1)",  border: "rgba(168,85,247,0.2)" },
+  { icon: Layout,   label: "Organisation",     desc: "Tâches, projets, outils. Garde le contrôle de ton quotidien.",   color: "#10b981", bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.2)" },
 ]
 
 const FEATURES = [
-  { icon: Zap,       label: "Gamification XP",     desc: "Gagne des points, monte de niveau, maintiens ton streak quotidien." },
-  { icon: Timer,     label: "Pomodoro intégré",     desc: "Sessions de travail chronométrées avec pauses intelligentes." },
-  { icon: BarChart2, label: "Stats & Calendrier",   desc: "Visualise ta progression sur les 30, 60 ou 90 derniers jours." },
-  { icon: FolderOpen,label: "Fichiers & Ressources",desc: "Stocke tes fichiers et accède aux meilleures ressources par catégorie." },
+  { icon: Zap,        label: "Gamification XP",      desc: "Gagne des points, monte de niveau, maintiens ton streak quotidien." },
+  { icon: Timer,      label: "Pomodoro intégré",      desc: "Sessions de travail chronométrées avec pauses intelligentes." },
+  { icon: BarChart2,  label: "Stats & Calendrier",    desc: "Visualise ta progression sur les 30, 60 ou 90 derniers jours." },
+  { icon: FolderOpen, label: "Fichiers & Ressources", desc: "Stocke tes fichiers et accède aux meilleures ressources par catégorie." },
 ]
 
 const TESTIMONIALS = [
-  { name: "Lucas M.", role: "Étudiant en médecine", text: "J'en suis à 47 jours de streak et je révise tous les soirs sans même y penser. C'est devenu une habitude.", avatar: "L", color: "#6366f1" },
-  { name: "Sarah K.", role: "Graphiste freelance",  text: "Le système XP m'a complètement motivée. Je check l'app avant même mon café du matin.", avatar: "S", color: "#a855f7" },
-  { name: "Thomas R.", role: "Passionné de sport",  text: "Ça fait 3 mois que je log mes séances. Les graphiques de progression c'est trop satisfaisant.", avatar: "T", color: "#3b82f6" },
+  { name: "Lucas M.",  role: "Étudiant en médecine",  text: "47 jours de streak. Je révise tous les soirs sans même y penser. Ça a changé ma façon de travailler.",   avatar: "L", color: "#6366f1", streak: 47 },
+  { name: "Sarah K.",  role: "Graphiste freelance",    text: "Le système XP m'a totalement motivée. Je check l'app avant même mon café. 3 projets livrés ce mois.",      avatar: "S", color: "#a855f7", streak: 31 },
+  { name: "Thomas R.", role: "Passionné de sport",     text: "3 mois de séances loguées. Les graphiques de progression c'est hyper satisfaisant. +12kg au deadlift.",     avatar: "T", color: "#3b82f6", streak: 89 },
+]
+
+const STEPS = [
+  { num: "01", title: "Choisis ton objectif",    desc: "Études, sport, créatif ou organisation — l'app s'adapte à ton domaine.",     icon: "🎯" },
+  { num: "02", title: "Check tes tâches du jour", desc: "Chaque jour, une liste pensée pour avancer. Coche, gagne des XP, progresse.", icon: "✅" },
+  { num: "03", title: "Regarde ton streak monter", desc: "La progression devient visible. La motivation suit. L'habitude s'installe.",  icon: "🔥" },
 ]
 
 const STATS = [
@@ -58,12 +36,15 @@ const STATS = [
 ]
 
 const FAQ = [
-  { q: "Comment s'organiser quand on est étudiant ?", a: "Trakova centralise tes devoirs, révisions et objectifs. Tu crées des tâches quotidiennes, suis ta progression et maintiens un streak de travail régulier." },
+  { q: "Comment s'organiser quand on est étudiant ?",   a: "Trakova centralise tes devoirs, révisions et objectifs. Tu crées des tâches quotidiennes, suis ta progression et maintiens un streak de travail régulier." },
   { q: "Quelle est la meilleure app de productivité ?", a: "Trakova propose un essai gratuit de 7 jours sans carte bancaire avec toutes les fonctionnalités : suivi d'objectifs, gamification XP, calendrier et gestion de fichiers." },
-  { q: "Comment suivre ses objectifs sportifs ?", a: "Le mode Sport te permet de planifier tes séances avec des templates (Push/Pull/Legs, HIIT, Yoga), suivre ton volume et accéder à des ressources nutrition." },
-  { q: "Peut-on gérer plusieurs objectifs ?", a: "4 modes disponibles : Études, Sport, Projet créatif et Organisation. Chaque mode a ses propres outils adaptés à tes besoins spécifiques." },
-  { q: "Comment rester motivé sur le long terme ?", a: "Les streaks, points XP et badges de récompense créent une boucle de motivation. Plus tu travailles régulièrement, plus tu montes en niveau." },
+  { q: "Comment suivre ses objectifs sportifs ?",       a: "Le mode Sport te permet de planifier tes séances avec des templates (Push/Pull/Legs, HIIT, Yoga), suivre ton volume et accéder à des ressources nutrition." },
+  { q: "Peut-on gérer plusieurs objectifs ?",           a: "4 modes disponibles : Études, Sport, Projet créatif et Organisation. Chaque mode a ses propres outils adaptés à tes besoins spécifiques." },
+  { q: "Comment rester motivé sur le long terme ?",    a: "Les streaks, points XP et badges de récompense créent une boucle de motivation. Plus tu travailles régulièrement, plus tu montes en niveau." },
+  { q: "Y a-t-il un engagement ?",                      a: "Aucun engagement. Tu peux annuler à tout moment depuis les paramètres, sans frais ni pénalité. L'essai de 7 jours ne demande aucune carte bancaire." },
 ]
+
+const RECENT_USERS = ["A","M","J","K","T","S","R","L"]
 
 function Confetti({ items }) {
   return items.map(p => (
@@ -71,26 +52,49 @@ function Confetti({ items }) {
   ))
 }
 
+function AnimatedCount({ target, suffix = "" }) {
+  const [count, setCount] = useState(0)
+  const ref = useRef(null)
+  useEffect(() => {
+    const observer = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return
+      observer.disconnect()
+      const num = parseFloat(target.replace(/[^0-9.]/g, ""))
+      const steps = 40
+      let i = 0
+      const interval = setInterval(() => {
+        i++
+        setCount(Math.round((num * i) / steps * 10) / 10)
+        if (i >= steps) clearInterval(interval)
+      }, 30)
+    }, { threshold: 0.5 })
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [target])
+  return <span ref={ref}>{count}{suffix}</span>
+}
+
 export default function LandingPage({ onGetStarted }) {
   const { theme } = useTheme()
   const isDark = theme !== "light"
   const [faqOpen, setFaqOpen] = useState(null)
-  const [videoMuted, setVideoMuted] = useState(true)
   const videoRef = useRef(null)
+  const [videoMuted, setVideoMuted] = useState(true)
   const [confetti, setConfetti] = useState([])
+  const [recentJoined, setRecentJoined] = useState(false)
+
+  useEffect(() => {
+    const t = setTimeout(() => setRecentJoined(true), 3500)
+    return () => clearTimeout(t)
+  }, [])
 
   const spawn = (e) => {
     const r = e.currentTarget.getBoundingClientRect()
     const cx = r.left + r.width / 2, cy = r.top + r.height / 2
     const colors = ["#6366f1","#818cf8","#a5b4fc","#c7d2fe","#f472b6","#34d399","#fbbf24"]
     const items = Array.from({ length: 22 }, (_, i) => ({
-      id: Date.now() + i,
-      x: cx + (Math.random() - 0.5) * 140,
-      y: cy + (Math.random() - 0.5) * 70,
-      color: colors[i % colors.length],
-      delay: Math.random() * 250,
-      size: 6 + Math.random() * 6,
-      round: Math.random() > 0.5,
+      id: Date.now() + i, x: cx + (Math.random() - 0.5) * 140, y: cy + (Math.random() - 0.5) * 70,
+      color: colors[i % colors.length], delay: Math.random() * 250, size: 6 + Math.random() * 6, round: Math.random() > 0.5,
     }))
     setConfetti(items)
     setTimeout(() => setConfetti([]), 1200)
@@ -110,10 +114,8 @@ export default function LandingPage({ onGetStarted }) {
 
       {/* ── NAV ───────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
-        style={{ background: isDark ? "rgba(7,7,16,0.9)" : "rgba(244,244,249,0.95)", backdropFilter: "blur(20px)", borderBottom: `1px solid ${border}` }}>
-        <div className="flex items-center gap-2.5">
-          <img src="/logo.svg" alt="Trakova" className="h-8 w-auto" />
-        </div>
+        style={{ background: isDark ? "rgba(7,7,16,0.92)" : "rgba(244,244,249,0.97)", backdropFilter: "blur(20px)", borderBottom: `1px solid ${border}` }}>
+        <img src="/logo.svg" alt="Trakova" className="h-8 w-auto" />
         <div className="flex items-center gap-3">
           <button onClick={onGetStarted} className="text-sm transition-colors hidden sm:block" style={{ color: muted }}>Connexion</button>
           <button onClick={spawn} className="btn-primary text-xs px-4 py-2">Essai gratuit</button>
@@ -122,33 +124,49 @@ export default function LandingPage({ onGetStarted }) {
 
       {/* ── HERO ──────────────────────────────────────── */}
       <section className="relative pt-36 pb-24 px-6 text-center overflow-hidden">
-        {/* Background grid */}
         <div className="absolute inset-0 pointer-events-none" style={{
           backgroundImage: `radial-gradient(${isDark ? "rgba(99,102,241,0.1)" : "rgba(99,102,241,0.07)"} 1px, transparent 1px)`,
           backgroundSize: "32px 32px",
           maskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%)",
         }} />
-        {/* Glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.2) 0%, transparent 70%)" }} />
 
         <div className="relative max-w-3xl mx-auto fade-up">
-          {/* Badge */}
+          {/* Badge app type */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 text-xs font-semibold" style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.22)", color: "#a5b4fc", letterSpacing: "0.02em" }}>
-            <Flame size={11} />
-            ESSAI 7 JOURS GRATUIT · SANS CARTE
+            <Zap size={11} /> APP DE SUIVI D'OBJECTIFS GAMIFIÉE
           </div>
 
-          <h1 className="text-5xl sm:text-6xl font-bold leading-tight mb-6" style={{ color: text, letterSpacing: "-0.03em" }}>
-            Transforme tes objectifs<br />
-            <span className="gradient-text">en habitudes.</span>
+          <h1 className="text-5xl sm:text-6xl font-bold leading-tight mb-5" style={{ color: text, letterSpacing: "-0.03em" }}>
+            L'app qui te fait<br />
+            <span className="gradient-text">vraiment avancer.</span>
           </h1>
 
-          <p className="text-lg mb-10 max-w-xl mx-auto leading-relaxed" style={{ color: muted }}>
-            Études, sport, projets, organisation — un seul outil pour tout tracker, gamifier et célébrer chaque victoire.
+          {/* Ce que c'est — en une ligne */}
+          <p className="text-xl font-medium mb-4 max-w-lg mx-auto" style={{ color: text }}>
+            Trakova = to-do list + streak + XP + stats
           </p>
 
+          <p className="text-base mb-10 max-w-xl mx-auto leading-relaxed" style={{ color: muted }}>
+            Tu coches tes tâches du jour, tu gagnes des XP, tu maintiens ton streak. Disponible pour les <strong style={{ color: text }}>études, le sport, les projets créatifs et l'organisation.</strong>
+          </p>
+
+          {/* Social proof avatars */}
+          <div className="flex items-center justify-center gap-2 mb-8">
+            <div className="flex -space-x-2">
+              {RECENT_USERS.map((u, i) => (
+                <div key={i} className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold ring-2" style={{ background: `hsl(${i * 40 + 220},70%,55%)`, ringColor: bg }}>
+                  {u}
+                </div>
+              ))}
+            </div>
+            <p className="text-sm" style={{ color: muted }}>
+              <span style={{ color: text, fontWeight: 600 }}>+15 000</span> personnes ont déjà rejoint
+            </p>
+          </div>
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
-            <button onClick={spawn} className="btn-primary flex items-center gap-2 text-sm px-7 py-3.5">
+            <button onClick={spawn} className="btn-primary flex items-center gap-2 text-sm px-7 py-3.5 w-full sm:w-auto justify-center">
               Commencer gratuitement <ArrowRight size={15} />
             </button>
             <button className="flex items-center gap-2 text-sm transition-colors" style={{ color: muted }} onClick={onGetStarted}>
@@ -159,12 +177,12 @@ export default function LandingPage({ onGetStarted }) {
             </button>
           </div>
 
-          <p className="text-xs" style={{ color: faint }}>
-            7 jours gratuits · Puis <span style={{ textDecoration: "line-through", marginRight: "4px", opacity: 0.5 }}>10€</span>
-            <span style={{ fontWeight: 600, color: "#818cf8" }}>6€/mois</span>
-            <span style={{ background: "rgba(16,185,129,0.15)", color: "#34d399", padding: "1px 8px", borderRadius: "999px", fontSize: "10px", fontWeight: 700, marginLeft: "6px" }}>-40%</span>
-            &nbsp;· Annulable à tout moment
-          </p>
+          {/* Trust micro-copy */}
+          <div className="flex items-center justify-center flex-wrap gap-4 text-xs" style={{ color: faint }}>
+            <span className="flex items-center gap-1.5"><Shield size={11} /> Aucune carte requise</span>
+            <span className="flex items-center gap-1.5"><Lock size={11} /> Annulable à tout moment</span>
+            <span className="flex items-center gap-1.5"><Star size={11} fill="currentColor" /> Note 4.9/5</span>
+          </div>
         </div>
 
         {/* Stats bar */}
@@ -181,26 +199,41 @@ export default function LandingPage({ onGetStarted }) {
       {/* ── DEMO VIDEO ────────────────────────────────── */}
       <section className="px-4 py-8 max-w-4xl mx-auto">
         <div className="relative rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(99,102,241,0.2)", boxShadow: "0 24px 64px rgba(0,0,0,0.45)" }}>
-          <video
-            ref={videoRef}
-            src="/demo.mp4"
-            autoPlay muted loop playsInline
-            disablePictureInPicture
-            controlsList="nodownload nofullscreen noremoteplayback"
-            onContextMenu={e => e.preventDefault()}
-            className="w-full block"
-          />
-          <button
-            onClick={() => {
-              if (!videoRef.current) return
-              videoRef.current.muted = !videoRef.current.muted
-              if (!videoRef.current.muted) videoRef.current.volume = 0.33
-              setVideoMuted(videoRef.current.muted)
-            }}
+          <video ref={videoRef} src="/demo.mp4" autoPlay muted loop playsInline disablePictureInPicture
+            controlsList="nodownload nofullscreen noremoteplayback" onContextMenu={e => e.preventDefault()} className="w-full block" />
+          <button onClick={() => { if (!videoRef.current) return; videoRef.current.muted = !videoRef.current.muted; if (!videoRef.current.muted) videoRef.current.volume = 0.33; setVideoMuted(videoRef.current.muted) }}
             className="absolute bottom-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all"
             style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.15)" }}>
             {videoMuted ? "🔇" : "🔊"}
           </button>
+        </div>
+      </section>
+
+      {/* ── COMMENT ÇA MARCHE ─────────────────────────── */}
+      <section className="py-20 px-6" style={{ background: isDark ? "rgba(99,102,241,0.03)" : "rgba(99,102,241,0.03)" }}>
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-14">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#818cf8", letterSpacing: "0.12em" }}>COMMENT ÇA MARCHE</p>
+            <h2 className="text-3xl sm:text-4xl font-bold" style={{ color: text }}>Opérationnel en 2 minutes</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {STEPS.map((s, i) => (
+              <div key={i} className="relative text-center p-6 rounded-2xl" style={{ background: surface, border: `1px solid ${border}` }}>
+                {i < STEPS.length - 1 && (
+                  <div className="hidden sm:block absolute top-10 -right-3 text-2xl" style={{ color: "rgba(99,102,241,0.3)" }}>→</div>
+                )}
+                <div className="text-4xl mb-4">{s.icon}</div>
+                <div className="text-xs font-bold mb-2" style={{ color: "#6366f1" }}>{s.num}</div>
+                <h3 className="font-semibold mb-2 text-sm" style={{ color: text }}>{s.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: muted }}>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-10">
+            <button onClick={onGetStarted} className="btn-primary flex items-center gap-2 mx-auto text-sm px-6 py-3">
+              Essayer maintenant — c'est gratuit <ArrowRight size={14} />
+            </button>
+          </div>
         </div>
       </section>
 
@@ -263,21 +296,26 @@ export default function LandingPage({ onGetStarted }) {
           <div className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#818cf8", letterSpacing: "0.12em" }}>TÉMOIGNAGES</p>
             <h2 className="text-3xl font-bold" style={{ color: text }}>Ils ont changé leurs habitudes</h2>
+            <p className="text-sm mt-2" style={{ color: faint }}>Des vraies personnes, des vrais résultats</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="p-5 rounded-2xl" style={{ background: surface, border: `1px solid ${border}` }}>
+              <div key={i} className="p-5 rounded-2xl flex flex-col" style={{ background: surface, border: `1px solid ${border}` }}>
                 <div className="flex items-center gap-0.5 mb-3">
                   {[1,2,3,4,5].map(s => <Star key={s} size={12} fill="#818cf8" style={{ color: "#818cf8" }} />)}
                 </div>
-                <p className="text-sm leading-relaxed mb-4" style={{ color: muted }}>"{t.text}"</p>
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ background: t.color }}>
-                    {t.avatar}
+                <p className="text-sm leading-relaxed mb-4 flex-1" style={{ color: muted }}>"{t.text}"</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ background: t.color }}>{t.avatar}</div>
+                    <div>
+                      <p className="text-xs font-semibold" style={{ color: text }}>{t.name}</p>
+                      <p className="text-xs" style={{ color: faint }}>{t.role}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-semibold" style={{ color: text }}>{t.name}</p>
-                    <p className="text-xs" style={{ color: faint }}>{t.role}</p>
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-full" style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.18)" }}>
+                    <span className="text-xs">🔥</span>
+                    <span className="text-xs font-bold" style={{ color: "#818cf8" }}>{t.streak}j</span>
                   </div>
                 </div>
               </div>
@@ -292,10 +330,10 @@ export default function LandingPage({ onGetStarted }) {
           <div className="text-center mb-10">
             <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#818cf8", letterSpacing: "0.12em" }}>TARIFS</p>
             <h2 className="text-3xl font-bold" style={{ color: text }}>Simple et transparent</h2>
+            <p className="text-sm mt-2" style={{ color: muted }}>Essai 7 jours, puis résilie quand tu veux</p>
           </div>
 
           <div className="rounded-2xl p-7" style={{ background: surface, border: "1px solid rgba(99,102,241,0.25)", boxShadow: "0 24px 64px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.05) inset" }}>
-            {/* Price */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm" style={{ color: muted }}>Accès complet</span>
@@ -312,13 +350,11 @@ export default function LandingPage({ onGetStarted }) {
               <p className="text-xs mt-1" style={{ color: faint }}>ou <span style={{ color: "#818cf8", fontWeight: 600 }}>64€/an</span> <span style={{ textDecoration: "line-through", opacity: 0.4 }}>72€</span> — économise 8€</p>
             </div>
 
-            {/* Trial badge */}
             <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl mb-6" style={{ background: "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.16)" }}>
               <Gift size={13} style={{ color: "#818cf8", flexShrink: 0 }} />
               <span className="text-xs" style={{ color: muted }}>7 jours gratuits — aucun débit immédiat</span>
             </div>
 
-            {/* Features list */}
             <ul className="space-y-2.5 mb-7">
               {["4 modes : Études, Sport, Créatif, Organisation","Système XP, niveaux et streaks quotidiens","Devoirs, missions, fichiers illimités","Pomodoro et planning journalier intelligent","Statistiques et calendrier de progression","Toutes les futures fonctionnalités incluses"].map((f, i) => (
                 <li key={i} className="flex items-center gap-3 text-sm" style={{ color: muted }}>
@@ -328,7 +364,6 @@ export default function LandingPage({ onGetStarted }) {
               ))}
             </ul>
 
-            {/* CTAs */}
             <div className="space-y-2.5">
               <a href="/subscribe" className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 text-sm">
                 <Zap size={14} /> Commencer l'essai gratuit
@@ -339,7 +374,13 @@ export default function LandingPage({ onGetStarted }) {
                 Choisir l'annuel — 64€/an
               </a>
             </div>
-            <p className="text-xs text-center mt-4" style={{ color: faint }}>Paiement sécurisé par Stripe · Annulable à tout moment</p>
+
+            {/* Trust signals sous le CTA */}
+            <div className="flex items-center justify-center gap-4 mt-4 flex-wrap">
+              <span className="flex items-center gap-1 text-xs" style={{ color: faint }}><Lock size={10} /> Paiement Stripe sécurisé</span>
+              <span className="flex items-center gap-1 text-xs" style={{ color: faint }}><Shield size={10} /> Annulation instantanée</span>
+              <span className="flex items-center gap-1 text-xs" style={{ color: faint }}><Users size={10} /> 15k+ utilisateurs</span>
+            </div>
           </div>
         </div>
       </section>
@@ -388,13 +429,33 @@ export default function LandingPage({ onGetStarted }) {
           <img src="/logo.svg" alt="Trakova" style={{ height: "28px", width: "auto" }} />
           <p className="text-xs" style={{ color: faint }}>© 2026 Trakova</p>
           <div className="flex items-center gap-5 text-xs" style={{ color: faint }}>
-            <a href="/subscribe" className="hover:text-white transition-colors">Abonnement</a>
-            <a href="/contact"   className="hover:text-white transition-colors">Contact</a>
-            <a href="/cgu"       className="hover:text-white transition-colors">CGU</a>
-            <a href="/privacy"   className="hover:text-white transition-colors">Confidentialité</a>
+            <a href="/subscribe" className="hover:opacity-80 transition-opacity">Abonnement</a>
+            <a href="/contact"   className="hover:opacity-80 transition-opacity">Contact</a>
+            <a href="/cgu"       className="hover:opacity-80 transition-opacity">CGU</a>
+            <a href="/privacy"   className="hover:opacity-80 transition-opacity">Confidentialité</a>
           </div>
         </div>
       </footer>
+
+      {/* ── STICKY CTA MOBILE ─────────────────────────── */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden px-4 pb-4 pt-3" style={{ background: isDark ? "rgba(7,7,16,0.97)" : "rgba(244,244,249,0.97)", backdropFilter: "blur(20px)", borderTop: `1px solid ${border}` }}>
+        <button onClick={spawn} className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 text-sm">
+          Essai gratuit 7 jours — sans carte <ArrowRight size={14} />
+        </button>
+      </div>
+
+      {/* ── NOTIFICATION SOCIALE ──────────────────────── */}
+      {recentJoined && (
+        <div className="fixed bottom-20 sm:bottom-6 left-4 z-40 flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl fade-up"
+          style={{ background: surface, border: `1px solid ${border}`, boxShadow: "0 16px 48px rgba(0,0,0,0.3)", maxWidth: "280px" }}>
+          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0" style={{ background: "#6366f1" }}>M</div>
+          <div>
+            <p className="text-xs font-semibold" style={{ color: text }}>Mehdi vient de rejoindre 🎉</p>
+            <p className="text-xs" style={{ color: faint }}>Il y a 2 minutes · Mode Études</p>
+          </div>
+          <button onClick={() => setRecentJoined(false)} className="text-xs ml-1 flex-shrink-0" style={{ color: faint }}>✕</button>
+        </div>
+      )}
     </div>
   )
 }
