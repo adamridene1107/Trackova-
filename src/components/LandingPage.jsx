@@ -142,8 +142,11 @@ export default function LandingPage({ onGetStarted }) {
             <span className="gradient-text">Construis tes habitudes.</span>
           </h1>
 
-          <p className="text-lg mb-10 max-w-xl mx-auto leading-relaxed" style={{ color: muted }}>
-            Coche tes tâches, maintiens ton streak, monte en niveau. Trakova gamifie ta productivité pour les <span style={{ color: text, fontWeight: 500 }}>études, le sport, les projets et l'organisation.</span>
+          <p className="text-xl font-semibold mb-10 max-w-xl mx-auto" style={{ color: text, letterSpacing: "-0.02em" }}>
+            Trakova = to-do list&nbsp;
+            <span style={{ color: "rgba(99,102,241,0.5)" }}>+</span>&nbsp;streak&nbsp;
+            <span style={{ color: "rgba(99,102,241,0.5)" }}>+</span>&nbsp;XP&nbsp;
+            <span style={{ color: "rgba(99,102,241,0.5)" }}>+</span>&nbsp;stats
           </p>
 
           {/* Social proof avatars */}
