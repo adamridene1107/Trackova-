@@ -1,12 +1,21 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { getGoalById, getDailyContent } from "../lib/goals"
 import { getDailyQuote } from "../lib/quotes"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import AnimatedCheckbox from "./AnimatedCheckbox"
-import { CheckCircle2, Circle, Lightbulb, Zap, Plus, Trash2, ChevronUp, ChevronDown } from "lucide-react"
+import { CheckCircle2, Circle, Lightbulb, Zap, Plus, Trash2, ChevronUp, ChevronDown, Play, Pause, Clock } from "lucide-react"
 import Pomodoro from "./Pomodoro"
 import PomodoroWidget from "./PomodoroWidget"
+
+function fmtTime(s) {
+  if (!s || s < 0) return "0:00"
+  const h = Math.floor(s / 3600)
+  const m = Math.floor((s % 3600) / 60)
+  const r = s % 60
+  if (h > 0) return `${h}h${m.toString().padStart(2,"0")}`
+  return `${m}:${r.toString().padStart(2,"0")}`
+}
 
 const HOURS = Array.from({ length: 17 }, (_, i) => `${(i + 7).toString().padStart(2, "0")}:00`)
 const PRIOS = [
@@ -34,6 +43,71 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
   const [newTaskPrio, setNewTaskPrio] = useState("medium")
   const [newFixedTask, setNewFixedTask] = useState("")
   const [humeur, setHumeur] = useState(() => getTodayEntry().humeur || "")
+
+  // ─── Task timers ────────────────────────────────────────
+  const timers = entry.timers || {}
+  const [activeKey, setActiveKey] = useState(null)
+  const [activeStart, setActiveStart] = useState(null)
+  const [, setTick] = useState(0)
+
+  useEffect(() => {
+    if (!activeKey) return
+    const id = setInterval(() => setTick(t => t + 1), 1000)
+    return () => clearInterval(id)
+  }, [activeKey])
+
+  const getElapsed = (key) => {
+    const base = timers[key] || 0
+    if (activeKey === key && activeStart) return base + Math.floor((Date.now() - activeStart) / 1000)
+    return base
+  }
+
+  const stopActive = () => {
+    if (!activeKey || !activeStart) return timers
+    const elapsed = Math.floor((Date.now() - activeStart) / 1000)
+    return { ...timers, [activeKey]: (timers[activeKey] || 0) + elapsed }
+  }
+
+  const toggleTimer = (key) => {
+    if (activeKey === key) {
+      updateEntry({ timers: stopActive() })
+      setActiveKey(null); setActiveStart(null)
+    } else {
+      if (activeKey) updateEntry({ timers: stopActive() })
+      setActiveKey(key); setActiveStart(Date.now())
+    }
+  }
+
+  const allTimerKeys = new Set([...Object.keys(timers), activeKey].filter(Boolean))
+  const totalToday = [...allTimerKeys].reduce((sum, k) => sum + getElapsed(k), 0)
+
+  const TimerChip = ({ keyId, done }) => {
+    const t = getElapsed(keyId)
+    if (done) {
+      if (!t) return null
+      return (
+        <span className="text-[10px] tabular-nums px-2 py-0.5 rounded-md flex-shrink-0 flex items-center gap-1"
+          style={{ color: "var(--text-faint)", background: "rgba(255,255,255,0.03)", border: "1px solid var(--border)" }}>
+          <Clock size={9} />{fmtTime(t)}
+        </span>
+      )
+    }
+    const active = activeKey === keyId
+    return (
+      <button onClick={(e) => { e.stopPropagation(); toggleTimer(keyId) }}
+        className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold tabular-nums flex-shrink-0 transition-all active:scale-95"
+        style={{
+          background: active ? "rgba(34,197,94,0.15)" : "rgba(99,102,241,0.08)",
+          border: `1px solid ${active ? "rgba(34,197,94,0.35)" : "rgba(99,102,241,0.2)"}`,
+          color: active ? "#34d399" : "#a5b4fc",
+          boxShadow: active ? "0 0 12px rgba(34,197,94,0.25)" : "none",
+        }}
+        title={active ? "Pause" : "Démarrer le chrono"}>
+        {active ? <Pause size={10} /> : <Play size={10} />}
+        {fmtTime(t)}
+      </button>
+    )
+  }
 
   if (!goal) return null
 
@@ -99,6 +173,23 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
         <div className="progress-bar">
           <div className="progress-fill" style={{ width: `${totalPct}%` }} />
         </div>
+
+        {/* Temps total aujourd'hui */}
+        <div className="flex items-center gap-2 mt-4 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: activeKey ? "rgba(99,102,241,0.18)" : "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.2)" }}>
+            <Clock size={13} style={{ color: "#a5b4fc" }} className={activeKey ? "animate-pulse" : ""} />
+          </div>
+          <div className="flex-1">
+            <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--text-faint)", letterSpacing: "0.1em" }}>Temps aujourd'hui</p>
+            <p className="text-base font-bold tabular-nums" style={{ color: activeKey ? "#a5b4fc" : "var(--text)" }}>{fmtTime(totalToday)}</p>
+          </div>
+          {activeKey && (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)" }}>
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#34d399" }} />
+              <span className="text-[10px] font-semibold" style={{ color: "#34d399" }}>ACTIF</span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Mood */}
@@ -130,40 +221,53 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
         <div className="space-y-1.5">
           {goal.tasks.map((task, i) => {
             const done = !!entry.tasks?.[i]
+            const tkey = `fixed-${i}`
             return (
-              <button key={i}
-                onClick={() => { if (!done) onTaskComplete?.(); toggleTask(i) }}
+              <div key={i}
                 className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all"
                 style={{
                   background: done ? "rgba(99,102,241,0.06)" : "rgba(255,255,255,0.02)",
                   border: `1px solid ${done ? "rgba(99,102,241,0.15)" : "var(--border)"}`,
                 }}>
-                {done
-                  ? <CheckCircle2 size={16} style={{ color: "var(--primary-light)", flexShrink: 0 }} />
-                  : <Circle      size={16} style={{ color: "var(--text-faint)",     flexShrink: 0 }} />}
-                <span className="text-sm" style={{ color: done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: done ? "line-through" : "none" }}>
+                <button onClick={() => {
+                  if (!done) { onTaskComplete?.(); if (activeKey === tkey) { updateEntry({ timers: stopActive() }); setActiveKey(null); setActiveStart(null) } }
+                  toggleTask(i)
+                }} className="flex-shrink-0">
+                  {done
+                    ? <CheckCircle2 size={16} style={{ color: "var(--primary-light)" }} />
+                    : <Circle      size={16} style={{ color: "var(--text-faint)" }} />}
+                </button>
+                <span className="flex-1 text-sm" style={{ color: done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: done ? "line-through" : "none" }}>
                   {task}
                 </span>
-              </button>
+                <TimerChip keyId={tkey} done={done} />
+              </div>
             )
           })}
 
-          {(entry.customTasks || []).map(t => (
-            <div key={t.id} className="flex items-center gap-3 p-3 rounded-xl transition-all"
-              style={{ background: t.done ? "rgba(99,102,241,0.06)" : "rgba(255,255,255,0.02)", border: `1px solid ${t.done ? "rgba(99,102,241,0.15)" : "var(--border)"}` }}>
-              <button onClick={() => { if (!t.done) onTaskComplete?.(); toggleCustom(t.id) }} className="flex-shrink-0">
-                {t.done
-                  ? <CheckCircle2 size={16} style={{ color: "var(--primary-light)" }} />
-                  : <Circle      size={16} style={{ color: "var(--text-faint)" }} />}
-              </button>
-              <span className="flex-1 text-sm" style={{ color: t.done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: t.done ? "line-through" : "none" }}>{t.text}</span>
-              <button onClick={() => removeCustom(t.id)} className="flex-shrink-0 transition-colors" style={{ color: "var(--text-faint)" }}
-                onMouseEnter={e => e.currentTarget.style.color = "var(--text-muted)"}
-                onMouseLeave={e => e.currentTarget.style.color = "var(--text-faint)"}>
-                <Trash2 size={13} />
-              </button>
-            </div>
-          ))}
+          {(entry.customTasks || []).map(t => {
+            const tkey = `custom-${t.id}`
+            return (
+              <div key={t.id} className="flex items-center gap-3 p-3 rounded-xl transition-all"
+                style={{ background: t.done ? "rgba(99,102,241,0.06)" : "rgba(255,255,255,0.02)", border: `1px solid ${t.done ? "rgba(99,102,241,0.15)" : "var(--border)"}` }}>
+                <button onClick={() => {
+                  if (!t.done) { onTaskComplete?.(); if (activeKey === tkey) { updateEntry({ timers: stopActive() }); setActiveKey(null); setActiveStart(null) } }
+                  toggleCustom(t.id)
+                }} className="flex-shrink-0">
+                  {t.done
+                    ? <CheckCircle2 size={16} style={{ color: "var(--primary-light)" }} />
+                    : <Circle      size={16} style={{ color: "var(--text-faint)" }} />}
+                </button>
+                <span className="flex-1 text-sm" style={{ color: t.done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: t.done ? "line-through" : "none" }}>{t.text}</span>
+                <TimerChip keyId={tkey} done={t.done} />
+                <button onClick={() => removeCustom(t.id)} className="flex-shrink-0 transition-colors" style={{ color: "var(--text-faint)" }}
+                  onMouseEnter={e => e.currentTarget.style.color = "var(--text-muted)"}
+                  onMouseLeave={e => e.currentTarget.style.color = "var(--text-faint)"}>
+                  <Trash2 size={13} />
+                </button>
+              </div>
+            )
+          })}
         </div>
 
         <div className="flex gap-2 mt-3">
@@ -202,23 +306,28 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
             <div className="space-y-1.5">
               {[...freeTasks].sort((a, b) => a.hour.localeCompare(b.hour)).map((t, i) => {
                 const pr = PRIOS.find(p => p.v === t.priority) || PRIOS[1]
+                const tkey = `free-${t.id}`
                 return (
-                  <div key={t.id} className="flex items-center gap-2 p-2.5 rounded-xl transition-all"
+                  <div key={t.id} className="flex items-center gap-2 p-2.5 rounded-xl transition-all flex-wrap"
                     style={{
                       border: `1px solid var(--border)`,
-                      opacity: t.done ? 0.45 : 1,
+                      opacity: t.done ? 0.55 : 1,
                     }}>
                     <div className="flex flex-col flex-shrink-0">
                       <button onClick={() => moveFree(i,-1)} style={{ color: "var(--text-faint)" }}><ChevronUp size={11}/></button>
                       <button onClick={() => moveFree(i, 1)} style={{ color: "var(--text-faint)" }}><ChevronDown size={11}/></button>
                     </div>
                     <span className="text-xs font-mono w-10 flex-shrink-0" style={{ color: "var(--text-muted)" }}>{t.hour}</span>
-                    <button onClick={() => { if (!t.done) onTaskComplete?.(); toggleFree(t.id) }} className="flex-shrink-0">
+                    <button onClick={() => {
+                      if (!t.done) { onTaskComplete?.(); if (activeKey === tkey) { updateEntry({ timers: stopActive() }); setActiveKey(null); setActiveStart(null) } }
+                      toggleFree(t.id)
+                    }} className="flex-shrink-0">
                       {t.done
                         ? <CheckCircle2 size={15} style={{ color: "var(--primary-light)" }} />
                         : <Circle      size={15} style={{ color: "var(--text-faint)" }} />}
                     </button>
-                    <span className="flex-1 text-sm" style={{ color: t.done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: t.done ? "line-through" : "none" }}>{t.text}</span>
+                    <span className="flex-1 min-w-0 text-sm" style={{ color: t.done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: t.done ? "line-through" : "none" }}>{t.text}</span>
+                    <TimerChip keyId={tkey} done={t.done} />
                     <span className={`badge border text-[10px] flex-shrink-0 ${pr.c}`}>{pr.l}</span>
                     <button onClick={() => removeFree(t.id)} className="flex-shrink-0 transition-colors" style={{ color: "var(--text-faint)" }}
                       onMouseEnter={e => e.currentTarget.style.color = "var(--text-muted)"}
