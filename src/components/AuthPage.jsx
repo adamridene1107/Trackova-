@@ -101,25 +101,36 @@ export default function AuthPage({ onAuth }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden" style={{ background: pageBg }}>
-      <div className="glow-orb glow-orb-violet w-96 h-96 -top-20 -left-20 opacity-25" />
-      <div className="w-full max-w-sm relative fade-up">
+      {/* Animated mesh background */}
+      <div className="mesh-bg">
+        <div className="mesh-orb mesh-orb-1" style={{ top: "-120px", left: "-100px" }} />
+        <div className="mesh-orb mesh-orb-2" style={{ bottom: "-100px", right: "-80px" }} />
+        <div className="mesh-orb mesh-orb-3" style={{ top: "40%", left: "50%", transform: "translate(-50%,-50%)" }} />
+      </div>
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{
+        backgroundImage: "radial-gradient(rgba(255,255,255,0.8) 1px, transparent 1px)",
+        backgroundSize: "24px 24px",
+      }} />
+
+      <div className="w-full max-w-sm relative z-10 fade-up">
         <button onClick={() => goTo(mode === "login" || mode === "signup" ? "login" : "login")}
-          style={{ color: textMuted }} className="inline-flex items-center gap-1.5 text-xs mb-8 transition-colors">
+          style={{ color: textMuted }} className="inline-flex items-center gap-1.5 text-xs mb-8 transition-all hover:-translate-x-1">
           <ArrowLeft size={12} />
           {mode === "login" || mode === "signup" ? <a href="/">Retour</a> : "Retour a la connexion"}
         </button>
         <div className="flex items-center gap-2.5 mb-8">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg,#8b5cf6,#6366f1)", boxShadow: "0 4px 16px rgba(139,92,246,0.4)" }}>
-            <Zap size={16} className="text-white" />
+          <div className="w-10 h-10 rounded-2xl flex items-center justify-center relative overflow-hidden float"
+            style={{ background: "linear-gradient(135deg,#8b5cf6,#6366f1)", boxShadow: "0 8px 24px rgba(139,92,246,0.5), 0 0 0 1px rgba(255,255,255,0.1) inset" }}>
+            <Zap size={18} className="text-white relative z-10" />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.25), transparent 60%)" }} />
           </div>
-          <span style={{ color: textPrimary }} className="font-bold text-base">Trakova</span>
+          <span style={{ color: textPrimary }} className="font-bold text-lg tracking-tight">Trakova</span>
         </div>
-        <div className="mb-8">
-          <h1 style={{ color: textPrimary }} className="text-3xl font-bold mb-1">{titles[mode]?.h}</h1>
-          <p style={{ color: textMuted }} className="text-sm">{titles[mode]?.p}</p>
+        <div className="mb-8" key={mode}>
+          <h1 style={{ color: textPrimary, letterSpacing: "-0.03em" }} className="text-4xl font-bold mb-2 slide-in-right">{titles[mode]?.h}</h1>
+          <p style={{ color: textMuted, animationDelay: "0.08s" }} className="text-sm slide-in-right">{titles[mode]?.p}</p>
         </div>
-        <div className="card-glass p-6" style={{ background: cardBg, border: `1px solid ${borderColor}` }}>
+        <div className="card-premium" style={{ background: isDark ? undefined : cardBg }}>
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === "signup" && <>
               <div className="relative">

@@ -113,23 +113,29 @@ export default function LandingPage({ onGetStarted }) {
       <Confetti items={confetti} />
 
       {/* ── NAV ───────────────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
-        style={{ background: isDark ? "rgba(7,7,16,0.92)" : "rgba(244,244,249,0.97)", backdropFilter: "blur(20px)", borderBottom: `1px solid ${border}` }}>
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 glass-nav"
+        style={{ background: isDark ? "rgba(7,7,16,0.55)" : "rgba(244,244,249,0.65)", borderBottom: `1px solid ${border}` }}>
         <img src="/logo.svg" alt="Trakova" className="h-8 w-auto" />
         <div className="flex items-center gap-3">
-          <button onClick={onGetStarted} className="text-sm transition-colors hidden sm:block" style={{ color: muted }}>Connexion</button>
+          <button onClick={onGetStarted} className="text-sm transition-colors hidden sm:block hover:text-white" style={{ color: muted }}>Connexion</button>
           <button onClick={spawn} className="btn-primary text-xs px-4 py-2">Essai gratuit</button>
         </div>
       </nav>
 
       {/* ── HERO ──────────────────────────────────────── */}
       <section className="relative pt-36 pb-24 px-6 text-center overflow-hidden">
+        {/* Animated mesh orbs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="mesh-orb mesh-orb-1" style={{ top: "-10%", left: "10%" }} />
+          <div className="mesh-orb mesh-orb-2" style={{ top: "20%", right: "5%" }} />
+          <div className="mesh-orb mesh-orb-3" style={{ bottom: "-15%", left: "40%" }} />
+        </div>
         <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: `radial-gradient(${isDark ? "rgba(99,102,241,0.1)" : "rgba(99,102,241,0.07)"} 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(${isDark ? "rgba(99,102,241,0.12)" : "rgba(99,102,241,0.07)"} 1px, transparent 1px)`,
           backgroundSize: "32px 32px",
           maskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%)",
+          WebkitMaskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%)",
         }} />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.2) 0%, transparent 70%)" }} />
 
         <div className="relative max-w-3xl mx-auto fade-up">
           {/* Badge */}
@@ -137,9 +143,9 @@ export default function LandingPage({ onGetStarted }) {
             <Flame size={11} /> ESSAI 7 JOURS GRATUIT · SANS CARTE BANCAIRE
           </div>
 
-          <h1 className="text-5xl sm:text-6xl font-bold leading-tight mb-6" style={{ color: text, letterSpacing: "-0.03em" }}>
+          <h1 className="text-5xl sm:text-7xl font-bold leading-[1.05] mb-6" style={{ color: text, letterSpacing: "-0.035em" }}>
             Suis tes objectifs.<br />
-            <span className="gradient-text">Construis tes habitudes.</span>
+            <span className="gradient-text-animated">Construis tes habitudes.</span>
           </h1>
 
           <p className="text-xl font-semibold mb-4 max-w-xl mx-auto" style={{ color: text, letterSpacing: "-0.02em" }}>
@@ -188,9 +194,16 @@ export default function LandingPage({ onGetStarted }) {
         </div>
 
         {/* Stats bar */}
-        <div className="relative max-w-2xl mx-auto mt-16 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="relative max-w-2xl mx-auto mt-16 grid grid-cols-2 sm:grid-cols-4 gap-3 stagger">
           {STATS.map((s, i) => (
-            <div key={i} className="text-center py-4 px-3 rounded-2xl" style={{ background: surface, border: `1px solid ${border}` }}>
+            <div key={i} className="text-center py-5 px-3 rounded-2xl card-lift shine-on-hover"
+              style={{
+                background: isDark ? "rgba(14,14,28,0.55)" : "rgba(255,255,255,0.7)",
+                border: `1px solid ${border}`,
+                backdropFilter: "blur(16px) saturate(160%)",
+                WebkitBackdropFilter: "blur(16px) saturate(160%)",
+                boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset, 0 8px 24px rgba(0,0,0,0.2)",
+              }}>
               <p className="text-2xl font-bold gradient-text" style={{ letterSpacing: "-0.03em" }}>{s.value}</p>
               <p className="text-xs mt-1" style={{ color: faint }}>{s.label}</p>
             </div>
@@ -218,14 +231,21 @@ export default function LandingPage({ onGetStarted }) {
             <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#818cf8", letterSpacing: "0.12em" }}>COMMENT ÇA MARCHE</p>
             <h2 className="text-3xl sm:text-4xl font-bold" style={{ color: text }}>Opérationnel en 2 minutes</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 stagger">
             {STEPS.map((s, i) => (
-              <div key={i} className="relative text-center p-6 rounded-2xl" style={{ background: surface, border: `1px solid ${border}` }}>
+              <div key={i} className="relative text-center p-6 rounded-2xl card-lift shine-on-hover"
+                style={{
+                  background: isDark ? "rgba(14,14,28,0.6)" : "rgba(255,255,255,0.75)",
+                  border: `1px solid ${border}`,
+                  backdropFilter: "blur(16px) saturate(160%)",
+                  WebkitBackdropFilter: "blur(16px) saturate(160%)",
+                  boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset, 0 8px 32px rgba(0,0,0,0.2)",
+                }}>
                 {i < STEPS.length - 1 && (
                   <div className="hidden sm:block absolute top-10 -right-3 text-2xl" style={{ color: "rgba(99,102,241,0.3)" }}>→</div>
                 )}
-                <div className="text-4xl mb-4">{s.icon}</div>
-                <div className="text-xs font-bold mb-2" style={{ color: "#6366f1" }}>{s.num}</div>
+                <div className="text-4xl mb-4 float" style={{ animationDelay: `${i * 0.3}s` }}>{s.icon}</div>
+                <div className="text-xs font-bold mb-2" style={{ color: "#818cf8" }}>{s.num}</div>
                 <h3 className="font-semibold mb-2 text-sm" style={{ color: text }}>{s.title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color: muted }}>{s.desc}</p>
               </div>
@@ -247,17 +267,25 @@ export default function LandingPage({ onGetStarted }) {
             <h2 className="text-3xl sm:text-4xl font-bold" style={{ color: text }}>Un outil pour chaque objectif</h2>
             <p className="mt-3 max-w-md mx-auto text-sm" style={{ color: muted }}>Chaque mode est pensé pour son domaine. Onglets, catégories et outils adaptés.</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 stagger">
             {CATEGORIES.map((c, i) => {
               const Icon = c.icon
               return (
-                <div key={i} className="rounded-2xl p-6 transition-all cursor-default group" style={{ background: surface, border: `1px solid ${border}` }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.boxShadow = `0 8px 32px rgba(0,0,0,0.2)` }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = border; e.currentTarget.style.boxShadow = "none" }}>
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style={{ background: c.bg, border: `1px solid ${c.border}` }}>
-                    <Icon size={18} style={{ color: c.color }} />
+                <div key={i} className="rounded-2xl p-6 cursor-default group card-lift shine-on-hover"
+                  style={{
+                    background: isDark ? "rgba(14,14,28,0.55)" : "rgba(255,255,255,0.7)",
+                    border: `1px solid ${border}`,
+                    backdropFilter: "blur(20px) saturate(160%)",
+                    WebkitBackdropFilter: "blur(20px) saturate(160%)",
+                    transition: "transform 0.3s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s, box-shadow 0.3s",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.boxShadow = `0 16px 48px ${c.bg}, 0 0 0 1px ${c.border}` }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = border; e.currentTarget.style.boxShadow = "" }}>
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110 group-hover:rotate-3"
+                    style={{ background: c.bg, border: `1px solid ${c.border}`, boxShadow: `0 8px 24px ${c.bg}` }}>
+                    <Icon size={20} style={{ color: c.color }} />
                   </div>
-                  <h3 className="font-semibold mb-2" style={{ color: text, letterSpacing: "-0.02em" }}>{c.label}</h3>
+                  <h3 className="font-semibold mb-2 text-lg" style={{ color: text, letterSpacing: "-0.02em" }}>{c.label}</h3>
                   <p className="text-sm leading-relaxed" style={{ color: muted }}>{c.desc}</p>
                 </div>
               )
@@ -273,13 +301,20 @@ export default function LandingPage({ onGetStarted }) {
             <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#818cf8", letterSpacing: "0.12em" }}>FONCTIONNALITÉS</p>
             <h2 className="text-3xl sm:text-4xl font-bold" style={{ color: text }}>Tout ce dont tu as besoin</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 stagger">
             {FEATURES.map((f, i) => {
               const Icon = f.icon
               return (
-                <div key={i} className="flex items-start gap-4 p-5 rounded-2xl" style={{ background: surface, border: `1px solid ${border}` }}>
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)" }}>
-                    <Icon size={16} style={{ color: "#818cf8" }} />
+                <div key={i} className="flex items-start gap-4 p-5 rounded-2xl card-lift"
+                  style={{
+                    background: isDark ? "rgba(14,14,28,0.55)" : "rgba(255,255,255,0.7)",
+                    border: `1px solid ${border}`,
+                    backdropFilter: "blur(20px) saturate(160%)",
+                    WebkitBackdropFilter: "blur(20px) saturate(160%)",
+                  }}>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.1))", border: "1px solid rgba(99,102,241,0.25)", boxShadow: "0 4px 16px rgba(99,102,241,0.15)" }}>
+                    <Icon size={17} style={{ color: "#a5b4fc" }} />
                   </div>
                   <div>
                     <h3 className="font-semibold text-sm mb-1" style={{ color: text }}>{f.label}</h3>
@@ -300,9 +335,15 @@ export default function LandingPage({ onGetStarted }) {
             <h2 className="text-3xl font-bold" style={{ color: text }}>Ils ont changé leurs habitudes</h2>
             <p className="text-sm mt-2" style={{ color: faint }}>Des vraies personnes, des vrais résultats</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger">
             {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="p-5 rounded-2xl flex flex-col" style={{ background: surface, border: `1px solid ${border}` }}>
+              <div key={i} className="p-5 rounded-2xl flex flex-col card-lift"
+                style={{
+                  background: isDark ? "rgba(14,14,28,0.55)" : "rgba(255,255,255,0.7)",
+                  border: `1px solid ${border}`,
+                  backdropFilter: "blur(20px) saturate(160%)",
+                  WebkitBackdropFilter: "blur(20px) saturate(160%)",
+                }}>
                 <div className="flex items-center gap-0.5 mb-3">
                   {[1,2,3,4,5].map(s => <Star key={s} size={12} fill="#818cf8" style={{ color: "#818cf8" }} />)}
                 </div>
@@ -335,7 +376,7 @@ export default function LandingPage({ onGetStarted }) {
             <p className="text-sm mt-2" style={{ color: muted }}>Essai 7 jours, puis résilie quand tu veux</p>
           </div>
 
-          <div className="rounded-2xl p-7" style={{ background: surface, border: "1px solid rgba(99,102,241,0.25)", boxShadow: "0 24px 64px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.05) inset" }}>
+          <div className="card-premium shine-on-hover" style={{ padding: "1.75rem" }}>
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm" style={{ color: muted }}>Accès complet</span>

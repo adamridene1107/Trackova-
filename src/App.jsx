@@ -154,15 +154,22 @@ export default function App({ user, onLogout }) {
   const streakColor = data.streak >= 30 ? "#f59e0b" : data.streak >= 14 ? "#f97316" : data.streak >= 7 ? "#818cf8" : "rgba(99,102,241,0.6)"
 
   return (
-    <div className="min-h-screen" style={{ background: theme === "light" ? "var(--bg)" : "#070710" }}>
+    <div className="min-h-screen relative" style={{ background: theme === "light" ? "var(--bg)" : "#070710" }}>
       {confetti.map(p => <ConfettiParticle key={p.id} {...p} />)}
 
+      {/* Ambient orbs background */}
+      {theme !== "light" && (
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden>
+          <div className="mesh-orb" style={{ width: 500, height: 500, top: "-15%", left: "-10%", background: "radial-gradient(circle, rgba(99,102,241,0.15), transparent 70%)", animation: "meshFloat1 20s ease-in-out infinite" }} />
+          <div className="mesh-orb" style={{ width: 400, height: 400, bottom: "-10%", right: "-10%", background: "radial-gradient(circle, rgba(168,85,247,0.12), transparent 70%)", animation: "meshFloat2 26s ease-in-out infinite" }} />
+        </div>
+      )}
+
       {/* ─── Header ─────────────────────────────────── */}
-      <header className="sticky top-0 z-40"
+      <header className="sticky top-0 z-40 glass-nav"
         style={{
-          background: theme === "light" ? "rgba(244,244,249,0.97)" : "rgba(7,7,16,0.96)",
-          borderBottom: `1px solid ${theme === "light" ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.07)"}`,
-          backdropFilter: "blur(20px)",
+          background: theme === "light" ? "rgba(244,244,249,0.65)" : "rgba(7,7,16,0.55)",
+          borderBottom: `1px solid ${theme === "light" ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)"}`,
         }}>
 
         {/* Top bar */}
@@ -229,7 +236,7 @@ export default function App({ user, onLogout }) {
       </header>
 
       {/* ─── Main content ────────────────────────────── */}
-      <main className="max-w-2xl mx-auto p-4 pb-10">
+      <main className="max-w-2xl mx-auto p-4 pb-10 relative z-10">
         <Suspense fallback={
           <div className="flex items-center justify-center py-20">
             <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: "rgba(99,102,241,0.2)", borderTopColor: "#818cf8" }} />
