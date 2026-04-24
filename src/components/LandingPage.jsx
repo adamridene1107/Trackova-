@@ -115,7 +115,7 @@ export default function LandingPage({ onGetStarted }) {
       {/* ── NAV ───────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 glass-nav"
         style={{ background: isDark ? "rgba(7,7,16,0.55)" : "rgba(244,244,249,0.65)", borderBottom: `1px solid ${border}` }}>
-        <img src="/logo.svg" alt="Trakova" className="h-8 w-auto" />
+        <img src="/logo.svg" alt="Trakova" className="h-12 w-auto" />
         <div className="flex items-center gap-3">
           <button onClick={onGetStarted} className="text-sm transition-colors hidden sm:block hover:text-white" style={{ color: muted }}>Connexion</button>
           <button onClick={spawn} className="btn-primary text-xs px-4 py-2">Essai gratuit</button>
@@ -469,7 +469,7 @@ export default function LandingPage({ onGetStarted }) {
       {/* ── FOOTER ────────────────────────────────────── */}
       <footer className="px-6 py-8" style={{ borderTop: `1px solid ${border}` }}>
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <img src="/logo.svg" alt="Trakova" style={{ height: "28px", width: "auto" }} />
+          <img src="/logo.svg" alt="Trakova" style={{ height: "44px", width: "auto" }} />
           <p className="text-xs" style={{ color: faint }}>© 2026 Trakova</p>
           <div className="flex items-center gap-5 text-xs" style={{ color: faint }}>
             <a href="/subscribe" className="hover:opacity-80 transition-opacity">Abonnement</a>
