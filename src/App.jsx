@@ -175,7 +175,7 @@ export default function App({ user, onLogout }) {
         {/* Top bar */}
         <div className="max-w-2xl mx-auto flex items-center justify-between px-4 pt-3.5 pb-2.5">
           <div className="flex items-center gap-3">
-            <img src="/logo.svg" alt="Trakova" style={{ height: "88px", width: "auto" }} className="flex-shrink-0" />
+            <img src="/logo.svg" alt="Trakova" style={{ height: "112px", width: "auto" }} className="flex-shrink-0" />
             {data.streak > 0 && (
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.18)" }}>
                 <span className="flame-anim text-xs">🔥</span>

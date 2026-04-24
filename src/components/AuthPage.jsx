@@ -119,12 +119,12 @@ export default function AuthPage({ onAuth }) {
           {mode === "login" || mode === "signup" ? <a href="/">Retour</a> : "Retour a la connexion"}
         </button>
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center relative overflow-hidden float"
-            style={{ background: "linear-gradient(135deg,#8b5cf6,#6366f1)", boxShadow: "0 12px 32px rgba(139,92,246,0.5), 0 0 0 1px rgba(255,255,255,0.1) inset" }}>
-            <Zap size={26} className="text-white relative z-10" />
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center relative overflow-hidden float"
+            style={{ background: "linear-gradient(135deg,#8b5cf6,#6366f1)", boxShadow: "0 14px 36px rgba(139,92,246,0.55), 0 0 0 1px rgba(255,255,255,0.1) inset" }}>
+            <Zap size={30} className="text-white relative z-10" />
             <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.25), transparent 60%)" }} />
           </div>
-          <span style={{ color: textPrimary, letterSpacing: "-0.02em" }} className="font-bold text-2xl">Trakova</span>
+          <span style={{ color: textPrimary, letterSpacing: "-0.02em" }} className="font-bold text-3xl">Trakova</span>
         </div>
         <div className="mb-8" key={mode}>
           <h1 style={{ color: textPrimary, letterSpacing: "-0.03em" }} className="text-4xl font-bold mb-2 slide-in-right">{titles[mode]?.h}</h1>
