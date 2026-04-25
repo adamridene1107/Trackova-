@@ -7,6 +7,7 @@ import AnimatedCheckbox from "./AnimatedCheckbox"
 import { CheckCircle2, Circle, Lightbulb, Zap, Plus, Trash2, ChevronUp, ChevronDown, Play, Pause, Clock, RefreshCw } from "lucide-react"
 import Pomodoro from "./Pomodoro"
 import PomodoroWidget from "./PomodoroWidget"
+import AgendaView from "./AgendaView"
 
 function fmtTime(s) {
   if (!s || s < 0) return "0:00"
@@ -366,166 +367,25 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
         </div>
       </div>
 
-      {/* Free tasks */}
-      <div className="card">
-        <SectionLabel>Tâches du jour</SectionLabel>
-        <div className="flex gap-2 flex-wrap mb-3">
-          <select value={newTaskHour} onChange={e => setNewTaskHour(e.target.value)} className="input w-24 flex-shrink-0 text-sm">
-            {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
-          </select>
-          <select value={newTaskPrio} onChange={e => setNewTaskPrio(e.target.value)} className="input flex-shrink-0 w-28 text-sm">
-            {PRIOS.map(p => <option key={p.v} value={p.v}>{p.l}</option>)}
-          </select>
-          <input value={newTask} onChange={e => setNewTask(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && addFreeTask()}
-            placeholder="Nouvelle tâche…"
-            className="input flex-1 min-w-0 text-sm" />
-          <button onClick={addFreeTask} className="btn-primary px-3 flex-shrink-0">
-            <Plus size={14} />
-          </button>
-        </div>
-
-        {freeTasks.length > 0 && (
-          <>
-            <div className="h-px mb-3" style={{ background: "var(--border)" }} />
-            <div className="space-y-1.5">
-              {[...freeTasks].sort((a, b) => a.hour.localeCompare(b.hour)).map((t, i) => {
-                const pr = PRIOS.find(p => p.v === t.priority) || PRIOS[1]
-                const tkey = `free-${t.id}`
-                return (
-                  <div key={t.id} className="flex items-center gap-2 p-2.5 rounded-xl transition-all flex-wrap"
-                    style={{
-                      border: `1px solid var(--border)`,
-                      opacity: t.done ? 0.55 : 1,
-                    }}>
-                    <div className="flex flex-col flex-shrink-0">
-                      <button onClick={() => moveFree(i,-1)} style={{ color: "var(--text-faint)" }}><ChevronUp size={11}/></button>
-                      <button onClick={() => moveFree(i, 1)} style={{ color: "var(--text-faint)" }}><ChevronDown size={11}/></button>
-                    </div>
-                    <span className="text-xs font-mono w-10 flex-shrink-0" style={{ color: "var(--text-muted)" }}>{t.hour}</span>
-                    <button onClick={() => {
-                      if (!t.done) { onTaskComplete?.(); if (activeKey === tkey) { updateEntry({ timers: stopActive() }); setActiveKey(null); setActiveStart(null) } }
-                      toggleFree(t.id)
-                    }} className="flex-shrink-0">
-                      {t.done
-                        ? <CheckCircle2 size={15} style={{ color: "var(--primary-light)" }} />
-                        : <Circle      size={15} style={{ color: "var(--text-faint)" }} />}
-                    </button>
-                    <span className="flex-1 min-w-0 text-sm" style={{ color: t.done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: t.done ? "line-through" : "none" }}>{t.text}</span>
-                    <TimerChip keyId={tkey} done={t.done} />
-                    <span className={`badge border text-[10px] flex-shrink-0 ${pr.c}`}>{pr.l}</span>
-                    <button onClick={() => removeFree(t.id)} className="flex-shrink-0 transition-colors" style={{ color: "var(--text-faint)" }}
-                      onMouseEnter={e => e.currentTarget.style.color = "var(--text-muted)"}
-                      onMouseLeave={e => e.currentTarget.style.color = "var(--text-faint)"}>
-                      <Trash2 size={13} />
-                    </button>
-                  </div>
-                )
-              })}
-            </div>
-          </>
-        )}
-      </div>
-
-      {/* Planning timeline */}
-      <div className="card">
-        <SectionLabel>Planning</SectionLabel>
-        <p className="text-xs mb-4 -mt-1" style={{ color: "var(--text-faint)" }}>Tâches et missions heure par heure</p>
-        <div className="relative">
-          <div className="absolute left-10 top-0 bottom-0 w-px" style={{ background: "var(--border)" }} />
-          <div className="space-y-0">
-            {HOURS.map(hour => {
-              const slots  = freeTasks.filter(t => t.hour === hour)
-              const mSlots = missions.filter(m => (entry.missionHours || {})[m.id] === hour)
-              // Recurring tasks whose hour matches (e.g. "08:30" → matches "08:00")
-              const rSlots = recurringToday.filter(t => t.time && t.time.slice(0,2) === hour.slice(0,2))
-              const hasContent = slots.length > 0 || mSlots.length > 0 || rSlots.length > 0
-              const isNow = format(new Date(), "HH:00") === hour
-              return (
-                <div key={hour} className={`flex gap-3 min-h-[36px] ${hasContent ? "py-2" : "py-1"}`}>
-                  <div className={`w-10 flex-shrink-0 text-right text-xs font-mono pt-0.5`}
-                    style={{ color: isNow ? "var(--text)" : "var(--text-faint)" }}>
-                    {hour}
-                  </div>
-                  <div className="flex-shrink-0 flex flex-col items-center pt-1.5">
-                    <div className="w-2 h-2 rounded-full z-10 transition-all" style={{
-                      background: isNow ? "var(--primary-light)" : hasContent ? "var(--primary-dim)" : "var(--border)",
-                      boxShadow: isNow ? "0 0 0 3px rgba(99,102,241,0.2)" : "none",
-                    }} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    {rSlots.map(t => {
-                      const done = isRecDone(t)
-                      return (
-                        <div key={t.id} onClick={() => { if (!done) onTaskComplete?.(); toggleRecurring(t.id) }}
-                          className="mb-1 flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-all text-sm"
-                          style={{
-                            border: `1px solid ${done ? "rgba(251,191,36,0.15)" : "rgba(251,191,36,0.1)"}`,
-                            background: done ? "rgba(251,191,36,0.04)" : "rgba(251,191,36,0.02)",
-                            color: done ? "var(--text-faint)" : "var(--text-muted)",
-                            textDecoration: done ? "line-through" : "none",
-                            opacity: done ? 0.6 : 1,
-                          }}>
-                          <RefreshCw size={9} style={{ color: "#fbbf24", flexShrink: 0 }} />
-                          <span className="truncate flex-1">{t.title}</span>
-                          {t.time && <span className="text-[10px] font-mono flex-shrink-0" style={{ color: "#fbbf24", opacity: 0.7 }}>{t.time}</span>}
-                        </div>
-                      )
-                    })}
-                    {slots.map(t => {
-                      const pr = PRIOS.find(p => p.v === t.priority) || PRIOS[1]
-                      return (
-                        <div key={t.id} onClick={() => toggleFree(t.id)}
-                          className="mb-1 flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-all text-sm"
-                          style={{
-                            border: `1px solid var(--border)`,
-                            color: t.done ? "var(--text-faint)" : "var(--text-muted)",
-                            textDecoration: t.done ? "line-through" : "none",
-                          }}>
-                          <span className="truncate flex-1">{t.text}</span>
-                          <span className={`badge border text-[10px] flex-shrink-0 ${pr.c}`}>{pr.l}</span>
-                        </div>
-                      )
-                    })}
-                    {mSlots.map(m => (
-                      <div key={m.id} className="mb-1 flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm"
-                        style={{ border: `1px solid var(--border)`, color: "var(--text-faint)" }}>
-                        <span className="flex-shrink-0" style={{ color: "var(--primary-dim)", fontSize: "10px" }}>◎</span>
-                        <span className="truncate">{m.text}</span>
-                        <span className="ml-auto text-[10px] flex-shrink-0" style={{ color: "var(--text-faint)" }}>mission</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        {missions.length > 0 && (
-          <div className="mt-4 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
-            <SectionLabel>Placer mes missions</SectionLabel>
-            <div className="space-y-2">
-              {missions.map(m => (
-                <div key={m.id} className="flex items-center gap-2">
-                  <span className="flex-1 text-sm truncate" style={{ color: "var(--text-muted)" }}>{m.text}</span>
-                  <select
-                    value={(entry.missionHours || {})[m.id] || ""}
-                    onChange={e => {
-                      const mh = { ...(entry.missionHours || {}), [m.id]: e.target.value || undefined }
-                      if (!e.target.value) delete mh[m.id]
-                      updateEntry({ missionHours: mh })
-                    }}
-                    className="input text-xs w-24 flex-shrink-0">
-                    <option value="">-- heure --</option>
-                    {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
-                  </select>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      {/* Agenda visuel */}
+      <AgendaView
+        recurringToday={recurringToday}
+        freeTasks={freeTasks}
+        missions={missions}
+        entry={entry}
+        isRecDone={isRecDone}
+        toggleRecurring={toggleRecurring}
+        toggleFree={toggleFree}
+        onTaskComplete={onTaskComplete}
+        updateEntry={updateEntry}
+        newTask={newTask}
+        setNewTask={setNewTask}
+        newTaskHour={newTaskHour}
+        setNewTaskHour={setNewTaskHour}
+        newTaskPrio={newTaskPrio}
+        setNewTaskPrio={setNewTaskPrio}
+        addFreeTask={addFreeTask}
+      />
 
       {/* Victory */}
       <div className="card">
