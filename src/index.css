@@ -435,9 +435,32 @@ input[type="date"] { color-scheme: dark; }
 /* ─── Mobile ─────────────────────────────────────────── */
 @media (max-width: 640px) {
   .card { @apply p-4 rounded-xl; }
+  /* Prevent zoom on inputs */
   input, select, textarea { font-size: 16px !important; }
-  header { padding-top: max(1.25rem, env(safe-area-inset-top)); }
-  main { padding-bottom: max(2rem, env(safe-area-inset-bottom)); }
+  /* Safe areas */
+  header { padding-top: max(0.5rem, env(safe-area-inset-top)); }
+  main { padding-bottom: max(4rem, env(safe-area-inset-bottom)); }
+  /* Bigger touch targets for ghost buttons */
+  .btn-ghost { min-width: 40px; min-height: 40px; display: flex; align-items: center; justify-content: center; }
+  /* Nav tabs more compact */
+  .nav-tab { @apply px-2.5 py-1.5; }
+}
+
+/* Disable hover lift effects on touch devices to avoid sticky states */
+@media (hover: none) {
+  .card:hover { transform: none !important; box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset !important; }
+  .card-premium:hover { transform: none !important; }
+  .card-lift:hover { transform: none !important; }
+  .btn-primary:hover { transform: none !important; }
+  .btn-primary { transition: opacity 0.15s, box-shadow 0.15s; }
+  .btn-primary:active { opacity: 0.85; }
+  .input:focus { transform: none !important; }
+}
+
+/* Smooth scrolling and tap highlight removal */
+button, a, [role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ═══════════════════════════════════════════════════════

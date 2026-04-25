@@ -173,56 +173,44 @@ export default function App({ user, onLogout }) {
         }}>
 
         {/* Top bar */}
-        <div className="max-w-2xl mx-auto flex items-center justify-between px-4 pt-3.5 pb-2.5">
-          <div className="flex items-center gap-3">
-            <img src="/logo.svg" alt="Trakova" style={{ height: "112px", width: "auto" }} className="flex-shrink-0" />
+        <div className="max-w-2xl mx-auto flex items-center justify-between px-3 sm:px-4 pt-2 sm:pt-3.5 pb-1.5 sm:pb-2.5">
+          <div className="flex items-center gap-2">
+            <img src="/logo.svg" alt="Trakova"
+              style={{ height: "72px", width: "auto" }}
+              className="flex-shrink-0 sm:h-24" />
             {data.streak > 0 && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.18)" }}>
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full" style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.18)" }}>
                 <span className="flame-anim text-xs">🔥</span>
                 <span className="text-xs font-semibold tabular-nums" style={{ color: streakColor }}>{data.streak}j</span>
               </div>
             )}
           </div>
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-0">
             <Suspense fallback={null}><ExportPDF data={data} /></Suspense>
-            <button onClick={() => resetGoal()} className="btn-ghost" title="Changer d'objectif"><RefreshCw size={15} /></button>
+            <button onClick={() => resetGoal()} className="btn-ghost" title="Changer d'objectif"><RefreshCw size={14} /></button>
             <button
               onClick={() => setShowFocus(true)}
               className="btn-ghost"
               title="Mode Focus"
               style={{ color: showFocus ? "#818cf8" : undefined }}>
-              <Zap size={15} />
+              <Zap size={14} />
             </button>
-            <button onClick={() => setShowSettings(true)} className="btn-ghost"><Settings size={15} /></button>
+            <button onClick={() => setShowSettings(true)} className="btn-ghost"><Settings size={14} /></button>
           </div>
         </div>
 
         {/* Tab navigation */}
         <nav
-          className="max-w-2xl mx-auto flex overflow-x-auto px-3 pb-2 gap-1 scrollbar-hide"
-          style={{ cursor: "grab", WebkitOverflowScrolling: "touch" }}
-          onMouseDown={e => {
-            const el = e.currentTarget
-            const startX = e.pageX - el.offsetLeft
-            const scrollLeft = el.scrollLeft
-            const onMove = mv => {
-              if (Math.abs(mv.pageX - el.offsetLeft - startX) > 5) {
-                el.style.cursor = "grabbing"
-                el.scrollLeft = scrollLeft - (mv.pageX - el.offsetLeft - startX)
-              }
-            }
-            const onUp = () => { el.style.cursor = "grab"; window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp) }
-            window.addEventListener("mousemove", onMove)
-            window.addEventListener("mouseup", onUp)
-          }}>
+          className="max-w-2xl mx-auto flex overflow-x-auto px-2 sm:px-3 pb-2 gap-0.5 sm:gap-1"
+          style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "none", msOverflowStyle: "none" }}>
           {tabs.map(t => {
             const Icon = t.icon
             const active = activeTab === t.id
             return (
-              <button key={t.id} onClick={() => setTab(t.id)} className={`nav-tab ${active ? "active" : ""}`}>
-                <Icon size={12} />
-                <span className="hidden sm:inline">{t.label}</span>
-                <span className="sm:hidden">{t.label.split("'")[0].split(" ")[0]}</span>
+              <button key={t.id} onClick={() => setTab(t.id)}
+                className={`nav-tab flex-shrink-0 ${active ? "active" : ""}`}>
+                <Icon size={13} />
+                <span className="text-[11px] sm:text-xs">{t.label}</span>
                 {t.id === "devoirs" && urgentCount > 0 && (
                   <span className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold leading-none flex-shrink-0"
                     style={{ background: "#6366f1", color: "#fff" }}>
