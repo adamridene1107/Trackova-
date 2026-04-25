@@ -4,7 +4,7 @@ import { getDailyQuote } from "../lib/quotes"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import AnimatedCheckbox from "./AnimatedCheckbox"
-import { CheckCircle2, Circle, Lightbulb, Zap, Plus, Trash2, ChevronUp, ChevronDown, Play, Pause, Clock } from "lucide-react"
+import { CheckCircle2, Circle, Lightbulb, Zap, Plus, Trash2, ChevronUp, ChevronDown, Play, Pause, Clock, RefreshCw } from "lucide-react"
 import Pomodoro from "./Pomodoro"
 import PomodoroWidget from "./PomodoroWidget"
 
@@ -32,7 +32,7 @@ function SectionLabel({ children }) {
   )
 }
 
-export default function DailyCheck({ data, today, getTodayEntry, toggleTask, updateEntry, onTaskComplete, onFocusComplete, showPomodoro = true }) {
+export default function DailyCheck({ data, today, getTodayEntry, toggleTask, updateEntry, updateDevoirs, onTaskComplete, onFocusComplete, showPomodoro = true }) {
   const goal = getGoalById(data.goal)
   const entry = getTodayEntry()
   const daily = getDailyContent(data.goal, today)
@@ -108,6 +108,36 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
       </button>
     )
   }
+
+  // ─── Tâches récurrentes ─────────────────────────────────
+  const todayStr = today
+  const todayDow = new Date().getDay()
+  const allDevoirs = data.devoirs || []
+
+  const recurringToday = allDevoirs.filter(d => {
+    if (!d.recurring || d.recurring === "none") return false
+    if (d.recurring === "daily") return true
+    if (d.recurring === "weekly") return (d.recurDays || []).includes(todayDow)
+    return false
+  }).sort((a, b) => {
+    const ta = a.time || "25:00", tb = b.time || "25:00"
+    const fix = t => { const [h,m] = t.split(":").map(Number); return h < 7 ? (24+h)*60+m : h*60+m }
+    return fix(ta) - fix(tb)
+  })
+
+  const isRecDone = (task) => (task.doneByDate || {})[todayStr] === true
+
+  const toggleRecurring = (id) => {
+    if (!updateDevoirs) return
+    updateDevoirs(allDevoirs.map(d => {
+      if (d.id !== id) return d
+      const doneByDate = { ...(d.doneByDate || {}) }
+      doneByDate[todayStr] = !doneByDate[todayStr]
+      return { ...d, doneByDate }
+    }))
+  }
+
+  const recDoneCount = recurringToday.filter(isRecDone).length
 
   if (!goal) return null
 
@@ -211,6 +241,61 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
           ))}
         </div>
       </div>
+
+      {/* Agenda récurrent */}
+      {recurringToday.length > 0 && (
+        <div className="card">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: "rgba(251,191,36,0.12)" }}>
+                <RefreshCw size={11} style={{ color: "#fbbf24" }} />
+              </div>
+              <SectionLabel>Agenda récurrent</SectionLabel>
+            </div>
+            <span className="text-xs tabular-nums" style={{ color: "var(--text-faint)" }}>
+              {recDoneCount}/{recurringToday.length}
+            </span>
+          </div>
+          {/* Progress bar */}
+          <div className="h-1 rounded-full mb-3 overflow-hidden" style={{ background: "rgba(251,191,36,0.1)" }}>
+            <div className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${recurringToday.length ? recDoneCount/recurringToday.length*100 : 0}%`, background: "#fbbf24" }} />
+          </div>
+          <div className="space-y-1.5">
+            {recurringToday.map(task => {
+              const done = isRecDone(task)
+              return (
+                <div key={task.id}
+                  className="flex items-center gap-3 p-3 rounded-xl transition-all"
+                  style={{
+                    background: done ? "rgba(251,191,36,0.05)" : "rgba(255,255,255,0.02)",
+                    border: `1px solid ${done ? "rgba(251,191,36,0.15)" : "var(--border)"}`,
+                    opacity: done ? 0.6 : 1,
+                  }}>
+                  <button onClick={() => { if (!done) onTaskComplete?.(); toggleRecurring(task.id) }} className="flex-shrink-0">
+                    {done
+                      ? <CheckCircle2 size={16} style={{ color: "#fbbf24" }} />
+                      : <Circle size={16} style={{ color: "var(--text-faint)" }} />}
+                  </button>
+                  {task.time && (
+                    <span className="text-xs font-mono flex-shrink-0 w-10 text-right" style={{ color: "#fbbf24", opacity: done ? 0.5 : 0.8 }}>
+                      {task.time}
+                    </span>
+                  )}
+                  <span className="flex-1 text-sm" style={{
+                    color: done ? "var(--text-faint)" : "var(--text-muted)",
+                    textDecoration: done ? "line-through" : "none",
+                  }}>{task.title}</span>
+                  <span className="text-[10px] flex-shrink-0 flex items-center gap-1" style={{ color: "var(--text-faint)" }}>
+                    <RefreshCw size={8} />
+                    {task.recurring === "daily" ? "quotidien" : "hebdo"}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Pomodoro */}
       {showPomodoro && <PomodoroWidget onFocusComplete={onFocusComplete} />}
@@ -352,7 +437,9 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
             {HOURS.map(hour => {
               const slots  = freeTasks.filter(t => t.hour === hour)
               const mSlots = missions.filter(m => (entry.missionHours || {})[m.id] === hour)
-              const hasContent = slots.length > 0 || mSlots.length > 0
+              // Recurring tasks whose hour matches (e.g. "08:30" → matches "08:00")
+              const rSlots = recurringToday.filter(t => t.time && t.time.slice(0,2) === hour.slice(0,2))
+              const hasContent = slots.length > 0 || mSlots.length > 0 || rSlots.length > 0
               const isNow = format(new Date(), "HH:00") === hour
               return (
                 <div key={hour} className={`flex gap-3 min-h-[36px] ${hasContent ? "py-2" : "py-1"}`}>
@@ -367,6 +454,24 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
                     }} />
                   </div>
                   <div className="flex-1 min-w-0">
+                    {rSlots.map(t => {
+                      const done = isRecDone(t)
+                      return (
+                        <div key={t.id} onClick={() => { if (!done) onTaskComplete?.(); toggleRecurring(t.id) }}
+                          className="mb-1 flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-all text-sm"
+                          style={{
+                            border: `1px solid ${done ? "rgba(251,191,36,0.15)" : "rgba(251,191,36,0.1)"}`,
+                            background: done ? "rgba(251,191,36,0.04)" : "rgba(251,191,36,0.02)",
+                            color: done ? "var(--text-faint)" : "var(--text-muted)",
+                            textDecoration: done ? "line-through" : "none",
+                            opacity: done ? 0.6 : 1,
+                          }}>
+                          <RefreshCw size={9} style={{ color: "#fbbf24", flexShrink: 0 }} />
+                          <span className="truncate flex-1">{t.title}</span>
+                          {t.time && <span className="text-[10px] font-mono flex-shrink-0" style={{ color: "#fbbf24", opacity: 0.7 }}>{t.time}</span>}
+                        </div>
+                      )
+                    })}
                     {slots.map(t => {
                       const pr = PRIOS.find(p => p.v === t.priority) || PRIOS[1]
                       return (
