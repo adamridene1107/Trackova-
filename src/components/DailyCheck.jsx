@@ -7,7 +7,6 @@ import AnimatedCheckbox from "./AnimatedCheckbox"
 import { CheckCircle2, Circle, Lightbulb, Zap, Plus, Trash2, ChevronUp, ChevronDown, Play, Pause, Clock, RefreshCw } from "lucide-react"
 import Pomodoro from "./Pomodoro"
 import PomodoroWidget from "./PomodoroWidget"
-import AgendaView from "./AgendaView"
 
 function fmtTime(s) {
   if (!s || s < 0) return "0:00"
@@ -367,25 +366,42 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
         </div>
       </div>
 
-      {/* Agenda visuel */}
-      <AgendaView
-        recurringToday={recurringToday}
-        freeTasks={freeTasks}
-        missions={missions}
-        entry={entry}
-        isRecDone={isRecDone}
-        toggleRecurring={toggleRecurring}
-        toggleFree={toggleFree}
-        onTaskComplete={onTaskComplete}
-        updateEntry={updateEntry}
-        newTask={newTask}
-        setNewTask={setNewTask}
-        newTaskHour={newTaskHour}
-        setNewTaskHour={setNewTaskHour}
-        newTaskPrio={newTaskPrio}
-        setNewTaskPrio={setNewTaskPrio}
-        addFreeTask={addFreeTask}
-      />
+      {/* Tâches du jour */}
+      <div className="card">
+        <SectionLabel>Tâches du jour</SectionLabel>
+        <div className="flex gap-2 mb-3 flex-wrap">
+          <select value={newTaskHour} onChange={e => setNewTaskHour(e.target.value)} className="input flex-shrink-0 text-sm" style={{ width: 90 }}>
+            {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
+          </select>
+          <select value={newTaskPrio} onChange={e => setNewTaskPrio(e.target.value)} className="input flex-shrink-0 text-sm" style={{ width: 110 }}>
+            {PRIOS.map(p => <option key={p.v} value={p.v}>{p.l}</option>)}
+          </select>
+          <input value={newTask} onChange={e => setNewTask(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && addFreeTask()}
+            placeholder="Nouvelle tâche…"
+            className="input flex-1 min-w-0 text-sm" />
+          <button onClick={addFreeTask} className="btn-primary px-3 flex-shrink-0"><Plus size={14} /></button>
+        </div>
+        {freeTasks.length > 0 && (
+          <div className="space-y-1.5">
+            {[...freeTasks].sort((a, b) => a.hour.localeCompare(b.hour)).map(t => {
+              const pr = PRIOS.find(p => p.v === t.priority) || PRIOS[1]
+              return (
+                <div key={t.id} className="flex items-center gap-2 p-2.5 rounded-xl transition-all"
+                  style={{ border: "1px solid var(--border)", opacity: t.done ? 0.5 : 1 }}>
+                  <button onClick={() => { if (!t.done) onTaskComplete?.(); toggleFree(t.id) }} className="flex-shrink-0">
+                    {t.done ? <CheckCircle2 size={15} style={{ color: "var(--primary-light)" }} /> : <Circle size={15} style={{ color: "var(--text-faint)" }} />}
+                  </button>
+                  <span className="text-xs font-mono w-10 flex-shrink-0" style={{ color: "var(--text-muted)" }}>{t.hour}</span>
+                  <span className="flex-1 text-sm" style={{ color: t.done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: t.done ? "line-through" : "none" }}>{t.text}</span>
+                  <span className={`badge border text-[10px] flex-shrink-0 ${pr.c}`}>{pr.l}</span>
+                  <button onClick={() => removeFree(t.id)} className="btn-ghost p-1.5"><Trash2 size={13} /></button>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
 
       {/* Victory */}
       <div className="card">

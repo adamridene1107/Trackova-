@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Plus, Trash2, CheckCircle2, Circle, Clock, ChevronDown, ChevronUp, Pencil } from "lucide-react"
 import { format } from "date-fns"
+import AgendaView from "./AgendaView"
 
 const JOURS = [
   { id: 1, court: "Lun", long: "Lundi" },
@@ -55,8 +56,19 @@ export default function PlanningHebdo({ weekPlan, updateWeekPlan }) {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState(emptyForm)
   const [editId, setEditId] = useState(null)
+  const [agendaNewTask, setAgendaNewTask] = useState("")
+  const [agendaNewHour, setAgendaNewHour] = useState("08:00")
 
   const dayTasks = [...(weekPlan[selectedDay] || [])].sort((a, b) => toMin(a.time) - toMin(b.time))
+
+  // Convertir weekPlan tasks → format AgendaView (freeTasks)
+  const agendaFreeTasks = dayTasks.map(t => ({
+    id: t.id,
+    text: t.title,
+    hour: t.time ? t.time.slice(0, 5) : "08:00",
+    priority: "medium",
+    done: isDoneToday(t),
+  }))
 
   const submit = () => {
     if (!form.title.trim()) return
@@ -245,54 +257,40 @@ export default function PlanningHebdo({ weekPlan, updateWeekPlan }) {
         )}
       </div>
 
-      {/* Liste du jour sélectionné */}
-      {dayTasks.length === 0 ? (
-        <div className="card text-center py-10">
-          <p className="text-white/20 text-sm">Rien de planifié pour {JOURS.find(j => j.id === selectedDay)?.long}.</p>
-          <p className="text-white/15 text-xs mt-1">Ajoute une tâche ci-dessus ↑</p>
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {dayTasks.map(task => {
-            const c = COULEURS.find(c => c.v === task.couleur) || COULEURS[0]
-            const done = isDoneToday(task)
-            return (
-              <div key={task.id}
-                className="card transition-all"
-                style={{
-                  borderColor: done ? "var(--border)" : c.border,
-                  background: done ? "var(--surface)" : c.bg,
-                  opacity: done ? 0.5 : 1,
-                }}>
-                <div className="flex items-start gap-3">
-                  <button onClick={() => toggle(task.id)} className="flex-shrink-0 mt-0.5">
-                    {done
-                      ? <CheckCircle2 size={18} style={{ color: c.dot }} />
-                      : <Circle size={18} style={{ color: c.dot }} />}
-                  </button>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-semibold text-sm"
-                        style={{ color: done ? "rgba(255,255,255,0.3)" : c.text, textDecoration: done ? "line-through" : "none" }}>
-                        {task.title}
-                      </p>
-                      <span className="text-xs font-mono px-2 py-0.5 rounded-md flex-shrink-0"
-                        style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.35)" }}>
-                        {task.time}
-                      </span>
-                    </div>
-                    {task.note && <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.35)" }}>{task.note}</p>}
-                  </div>
-                  <div className="flex gap-1 flex-shrink-0">
-                    <button onClick={() => startEdit(task)} className="btn-ghost p-1.5"><Pencil size={13} /></button>
-                    <button onClick={() => remove(task.id)} className="btn-ghost p-1.5"><Trash2 size={13} /></button>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
+      {/* Agenda visuel du jour sélectionné */}
+      <AgendaView
+        freeTasks={agendaFreeTasks}
+        recurringToday={[]}
+        missions={[]}
+        entry={{}}
+        isRecDone={() => false}
+        toggleRecurring={() => {}}
+        toggleFree={(id) => toggle(id)}
+        onTaskComplete={() => {}}
+        updateEntry={() => {}}
+        newTask={agendaNewTask}
+        setNewTask={setAgendaNewTask}
+        newTaskHour={agendaNewHour}
+        setNewTaskHour={setAgendaNewHour}
+        newTaskPrio="medium"
+        setNewTaskPrio={() => {}}
+        addFreeTask={() => {
+          if (!agendaNewTask.trim()) return
+          const dayList = weekPlan[selectedDay] || []
+          updateWeekPlan({
+            ...weekPlan,
+            [selectedDay]: [...dayList, {
+              id: Date.now(),
+              title: agendaNewTask.trim(),
+              time: agendaNewHour,
+              couleur: "violet",
+              note: "",
+              doneByDate: {}
+            }]
+          })
+          setAgendaNewTask("")
+        }}
+      />
     </div>
   )
 }
