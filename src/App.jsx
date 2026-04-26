@@ -22,6 +22,7 @@ const ReferralPage = lazy(() => import("./components/ReferralPage"))
 
 const Onboarding = lazy(() => import("./components/Onboarding"))
 import Idees from "./components/Idees"
+import PlanningHebdo from "./components/PlanningHebdo"
 import { useGamification } from "./hooks/useGamification"
 import { getGoalById } from "./lib/goals"
 import { parseISO, isToday, isPast } from "date-fns"
@@ -68,9 +69,9 @@ const TABS_BY_GOAL = {
   organization: [
     { id:"today",     label:"Aujourd'hui", icon:CheckSquare },
     { id:"devoirs",   label:"Tâches",       icon:ListTodo },
+    { id:"planning",  label:"Planning",     icon:Calendar },
     { id:"missions",  label:"Projets",      icon:Target },
     { id:"resources", label:"Outils",       icon:BookOpen },
-    { id:"calendar",  label:"Calendrier",   icon:Calendar },
     { id:"stats",     label:"Stats",        icon:BarChart2 },
     { id:"fichiers",  label:"Fichiers",     icon:FolderOpen },
     { id:"xp",        label:"XP",           icon:Zap },
@@ -90,7 +91,7 @@ function ConfettiParticle({ x, y, color, delay, size, round }) {
 
 export default function App({ user, onLogout }) {
   const { theme } = useTheme()
-  const { data, today, setGoal, resetGoal, getTodayEntry, updateEntry, toggleTask, updateMissions, updateNotifications, updateDevoirs, loading } = useGoalData()
+  const { data, today, setGoal, resetGoal, getTodayEntry, updateEntry, toggleTask, updateMissions, updateNotifications, updateDevoirs, updateWeekPlan, loading } = useGoalData()
   const { g, onTaskComplete, onFocusComplete } = useGamification()
   const [tab, setTab] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
@@ -234,6 +235,7 @@ export default function App({ user, onLogout }) {
           <div className={activeTab === "seance"       ? "tab-content" : "hidden"}><Seance data={data} updateEntry={updateEntry} getTodayEntry={getTodayEntry} /></div>
           <div className={activeTab === "idees"        ? "tab-content" : "hidden"}><Idees /></div>
           <div className={activeTab === "devoirs"      ? "tab-content" : "hidden"}><Devoirs devoirs={data.devoirs || []} updateDevoirs={updateDevoirs} goalId={data.goal} /></div>
+          <div className={activeTab === "planning"     ? "tab-content" : "hidden"}><PlanningHebdo weekPlan={data.weekPlan || {}} updateWeekPlan={updateWeekPlan} /></div>
           <div className={activeTab === "missions"     ? "tab-content" : "hidden"}><Missions data={data} updateMissions={updateMissions} /></div>
           <div className={activeTab === "resources"    ? "tab-content" : "hidden"}><Resources goalId={data.goal} /></div>
           <div className={activeTab === "calendar"     ? "tab-content" : "hidden"}><ProgressCalendar data={data} /></div>

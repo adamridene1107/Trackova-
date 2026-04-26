@@ -5,7 +5,7 @@ import { format } from 'date-fns'
 const today = () => format(new Date(), 'yyyy-MM-dd')
 
 function defaultData() {
-  return { goal: null, streak: 0, last_active: null, entries: {}, missions: [], devoirs: [], settings: {} }
+  return { goal: null, streak: 0, last_active: null, entries: {}, missions: [], devoirs: [], settings: {}, weekPlan: {} }
 }
 
 export function useSupabaseData(userId) {
@@ -51,6 +51,7 @@ export function useSupabaseData(userId) {
           missions: rows.missions || [],
           devoirs: rows.devoirs || [],
           settings: rows.settings || {},
+          weekPlan: rows.settings?.weekPlan || {},
         })
       }
     } catch(e) {
@@ -70,7 +71,7 @@ export function useSupabaseData(userId) {
         entries: newData.entries,
         missions: newData.missions,
         devoirs: newData.devoirs,
-        settings: newData.settings,
+        settings: { ...newData.settings, weekPlan: newData.weekPlan },
         updated_at: new Date().toISOString(),
       }).eq('id', recordIdRef.current)
     } catch(e) {
@@ -134,6 +135,7 @@ export function useSupabaseData(userId) {
 
   const updateMissions = useCallback((missions) => updateData({ missions }), [updateData])
   const updateDevoirs = useCallback((devoirs) => updateData({ devoirs }), [updateData])
+  const updateWeekPlan = useCallback((weekPlan) => updateData({ weekPlan }), [updateData])
   const updateNotifications = useCallback((notifs) => {
     updateData({ settings: { ...data.settings, ...notifs } })
   }, [updateData, data.settings])
@@ -143,7 +145,7 @@ export function useSupabaseData(userId) {
     today: today(),
     setGoal, resetGoal,
     getTodayEntry, updateEntry, toggleTask,
-    updateMissions, updateDevoirs, updateNotifications,
+    updateMissions, updateDevoirs, updateNotifications, updateWeekPlan,
     reload: loadData,
   }
 }
