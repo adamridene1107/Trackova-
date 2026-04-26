@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Plus, Trash2, CheckCircle2, Circle, Clock, ChevronDown, ChevronUp, Pencil } from "lucide-react"
+import { format } from "date-fns"
 
 const JOURS = [
   { id: 1, court: "Lun", long: "Lundi" },
@@ -20,13 +21,19 @@ const COULEURS = [
   { v: "ambre",  bg: "rgba(251,191,36,0.12)",  border: "rgba(251,191,36,0.28)", text: "#fde68a", dot: "#fbbf24" },
 ]
 
-const SLOTS_TIME = [
-  "07:00","07:30","08:00","08:30","09:00","09:30","10:00","10:30",
-  "11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30",
-  "15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30",
-  "19:00","19:30","20:00","20:30","21:00","21:30","22:00","22:30",
-  "23:00","23:30","00:00","00:30","01:00",
-]
+// Créneaux toutes les 5 minutes de 07:00 à 01:00
+const SLOTS_TIME = (() => {
+  const slots = []
+  for (let h = 7; h < 24; h++) {
+    for (let m = 0; m < 60; m += 5) {
+      slots.push(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`)
+    }
+  }
+  for (let m = 0; m <= 60; m += 5) {
+    slots.push(`${String(0).padStart(2,"0")}:${String(m).padStart(2,"0")}`)
+  }
+  return slots
+})()
 
 function toMin(t) {
   if (!t) return 9999
@@ -35,7 +42,13 @@ function toMin(t) {
 }
 
 const todayDow = new Date().getDay()
+const todayStr = format(new Date(), "yyyy-MM-dd")
 const emptyForm = { title: "", time: "08:00", couleur: "violet", note: "" }
+
+// Une tâche du planning est "faite aujourd'hui" si doneByDate contient la date du jour
+function isDoneToday(task) {
+  return (task.doneByDate || {})[todayStr] === true
+}
 
 export default function PlanningHebdo({ weekPlan, updateWeekPlan }) {
   const [selectedDay, setSelectedDay] = useState(todayDow === 0 ? 0 : todayDow)
@@ -70,7 +83,12 @@ export default function PlanningHebdo({ weekPlan, updateWeekPlan }) {
 
   const toggle = (id) => updateWeekPlan({
     ...weekPlan,
-    [selectedDay]: (weekPlan[selectedDay] || []).map(t => t.id === id ? { ...t, done: !t.done } : t)
+    [selectedDay]: (weekPlan[selectedDay] || []).map(t => {
+      if (t.id !== id) return t
+      const doneByDate = { ...(t.doneByDate || {}) }
+      doneByDate[todayStr] = !doneByDate[todayStr]
+      return { ...t, doneByDate }
+    })
   })
 
   const startEdit = (task) => {
@@ -80,9 +98,9 @@ export default function PlanningHebdo({ weekPlan, updateWeekPlan }) {
 
   const cancelForm = () => { setForm(emptyForm); setEditId(null); setShowForm(false) }
 
-  // Statistiques de la semaine
+  // Statistiques de la semaine (basées sur aujourd'hui)
   const totalSemaine = Object.values(weekPlan).flat().length
-  const doneTotal = Object.values(weekPlan).flat().filter(t => t.done).length
+  const doneTotal = Object.values(weekPlan).flat().filter(isDoneToday).length
 
   return (
     <div className="space-y-3 fade-in">
@@ -112,7 +130,7 @@ export default function PlanningHebdo({ weekPlan, updateWeekPlan }) {
         <div className="mt-3 flex gap-1">
           {JOURS.map(j => {
             const count = (weekPlan[j.id] || []).length
-            const done = (weekPlan[j.id] || []).filter(t => t.done).length
+            const done = (weekPlan[j.id] || []).filter(isDoneToday).length
             const isToday = j.id === todayDow
             const isSelected = j.id === selectedDay
             return (
@@ -130,7 +148,7 @@ export default function PlanningHebdo({ weekPlan, updateWeekPlan }) {
                     <div className="flex gap-0.5 flex-wrap justify-center">
                       {(weekPlan[j.id] || []).slice(0, 3).map(t => {
                         const c = COULEURS.find(c => c.v === t.couleur) || COULEURS[0]
-                        return <div key={t.id} className="w-1.5 h-1.5 rounded-full" style={{ background: t.done ? "rgba(255,255,255,0.15)" : c.dot }} />
+                        return <div key={t.id} className="w-1.5 h-1.5 rounded-full" style={{ background: isDoneToday(t) ? "rgba(255,255,255,0.15)" : c.dot }} />
                       })}
                     </div>
                     {count > 3 && <span className="text-[8px]" style={{ color: "rgba(255,255,255,0.2)" }}>+{count - 3}</span>}
@@ -237,24 +255,25 @@ export default function PlanningHebdo({ weekPlan, updateWeekPlan }) {
         <div className="space-y-2">
           {dayTasks.map(task => {
             const c = COULEURS.find(c => c.v === task.couleur) || COULEURS[0]
+            const done = isDoneToday(task)
             return (
               <div key={task.id}
                 className="card transition-all"
                 style={{
-                  borderColor: task.done ? "var(--border)" : c.border,
-                  background: task.done ? "var(--surface)" : c.bg,
-                  opacity: task.done ? 0.5 : 1,
+                  borderColor: done ? "var(--border)" : c.border,
+                  background: done ? "var(--surface)" : c.bg,
+                  opacity: done ? 0.5 : 1,
                 }}>
                 <div className="flex items-start gap-3">
                   <button onClick={() => toggle(task.id)} className="flex-shrink-0 mt-0.5">
-                    {task.done
+                    {done
                       ? <CheckCircle2 size={18} style={{ color: c.dot }} />
                       : <Circle size={18} style={{ color: c.dot }} />}
                   </button>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-semibold text-sm"
-                        style={{ color: task.done ? "rgba(255,255,255,0.3)" : c.text, textDecoration: task.done ? "line-through" : "none" }}>
+                        style={{ color: done ? "rgba(255,255,255,0.3)" : c.text, textDecoration: done ? "line-through" : "none" }}>
                         {task.title}
                       </p>
                       <span className="text-xs font-mono px-2 py-0.5 rounded-md flex-shrink-0"
