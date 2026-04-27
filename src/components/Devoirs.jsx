@@ -202,7 +202,7 @@ export default function Devoirs({ devoirs, updateDevoirs, goalId = "homework" })
             <p className="text-white/30 text-xs text-center py-3">Pas de tâches récurrentes aujourd'hui.</p>
           ) : (
             <div className="space-y-2">
-              {(showAllRecurring ? recurringTasks.sort((a,b) => toAgendaMinutes(a.time)-toAgendaMinutes(b.time)) : todayAgenda).map(task => {
+              {(showAllRecurring ? [...recurringTasks].sort((a,b) => toAgendaMinutes(a.time)-toAgendaMinutes(b.time)) : todayAgenda).map(task => {
                 const mat = MATIERES.find(m => m.v === (task.matiere||"autre")) || MATIERES[MATIERES.length-1]
                 const done = isDoneToday(task)
                 const activeToday = isActiveToday(task)

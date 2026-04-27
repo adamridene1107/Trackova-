@@ -4,7 +4,7 @@ import { getDailyQuote } from "../lib/quotes"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import AnimatedCheckbox from "./AnimatedCheckbox"
-import { CheckCircle2, Circle, Lightbulb, Zap, Plus, Trash2, ChevronUp, ChevronDown, Play, Pause, Clock, RefreshCw } from "lucide-react"
+import { CheckCircle2, Circle, Lightbulb, Zap, Plus, Trash2, Play, Pause, Clock, RefreshCw } from "lucide-react"
 import Pomodoro from "./Pomodoro"
 import PomodoroWidget from "./PomodoroWidget"
 
@@ -166,13 +166,6 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
   }
   const toggleFree = (id) => updateEntry({ freeTasks: freeTasks.map(t => t.id === id ? { ...t, done: !t.done } : t) })
   const removeFree = (id) => updateEntry({ freeTasks: freeTasks.filter(t => t.id !== id) })
-  const moveFree   = (i, d) => {
-    const sorted = [...freeTasks].sort((a, b) => a.hour.localeCompare(b.hour))
-    const j = i + d
-    if (j < 0 || j >= sorted.length) return
-    ;[sorted[i], sorted[j]] = [sorted[j], sorted[i]]
-    updateEntry({ freeTasks: sorted })
-  }
 
   const missions = (data.missions || []).filter(m => m.status !== "done")
 

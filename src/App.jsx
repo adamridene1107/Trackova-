@@ -188,7 +188,7 @@ export default function App({ user, onLogout }) {
           </div>
           <div className="flex items-center gap-0">
             <Suspense fallback={null}><ExportPDF data={data} /></Suspense>
-            <button onClick={() => resetGoal()} className="btn-ghost" title="Changer d'objectif"><RefreshCw size={14} /></button>
+            <button onClick={() => { if (window.confirm("Changer d'objectif ? Tes données actuelles seront conservées.")) resetGoal() }} className="btn-ghost" title="Changer d'objectif"><RefreshCw size={14} /></button>
             <button
               onClick={() => setShowFocus(true)}
               className="btn-ghost"

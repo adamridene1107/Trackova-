@@ -84,9 +84,6 @@ export default function PlanningHebdo({ weekPlan: raw, updateWeekPlan }) {
   /* clic sur la grille → ouvrir modal ajout */
   const onGridClick = (day, e) => {
     if (e.target !== e.currentTarget && !e.target.dataset.grid) return
-    const rect = gridRef.current.getBoundingClientRect()
-    const t    = snapTime(e.clientY, rect.top + gridRef.current.scrollTop - e.currentTarget.offsetTop * 0 )
-    // simpler: use the column's top
     const colRect = e.currentTarget.getBoundingClientRect()
     const time    = snapTime(e.clientY, colRect.top + (e.currentTarget.scrollTop||0))
     const et      = addHour(time)
