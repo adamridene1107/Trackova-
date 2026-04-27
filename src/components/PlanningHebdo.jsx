@@ -279,11 +279,12 @@ export default function PlanningHebdo({ weekPlan: raw, updateWeekPlan }) {
 
       {/* ── Modal ───────────────────────────────────────── */}
       {modal && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4"
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-3"
           style={{background:"rgba(0,0,0,0.75)",backdropFilter:"blur(10px)"}}
           onClick={e => e.target===e.currentTarget && setModal(null)}>
-          <div className="w-full max-w-sm rounded-2xl p-5 space-y-3 slide-up"
-            style={{background:"var(--surface-2)",border:"1px solid var(--border-strong)"}}>
+          <div className="w-full max-w-sm rounded-2xl p-4 space-y-3 slide-up"
+            style={{background:"var(--surface-2)",border:"1px solid var(--border-strong)",
+              overflowY:"auto", maxHeight:"92vh"}}>
 
             <div className="flex items-center justify-between">
               <h3 className="text-white font-bold text-base">
