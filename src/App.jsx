@@ -89,6 +89,12 @@ const LOCKED_DESCRIPTIONS = {
   stats:     "Statistiques avancées",
   history:   "Historique complet",
   referral:  "Programme de parrainage",
+  calendar:  "Calendrier de progression",
+  resources: "Ressources & contenus",
+  seance:    "Suivi de séances",
+  idees:     "Carnet d'idées",
+  focus:     "Mode Focus & concentration",
+  missions:  "Missions illimitées",
 }
 
 function ConfettiParticle({ x, y, color, delay, size, round }) {
@@ -279,13 +285,13 @@ export default function App({ user, onLogout }) {
             )}
           </div>
           <div className="flex items-center gap-0">
-            <Suspense fallback={null}><ExportPDF data={data} /></Suspense>
+            {isPremium && <Suspense fallback={null}><ExportPDF data={data} /></Suspense>}
             <button onClick={() => { if (window.confirm("Changer d'objectif ? Tes données actuelles seront conservées.")) resetGoal() }} className="btn-ghost" title="Changer d'objectif"><RefreshCw size={14} /></button>
             <button
-              onClick={() => setShowFocus(true)}
+              onClick={() => isPremium ? setShowFocus(true) : setUpsellFeature("focus")}
               className="btn-ghost"
-              title="Mode Focus"
-              style={{ color: showFocus ? "#818cf8" : undefined }}>
+              title={isPremium ? "Mode Focus" : "Mode Focus (Pro)"}
+              style={{ color: showFocus ? "#818cf8" : !isPremium ? "rgba(251,191,36,0.5)" : undefined }}>
               <Zap size={14} />
             </button>
             <button onClick={() => setShowSettings(true)} className="btn-ghost"><Settings size={14} /></button>
@@ -326,7 +332,11 @@ export default function App({ user, onLogout }) {
             <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: "rgba(99,102,241,0.2)", borderTopColor: "#818cf8" }} />
           </div>
         }>
-          <div className={activeTab === "today"        ? "tab-content" : "hidden"}><Suspense fallback={null}><WeekSummary data={data} /></Suspense><Suspense fallback={null}><AmbientSound /></Suspense><DailyCheck data={data} today={today} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} updateDevoirs={updateDevoirs} onTaskComplete={handleTaskComplete} onFocusComplete={onFocusComplete} showPomodoro={data.goal === "homework"} isPremium={isPremium} freeLimits={FREE_LIMITS} /></div>
+          <div className={activeTab === "today"        ? "tab-content" : "hidden"}>
+            {isPremium && <Suspense fallback={null}><WeekSummary data={data} /></Suspense>}
+            {isPremium && <Suspense fallback={null}><AmbientSound /></Suspense>}
+            <DailyCheck data={data} today={today} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} updateDevoirs={updateDevoirs} onTaskComplete={handleTaskComplete} onFocusComplete={onFocusComplete} showPomodoro={data.goal === "homework"} isPremium={isPremium} freeLimits={FREE_LIMITS} />
+          </div>
           <div className={activeTab === "seance"       ? "tab-content" : "hidden"}><Seance data={data} updateEntry={updateEntry} getTodayEntry={getTodayEntry} /></div>
           <div className={activeTab === "idees"        ? "tab-content" : "hidden"}><Idees /></div>
           <div className={activeTab === "devoirs"      ? "tab-content" : "hidden"}><Devoirs devoirs={data.devoirs || []} updateDevoirs={updateDevoirs} goalId={data.goal} isPremium={isPremium} freeLimits={FREE_LIMITS} /></div>

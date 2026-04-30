@@ -293,8 +293,20 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
         </div>
       )}
 
-      {/* Pomodoro */}
-      {showPomodoro && <PomodoroWidget onFocusComplete={onFocusComplete} />}
+      {/* Pomodoro — Pro seulement */}
+      {showPomodoro && (isPremium
+        ? <PomodoroWidget onFocusComplete={onFocusComplete} />
+        : (
+          <a href="/subscribe" className="card flex items-center gap-3 opacity-60 hover:opacity-80 transition-opacity" style={{ textDecoration: "none" }}>
+            <Lock size={14} style={{ color: "#fbbf24", flexShrink: 0 }} />
+            <div className="flex-1">
+              <p className="text-sm font-medium" style={{ color: "var(--text-muted)" }}>Minuteur Pomodoro</p>
+              <p className="text-[11px]" style={{ color: "var(--text-faint)" }}>Fonctionnalité Pro 🔒</p>
+            </div>
+            <span className="text-[10px] font-semibold px-2 py-1 rounded-full" style={{ background: "rgba(251,191,36,0.1)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.2)" }}>Pro</span>
+          </a>
+        )
+      )}
 
       {/* Fixed tasks */}
       <div className="card">
@@ -321,7 +333,8 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
                 <span className="flex-1 text-sm" style={{ color: done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: done ? "line-through" : "none" }}>
                   {task}
                 </span>
-                <TimerChip keyId={tkey} done={done} />
+                {/* Chrono uniquement Pro */}
+                {isPremium && <TimerChip keyId={tkey} done={done} />}
               </div>
             )
           })}
@@ -340,7 +353,7 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
                     : <Circle      size={16} style={{ color: "var(--text-faint)" }} />}
                 </button>
                 <span className="flex-1 text-sm" style={{ color: t.done ? "var(--text-faint)" : "var(--text-muted)", textDecoration: t.done ? "line-through" : "none" }}>{t.text}</span>
-                <TimerChip keyId={tkey} done={t.done} />
+                {isPremium && <TimerChip keyId={tkey} done={t.done} />}
                 <button onClick={() => removeCustom(t.id)} className="flex-shrink-0 transition-colors" style={{ color: "var(--text-faint)" }}
                   onMouseEnter={e => e.currentTarget.style.color = "var(--text-muted)"}
                   onMouseLeave={e => e.currentTarget.style.color = "var(--text-faint)"}>
@@ -351,15 +364,23 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
           })}
         </div>
 
-        <div className="flex gap-2 mt-3">
-          <input value={newFixedTask} onChange={e => setNewFixedTask(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && addFixedTask()}
-            placeholder="Ajouter une tâche…"
-            className="input flex-1 text-sm" />
-          <button onClick={addFixedTask} className="btn-primary px-3 flex-shrink-0">
-            <Plus size={14} />
-          </button>
-        </div>
+        {/* Ajout tâche personnalisée — Pro seulement */}
+        {isPremium ? (
+          <div className="flex gap-2 mt-3">
+            <input value={newFixedTask} onChange={e => setNewFixedTask(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && addFixedTask()}
+              placeholder="Ajouter une tâche…"
+              className="input flex-1 text-sm" />
+            <button onClick={addFixedTask} className="btn-primary px-3 flex-shrink-0">
+              <Plus size={14} />
+            </button>
+          </div>
+        ) : (
+          <a href="/subscribe" className="flex items-center gap-2 mt-3 px-3 py-2 rounded-xl transition-opacity opacity-50 hover:opacity-70" style={{ background: "rgba(251,191,36,0.06)", border: "1px solid rgba(251,191,36,0.15)", textDecoration: "none" }}>
+            <Lock size={12} style={{ color: "#fbbf24", flexShrink: 0 }} />
+            <span className="text-xs" style={{ color: "#fbbf24" }}>Tâches personnalisées — Pro uniquement</span>
+          </a>
+        )}
       </div>
 
       {/* Tâches du jour */}
