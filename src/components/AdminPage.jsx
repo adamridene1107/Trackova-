@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Lock, Eye, EyeOff, Users, Gift, BarChart2, CreditCard, ExternalLink, Copy, Check } from "lucide-react"
 import { supabase } from "../lib/supabase"
 
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASS || ""
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASS || "trakova-admin-2026"
 
 export default function AdminPage() {
   const [password, setPassword] = useState("")
