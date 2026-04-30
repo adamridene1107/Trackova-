@@ -25,14 +25,25 @@ const Spinner = () => (
 function RootContent() {
   const path = window.location.pathname
   const [session, setSession] = useState(undefined)
+  const [authReady, setAuthReady] = useState(false)
 
   useEffect(() => {
+    // Charge la session initiale en premier
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
+      setAuthReady(true)
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
+    // onAuthStateChange ne met à jour que si on est déjà prêt
+    // (évite le flash landing page lors d'un token refresh)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      // SIGNED_OUT = vrai logout → on met à jour
+      // TOKEN_REFRESHED / SIGNED_IN = ne pas passer par null
+      if (event === "SIGNED_OUT") {
+        setSession(null)
+      } else if (session) {
+        setSession(session)
+      }
     })
 
     return () => subscription.unsubscribe()
@@ -64,7 +75,7 @@ function RootContent() {
     return <Suspense fallback={<Spinner />}><ProfilePage /></Suspense>
   }
 
-  if (session === undefined) return <Spinner />
+  if (!authReady) return <Spinner />
 
   if (!session) {
     if (path === "/login") {
