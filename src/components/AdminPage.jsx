@@ -1,14 +1,24 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Lock, Eye, EyeOff, Users, Gift, BarChart2, CreditCard, ExternalLink, Copy, Check } from "lucide-react"
 import { supabase } from "../lib/supabase"
 
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASS || "trakova-admin-2026"
+const ADMIN_EMAILS = ["adam.ridene1107@gmail.com"]
 
 export default function AdminPage() {
   const [password, setPassword] = useState("")
   const [show, setShow] = useState(false)
   const [auth, setAuth] = useState(false)
   const [error, setError] = useState(false)
+
+  // Auto-auth si l'email est dans la liste admin
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user?.email && ADMIN_EMAILS.includes(session.user.email)) {
+        setAuth(true)
+      }
+    })
+  }, [])
   const [tab, setTab] = useState("pages")
 
   // Mois gratuits
