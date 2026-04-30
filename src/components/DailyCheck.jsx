@@ -32,7 +32,7 @@ function SectionLabel({ children }) {
   )
 }
 
-export default function DailyCheck({ data, today, getTodayEntry, toggleTask, updateEntry, updateDevoirs, onTaskComplete, onFocusComplete, showPomodoro = true }) {
+export default function DailyCheck({ data, today, getTodayEntry, toggleTask, updateEntry, updateDevoirs, onTaskComplete, onFocusComplete, showPomodoro = true, isPremium = true, freeLimits = {} }) {
   const goal = getGoalById(data.goal)
   const entry = getTodayEntry()
   const daily = getDailyContent(data.goal, today)
@@ -158,9 +158,12 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
   const toggleCustom = (id) => updateEntry({ customTasks: (entry.customTasks || []).map(t => t.id === id ? { ...t, done: !t.done } : t) })
   const removeCustom = (id) => updateEntry({ customTasks: (entry.customTasks || []).filter(t => t.id !== id) })
 
+  const maxFreeTasks = freeLimits.freeTasks || Infinity
+  const freeTasksAtLimit = !isPremium && freeTasks.length >= maxFreeTasks
+
   const addFreeTask = () => {
     const text = newTask.trim()
-    if (!text) return
+    if (!text || freeTasksAtLimit) return
     updateEntry({ freeTasks: [...freeTasks, { id: Date.now(), text, hour: newTaskHour, priority: newTaskPrio, done: false }] })
     setNewTask("")
   }
@@ -361,19 +364,42 @@ export default function DailyCheck({ data, today, getTodayEntry, toggleTask, upd
 
       {/* Tâches du jour */}
       <div className="card">
-        <SectionLabel>Tâches du jour</SectionLabel>
+        <div className="flex items-center justify-between mb-3">
+          <SectionLabel>Tâches du jour</SectionLabel>
+          {!isPremium && (
+            <span className="text-[10px] tabular-nums" style={{ color: "var(--text-faint)" }}>
+              {freeTasks.length}/{maxFreeTasks}
+            </span>
+          )}
+        </div>
+        {/* Bannière limite */}
+        {freeTasksAtLimit && (
+          <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-xl"
+            style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)" }}>
+            <span className="text-xs">🔒</span>
+            <p className="text-[11px] flex-1" style={{ color: "#fbbf24" }}>
+              Max {maxFreeTasks} tâches/jour — <a href="/subscribe" className="underline">Passer au Pro</a>
+            </p>
+          </div>
+        )}
         <div className="flex gap-2 mb-3 flex-wrap">
-          <select value={newTaskHour} onChange={e => setNewTaskHour(e.target.value)} className="input flex-shrink-0 text-sm" style={{ width: 90 }}>
+          <select value={newTaskHour} onChange={e => setNewTaskHour(e.target.value)} className="input flex-shrink-0 text-sm" style={{ width: 90 }}
+            disabled={freeTasksAtLimit}>
             {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
           </select>
-          <select value={newTaskPrio} onChange={e => setNewTaskPrio(e.target.value)} className="input flex-shrink-0 text-sm" style={{ width: 110 }}>
+          <select value={newTaskPrio} onChange={e => setNewTaskPrio(e.target.value)} className="input flex-shrink-0 text-sm" style={{ width: 110 }}
+            disabled={freeTasksAtLimit}>
             {PRIOS.map(p => <option key={p.v} value={p.v}>{p.l}</option>)}
           </select>
           <input value={newTask} onChange={e => setNewTask(e.target.value)}
             onKeyDown={e => e.key === "Enter" && addFreeTask()}
-            placeholder="Nouvelle tâche…"
-            className="input flex-1 min-w-0 text-sm" />
-          <button onClick={addFreeTask} className="btn-primary px-3 flex-shrink-0"><Plus size={14} /></button>
+            placeholder={freeTasksAtLimit ? "Limite atteinte…" : "Nouvelle tâche…"}
+            className="input flex-1 min-w-0 text-sm"
+            disabled={freeTasksAtLimit} />
+          <button onClick={addFreeTask} className="btn-primary px-3 flex-shrink-0"
+            style={freeTasksAtLimit ? { opacity: 0.4, cursor: "not-allowed" } : {}}>
+            <Plus size={14} />
+          </button>
         </div>
         {freeTasks.length > 0 && (
           <div className="space-y-1.5">

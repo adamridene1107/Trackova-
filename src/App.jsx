@@ -28,7 +28,8 @@ import { getGoalById } from "./lib/goals"
 import { parseISO, isToday, isPast } from "date-fns"
 import { initNotifications } from "./lib/notifications"
 
-import { CheckSquare, Target, Calendar, BarChart2, BookOpen, ClipboardList, Settings, Flame, FolderOpen, Zap, LogOut, Dumbbell, Lightbulb, Apple, ListTodo, RefreshCw, Gift } from "lucide-react"
+import { CheckSquare, Target, Calendar, BarChart2, BookOpen, ClipboardList, Settings, FolderOpen, Zap, Dumbbell, Lightbulb, Apple, ListTodo, RefreshCw, Gift, Lock, Sparkles, X } from "lucide-react"
+import { computeIsPremium, LOCKED_TABS, FREE_LIMITS } from "./lib/plan"
 
 const TABS_BY_GOAL = {
   homework: [
@@ -51,8 +52,8 @@ const TABS_BY_GOAL = {
     { id:"stats",     label:"Stats",         icon:BarChart2 },
     { id:"fichiers",  label:"Fichiers",      icon:FolderOpen },
     { id:"xp",        label:"XP",            icon:Zap },
-    { id:"history",   label:"Historique",  icon:Calendar },
-    { id:"referral",  label:"Parrainage",  icon:Gift },
+    { id:"history",   label:"Historique",    icon:Calendar },
+    { id:"referral",  label:"Parrainage",    icon:Gift },
   ],
   creative: [
     { id:"today",     label:"Aujourd'hui", icon:CheckSquare },
@@ -63,8 +64,8 @@ const TABS_BY_GOAL = {
     { id:"stats",     label:"Stats",        icon:BarChart2 },
     { id:"fichiers",  label:"Fichiers",     icon:FolderOpen },
     { id:"xp",        label:"XP",           icon:Zap },
-    { id:"history",   label:"Historique",  icon:Calendar },
-    { id:"referral",  label:"Parrainage",  icon:Gift },
+    { id:"history",   label:"Historique",   icon:Calendar },
+    { id:"referral",  label:"Parrainage",   icon:Gift },
   ],
   organization: [
     { id:"today",     label:"Aujourd'hui", icon:CheckSquare },
@@ -75,9 +76,19 @@ const TABS_BY_GOAL = {
     { id:"stats",     label:"Stats",        icon:BarChart2 },
     { id:"fichiers",  label:"Fichiers",     icon:FolderOpen },
     { id:"xp",        label:"XP",           icon:Zap },
-    { id:"history",   label:"Historique",  icon:Calendar },
-    { id:"referral",  label:"Parrainage",  icon:Gift },
+    { id:"history",   label:"Historique",   icon:Calendar },
+    { id:"referral",  label:"Parrainage",   icon:Gift },
   ],
+}
+
+// Descriptions lisibles des features bloquées
+const LOCKED_DESCRIPTIONS = {
+  planning:  "Planning hebdo Google Calendar",
+  fichiers:  "Stockage de fichiers illimité",
+  xp:        "Système XP, niveaux et badges",
+  stats:     "Statistiques avancées",
+  history:   "Historique complet",
+  referral:  "Programme de parrainage",
 }
 
 function ConfettiParticle({ x, y, color, delay, size, round }) {
@@ -86,6 +97,67 @@ function ConfettiParticle({ x, y, color, delay, size, round }) {
       left: x, top: y, background: color, width: size, height: size,
       animationDelay: delay + "ms", borderRadius: round ? "50%" : "2px",
     }} />
+  )
+}
+
+// ─── Modal Upsell ─────────────────────────────────────────────────────────────
+function UpsellModal({ feature, onClose }) {
+  const desc = LOCKED_DESCRIPTIONS[feature] || "cette fonctionnalité"
+  return (
+    <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(12px)" }}
+      onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="w-full max-w-sm fade-up" style={{
+        background: "var(--surface)",
+        border: "1px solid rgba(139,92,246,0.25)",
+        borderRadius: "1.5rem",
+        padding: "1.75rem",
+        boxShadow: "0 40px 80px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.05) inset",
+      }}>
+        <div className="flex items-start justify-between mb-4">
+          <div className="w-10 h-10 rounded-2xl flex items-center justify-center"
+            style={{ background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.25)" }}>
+            <Lock size={18} style={{ color: "#a78bfa" }} />
+          </div>
+          <button onClick={onClose} className="btn-ghost p-1.5" style={{ color: "var(--text-faint)" }}>
+            <X size={16} />
+          </button>
+        </div>
+
+        <h2 className="font-bold text-lg mb-1" style={{ color: "var(--text)", letterSpacing: "-0.02em" }}>
+          Fonctionnalité Pro 🔒
+        </h2>
+        <p className="text-sm mb-5" style={{ color: "var(--text-muted)" }}>
+          <span style={{ color: "#a78bfa", fontWeight: 600 }}>{desc}</span> est disponible dans le plan Pro.
+        </p>
+
+        {/* Ce que le Pro débloque */}
+        <div className="space-y-2 mb-5">
+          {[
+            "Planning hebdo Google Calendar",
+            "Stats avancées & historique",
+            "Fichiers illimités",
+            "Système XP & niveaux",
+            "Tâches & missions illimitées",
+            "Toutes les futures features",
+          ].map(f => (
+            <div key={f} className="flex items-center gap-2.5 text-sm" style={{ color: "var(--text-muted)" }}>
+              <span className="text-xs" style={{ color: "#34d399" }}>✓</span>
+              {f}
+            </div>
+          ))}
+        </div>
+
+        <a href="/subscribe"
+          className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 text-sm mb-2">
+          <Sparkles size={14} /> Passer au Pro — 6€/mois
+        </a>
+        <button onClick={onClose} className="w-full text-xs py-2"
+          style={{ color: "var(--text-faint)" }}>
+          Continuer en gratuit
+        </button>
+      </div>
+    </div>
   )
 }
 
@@ -99,6 +171,7 @@ export default function App({ user, onLogout }) {
   const [giftMsg, setGiftMsg] = useState(null)
   const [giftSeen, setGiftSeen] = useState(false)
   const [confetti, setConfetti] = useState([])
+  const [upsellFeature, setUpsellFeature] = useState(null)
   const [showOnboarding, setShowOnboarding] = useState(() => {
     try { return !localStorage.getItem("gt_onboarded") } catch { return false }
   })
@@ -134,6 +207,17 @@ export default function App({ user, onLogout }) {
     onTaskComplete?.()
     spawnConfetti()
   }, [onTaskComplete, spawnConfetti])
+
+  const isPremium = computeIsPremium(data.settings)
+
+  // Gestion du clic sur un onglet : bloque si locked + free
+  const handleTabClick = useCallback((tabId) => {
+    if (!isPremium && LOCKED_TABS.has(tabId)) {
+      setUpsellFeature(tabId)
+    } else {
+      setTab(tabId)
+    }
+  }, [isPremium])
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg)" }}>
@@ -185,6 +269,14 @@ export default function App({ user, onLogout }) {
                 <span className="text-xs font-semibold tabular-nums" style={{ color: streakColor }}>{data.streak}j</span>
               </div>
             )}
+            {/* Badge plan */}
+            {!isPremium && (
+              <a href="/subscribe"
+                className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold transition-all hover:opacity-80"
+                style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.25)", color: "#fbbf24" }}>
+                Gratuit
+              </a>
+            )}
           </div>
           <div className="flex items-center gap-0">
             <Suspense fallback={null}><ExportPDF data={data} /></Suspense>
@@ -207,12 +299,15 @@ export default function App({ user, onLogout }) {
           {tabs.map(t => {
             const Icon = t.icon
             const active = activeTab === t.id
+            const locked = !isPremium && LOCKED_TABS.has(t.id)
             return (
-              <button key={t.id} onClick={() => setTab(t.id)}
-                className={`nav-tab flex-shrink-0 ${active ? "active" : ""}`}>
-                <Icon size={13} />
+              <button key={t.id} onClick={() => handleTabClick(t.id)}
+                className={`nav-tab flex-shrink-0 ${active ? "active" : ""} ${locked ? "opacity-50" : ""}`}>
+                {locked
+                  ? <Lock size={12} style={{ color: "#fbbf24" }} />
+                  : <Icon size={13} />}
                 <span className="text-[11px] sm:text-xs">{t.label}</span>
-                {t.id === "devoirs" && urgentCount > 0 && (
+                {t.id === "devoirs" && urgentCount > 0 && !locked && (
                   <span className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold leading-none flex-shrink-0"
                     style={{ background: "#6366f1", color: "#fff" }}>
                     {urgentCount > 9 ? "9+" : urgentCount}
@@ -231,12 +326,12 @@ export default function App({ user, onLogout }) {
             <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: "rgba(99,102,241,0.2)", borderTopColor: "#818cf8" }} />
           </div>
         }>
-          <div className={activeTab === "today"        ? "tab-content" : "hidden"}><Suspense fallback={null}><WeekSummary data={data} /></Suspense><Suspense fallback={null}><AmbientSound /></Suspense><DailyCheck data={data} today={today} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} updateDevoirs={updateDevoirs} onTaskComplete={handleTaskComplete} onFocusComplete={onFocusComplete} showPomodoro={data.goal === "homework"} /></div>
+          <div className={activeTab === "today"        ? "tab-content" : "hidden"}><Suspense fallback={null}><WeekSummary data={data} /></Suspense><Suspense fallback={null}><AmbientSound /></Suspense><DailyCheck data={data} today={today} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} updateDevoirs={updateDevoirs} onTaskComplete={handleTaskComplete} onFocusComplete={onFocusComplete} showPomodoro={data.goal === "homework"} isPremium={isPremium} freeLimits={FREE_LIMITS} /></div>
           <div className={activeTab === "seance"       ? "tab-content" : "hidden"}><Seance data={data} updateEntry={updateEntry} getTodayEntry={getTodayEntry} /></div>
           <div className={activeTab === "idees"        ? "tab-content" : "hidden"}><Idees /></div>
-          <div className={activeTab === "devoirs"      ? "tab-content" : "hidden"}><Devoirs devoirs={data.devoirs || []} updateDevoirs={updateDevoirs} goalId={data.goal} /></div>
+          <div className={activeTab === "devoirs"      ? "tab-content" : "hidden"}><Devoirs devoirs={data.devoirs || []} updateDevoirs={updateDevoirs} goalId={data.goal} isPremium={isPremium} freeLimits={FREE_LIMITS} /></div>
           <div className={activeTab === "planning"     ? "tab-content" : "hidden"}><PlanningHebdo weekPlan={data.weekPlan || {}} updateWeekPlan={updateWeekPlan} /></div>
-          <div className={activeTab === "missions"     ? "tab-content" : "hidden"}><Missions data={data} updateMissions={updateMissions} /></div>
+          <div className={activeTab === "missions"     ? "tab-content" : "hidden"}><Missions data={data} updateMissions={updateMissions} isPremium={isPremium} freeLimits={FREE_LIMITS} onUpsell={() => setUpsellFeature("missions")} /></div>
           <div className={activeTab === "resources"    ? "tab-content" : "hidden"}><Resources goalId={data.goal} /></div>
           <div className={activeTab === "calendar"     ? "tab-content" : "hidden"}><ProgressCalendar data={data} /></div>
           <div className={activeTab === "stats"        ? "tab-content" : "hidden"}><ProgressChart data={data} /></div>
@@ -246,6 +341,11 @@ export default function App({ user, onLogout }) {
           <div className={activeTab === "referral"     ? "tab-content" : "hidden"}><ReferralPage user={user} /></div>
         </Suspense>
       </main>
+
+      {/* ─── Upsell modal ────────────────────────────── */}
+      {upsellFeature && (
+        <UpsellModal feature={upsellFeature} onClose={() => setUpsellFeature(null)} />
+      )}
 
       {/* ─── Gift modal ──────────────────────────────── */}
       {giftMsg && (

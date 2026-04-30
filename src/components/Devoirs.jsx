@@ -45,7 +45,7 @@ function toAgendaMinutes(t) {
   return h < 7 ? (24 + h) * 60 + m : h * 60 + m
 }
 
-export default function Devoirs({ devoirs, updateDevoirs, goalId = "homework" }) {
+export default function Devoirs({ devoirs, updateDevoirs, goalId = "homework", isPremium = true, freeLimits = {} }) {
   const MATIERES = getCategoriesForGoal(goalId)
   const [form, setForm] = useState(() => getEmpty(getCategoriesForGoal(goalId)))
   const [showForm, setShowForm] = useState(false)
@@ -89,8 +89,12 @@ export default function Devoirs({ devoirs, updateDevoirs, goalId = "homework" })
     .sort((a, b) => toAgendaMinutes(a.time) - toAgendaMinutes(b.time))
 
   // --- Formulaire ---
+  const maxDevoirs = freeLimits.devoirs || Infinity
+  const atLimit = !isPremium && !editId && devoirs.length >= maxDevoirs
+
   const submit = () => {
     if (!form.title.trim()) return
+    if (atLimit) return
     if (editId) {
       updateDevoirs(devoirs.map(d => d.id === editId ? {
         ...d, ...form, title: form.title.trim(), desc: form.desc.trim()
@@ -255,8 +259,19 @@ export default function Devoirs({ devoirs, updateDevoirs, goalId = "homework" })
 
       {/* ── FORMULAIRE ── */}
       <div className="card">
-        <button onClick={() => showForm && !editId ? cancelForm() : setShowForm(!showForm)}
-          className="w-full flex items-center justify-between text-sm font-medium text-white/60 hover:text-white transition-colors">
+        {/* Bannière limite gratuit */}
+        {atLimit && (
+          <div className="flex items-center gap-2.5 mb-3 px-3 py-2.5 rounded-xl"
+            style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)" }}>
+            <span className="text-sm">🔒</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold" style={{ color: "#fbbf24" }}>Limite du plan gratuit atteinte</p>
+              <p className="text-[11px]" style={{ color: "rgba(251,191,36,0.6)" }}>Max {maxDevoirs} tâches — <a href="/subscribe" className="underline">Passer au Pro</a></p>
+            </div>
+          </div>
+        )}
+        <button onClick={() => !atLimit && (showForm && !editId ? cancelForm() : setShowForm(!showForm))}
+          className={`w-full flex items-center justify-between text-sm font-medium transition-colors ${atLimit ? "opacity-40 cursor-not-allowed text-white/40" : "text-white/60 hover:text-white"}`}>
           <span className="flex items-center gap-2">
             <Plus size={15}/>
             {editId ? "Modifier la tâche" : "Ajouter une tâche"}

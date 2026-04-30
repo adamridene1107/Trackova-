@@ -9,7 +9,7 @@ const ST = [
 ]
 // CATS est maintenant dynamique selon goalId
 
-export default function Missions({ data, updateMissions }) {
+export default function Missions({ data, updateMissions, isPremium = true, freeLimits = {}, onUpsell }) {
   const CATS = getCategoriesForGoal(data.goal || "homework").map(c => c.l)
   const missions = data.missions || []
   const [txt, setTxt] = useState("")
@@ -17,9 +17,13 @@ export default function Missions({ data, updateMissions }) {
   const [target, setTarget] = useState("")
   const [open, setOpen] = useState(null)
 
+  const maxMissions = freeLimits.missions || Infinity
+  const atLimit = !isPremium && missions.length >= maxMissions
+
   const save = m => updateMissions(m)
   const add = () => {
     if (!txt.trim()) return
+    if (atLimit) { onUpsell?.(); return }
     save([...missions, {
       id: Date.now(), text: txt.trim(), category: cat, status: "todo",
       note: "", progress: 0, target: target ? parseInt(target) : 0,
@@ -81,18 +85,34 @@ export default function Missions({ data, updateMissions }) {
           </div>
         )}
 
+        {/* Bannière limite gratuit */}
+        {atLimit && (
+          <div className="flex items-center gap-2.5 mb-3 px-3 py-2.5 rounded-xl"
+            style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)" }}>
+            <span className="text-sm">🔒</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold" style={{ color: "#fbbf24" }}>Limite du plan gratuit atteinte</p>
+              <p className="text-[11px]" style={{ color: "rgba(251,191,36,0.6)" }}>Max {maxMissions} missions — <a href="/subscribe" className="underline">Passer au Pro</a></p>
+            </div>
+          </div>
+        )}
         <div className="flex gap-2 mb-2 flex-wrap">
           <input value={txt} onChange={e => setTxt(e.target.value)} onKeyDown={e => e.key === "Enter" && add()}
-            placeholder="Nouvelle mission..." className="input flex-1 min-w-0" />
+            placeholder="Nouvelle mission..." className="input flex-1 min-w-0"
+            disabled={atLimit} style={atLimit ? { opacity: 0.4, cursor: "not-allowed" } : {}} />
           <select value={cat} onChange={e => setCat(e.target.value)}
-            className="input flex-shrink-0 w-32">
+            className="input flex-shrink-0 w-32"
+            disabled={atLimit} style={atLimit ? { opacity: 0.4, cursor: "not-allowed" } : {}}>
             {CATS.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
-          <button onClick={add} className="btn-primary px-3 flex-shrink-0"><Plus size={15} /></button>
+          <button onClick={add} className="btn-primary px-3 flex-shrink-0"
+            style={atLimit ? { opacity: 0.4 } : {}}>
+            <Plus size={15} />
+          </button>
         </div>
         <input value={target} onChange={e => setTarget(e.target.value)} type="number" min="1"
           placeholder="Objectif chiffre (ex: 10 chapitres)"
-          className="input text-xs" />
+          className="input text-xs" disabled={atLimit} style={atLimit ? { opacity: 0.4, cursor: "not-allowed" } : {}} />
       </div>
 
       {missions.length === 0 ? (
