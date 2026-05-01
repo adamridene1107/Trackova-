@@ -373,18 +373,19 @@ export default function App({ user, onLogout }) {
             {isPremium && <Suspense fallback={null}><AmbientSound /></Suspense>}
             <DailyCheck data={data} today={today} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} updateDevoirs={updateDevoirs} onTaskComplete={handleTaskComplete} onFocusComplete={onFocusComplete} showPomodoro={data.goal === "homework"} isPremium={isPremium} freeLimits={FREE_LIMITS} />
           </div>
-          <div className={activeTab === "seance"       ? "tab-content" : "hidden"}><Seance data={data} updateEntry={updateEntry} getTodayEntry={getTodayEntry} /></div>
-          <div className={activeTab === "idees"        ? "tab-content" : "hidden"}><Idees /></div>
+          {/* Onglets locked : ne pas charger si free (évite crash des libs) */}
+          <div className={activeTab === "seance"       ? "tab-content" : "hidden"}>{isPremium && <Seance data={data} updateEntry={updateEntry} getTodayEntry={getTodayEntry} />}</div>
+          <div className={activeTab === "idees"        ? "tab-content" : "hidden"}>{isPremium && <Idees />}</div>
           <div className={activeTab === "devoirs"      ? "tab-content" : "hidden"}><Devoirs devoirs={data.devoirs || []} updateDevoirs={updateDevoirs} goalId={data.goal} isPremium={isPremium} freeLimits={FREE_LIMITS} /></div>
-          <div className={activeTab === "planning"     ? "tab-content" : "hidden"}><PlanningHebdo weekPlan={data.weekPlan || {}} updateWeekPlan={updateWeekPlan} /></div>
+          <div className={activeTab === "planning"     ? "tab-content" : "hidden"}>{isPremium && <PlanningHebdo weekPlan={data.weekPlan || {}} updateWeekPlan={updateWeekPlan} />}</div>
           <div className={activeTab === "missions"     ? "tab-content" : "hidden"}><Missions data={data} updateMissions={updateMissions} isPremium={isPremium} freeLimits={FREE_LIMITS} onUpsell={() => setUpsellFeature("missions")} /></div>
-          <div className={activeTab === "resources"    ? "tab-content" : "hidden"}><Resources goalId={data.goal} /></div>
-          <div className={activeTab === "calendar"     ? "tab-content" : "hidden"}><ProgressCalendar data={data} /></div>
-          <div className={activeTab === "stats"        ? "tab-content" : "hidden"}><ProgressChart data={data} /></div>
-          <div className={activeTab === "fichiers"     ? "tab-content" : "hidden"}><MesFichiers goalId={data.goal} /></div>
-          <div className={activeTab === "xp"           ? "tab-content" : "hidden"}><Gamification /></div>
-          <div className={activeTab === "history"      ? "tab-content" : "hidden"}><HistoryPage data={data} /></div>
-          <div className={activeTab === "referral"     ? "tab-content" : "hidden"}><ReferralPage user={user} /></div>
+          <div className={activeTab === "resources"    ? "tab-content" : "hidden"}>{isPremium && <Resources goalId={data.goal} />}</div>
+          <div className={activeTab === "calendar"     ? "tab-content" : "hidden"}>{isPremium && <ProgressCalendar data={data} />}</div>
+          <div className={activeTab === "stats"        ? "tab-content" : "hidden"}>{isPremium && <ProgressChart data={data} />}</div>
+          <div className={activeTab === "fichiers"     ? "tab-content" : "hidden"}>{isPremium && <MesFichiers goalId={data.goal} />}</div>
+          <div className={activeTab === "xp"           ? "tab-content" : "hidden"}>{isPremium && <Gamification />}</div>
+          <div className={activeTab === "history"      ? "tab-content" : "hidden"}>{isPremium && <HistoryPage data={data} />}</div>
+          <div className={activeTab === "referral"     ? "tab-content" : "hidden"}>{isPremium && <ReferralPage user={user} />}</div>
         </Suspense>
       </main>
 
