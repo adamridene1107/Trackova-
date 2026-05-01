@@ -15,6 +15,7 @@ import ContactPage from "../components/ContactPage"
 import ProfilePage from "../components/ProfilePage"
 import ResetPasswordPage from "../components/ResetPasswordPage"
 import DashboardPage from "./DashboardPage"
+import ErrorBoundary from "../components/ErrorBoundary"
 
 const Spinner = () => (
   <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0F" }}>
@@ -103,17 +104,19 @@ function RootContent() {
   }
 
   return (
-    <GoalDataProvider userId={user.id}>
-      <Suspense fallback={<Spinner />}>
-        <DashboardPage user={user} onLogout={async () => {
-          await supabase.auth.signOut()
-          const s = JSON.parse(localStorage.getItem("gt_settings") || "{}")
-          s.theme = "dark"
-          localStorage.setItem("gt_settings", JSON.stringify(s))
-          window.location.href = "/"
-        }} />
-      </Suspense>
-    </GoalDataProvider>
+    <ErrorBoundary>
+      <GoalDataProvider userId={user.id}>
+        <Suspense fallback={<Spinner />}>
+          <DashboardPage user={user} onLogout={async () => {
+            await supabase.auth.signOut()
+            const s = JSON.parse(localStorage.getItem("gt_settings") || "{}")
+            s.theme = "dark"
+            localStorage.setItem("gt_settings", JSON.stringify(s))
+            window.location.href = "/"
+          }} />
+        </Suspense>
+      </GoalDataProvider>
+    </ErrorBoundary>
   )
 }
 
