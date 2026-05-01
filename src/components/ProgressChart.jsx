@@ -1,4 +1,3 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts"
 import { format, subDays, parseISO, isToday, isPast } from "date-fns"
 import { fr } from "date-fns/locale"
 
@@ -23,7 +22,7 @@ export default function ProgressChart({ data }) {
     return { day: format(d,"EEE",{locale:fr}), val, emoji: e?.humeur || "" }
   })
 
-  const barColors = { 1:"rgba(255,255,255,0.8)", 0.5:"rgba(255,255,255,0.25)", 0:"rgba(255,255,255,0.05)" }
+  const barColors = { 1:"rgba(255,255,255,0.75)", 0.5:"rgba(255,255,255,0.22)", 0:"rgba(255,255,255,0.05)" }
   const victories = Object.entries(entries).filter(([,e])=>e.victory).sort(([a],[b])=>b.localeCompare(a)).slice(0,8)
 
   let devoirsAll = []
@@ -106,22 +105,35 @@ export default function ProgressChart({ data }) {
 
       {/* Régularité 30 jours */}
       <div className="card">
-        <p className="text-white/50 text-xs font-medium uppercase tracking-wider mb-4">Regularite — 30 jours</p>
-        <ResponsiveContainer width="100%" height={120}>
-          <BarChart data={last30} barSize={6}>
-            <XAxis dataKey="day" tick={{fontSize:9, fill:"rgba(255,255,255,0.2)"}} interval={4} axisLine={false} tickLine={false}/>
-            <YAxis hide domain={[0,1]}/>
-            <Tooltip
-              contentStyle={{ background:"#111", border:"1px solid rgba(255,255,255,0.08)", borderRadius:8, fontSize:11 }}
-              labelStyle={{ color:"rgba(255,255,255,0.4)" }}
-              formatter={v=>v===1?"Complet":v===0.5?"Partiel":"Non fait"}
-              cursor={{fill:"rgba(255,255,255,0.03)"}}
-            />
-            <Bar dataKey="v" radius={[3,3,0,0]}>
-              {last30.map((e,i)=><Cell key={i} fill={barColors[e.v]}/>)}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+        <p className="text-white/50 text-xs font-medium uppercase tracking-wider mb-4">Régularité — 30 jours</p>
+        <div className="flex items-end gap-0.5 h-20" title="Chaque barre = 1 jour">
+          {last30.map((d, i) => (
+            <div key={i} className="flex flex-col items-center gap-0.5 flex-1 h-full justify-end group relative">
+              <div className="w-full rounded-t transition-all duration-300"
+                style={{
+                  height: d.v === 1 ? "100%" : d.v === 0.5 ? "55%" : "8%",
+                  background: barColors[d.v],
+                }}
+              />
+              {/* Tooltip au hover */}
+              <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] bg-black/80 text-white/70 px-1.5 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10">
+                {d.day} · {d.v === 1 ? "✅" : d.v === 0.5 ? "〜" : "—"}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-between mt-2">
+          <span className="text-[10px] text-white/20">{last30[0]?.day}</span>
+          <span className="text-[10px] text-white/20">{last30[29]?.day}</span>
+        </div>
+        <div className="flex items-center gap-4 mt-3 pt-3" style={{ borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+          {[["rgba(255,255,255,0.75)","Complet"],["rgba(255,255,255,0.22)","Partiel"],["rgba(255,255,255,0.05)","Non fait"]].map(([c,l])=>(
+            <div key={l} className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ background:c }} />
+              <span className="text-[10px] text-white/30">{l}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Victoires */}
