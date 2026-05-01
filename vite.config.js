@@ -36,7 +36,6 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
-          'charts': ['recharts'],
           'pdf': ['jspdf', 'jspdf-autotable', 'html2canvas'],
         }
       }
