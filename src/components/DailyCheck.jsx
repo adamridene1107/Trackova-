@@ -4,7 +4,7 @@ import { getDailyQuote } from "../lib/quotes"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import AnimatedCheckbox from "./AnimatedCheckbox"
-import { CheckCircle2, Circle, Lightbulb, Zap, Plus, Trash2, Play, Pause, Clock, RefreshCw } from "lucide-react"
+import { CheckCircle2, Circle, Lightbulb, Zap, Plus, Trash2, Play, Pause, Clock, RefreshCw, Lock } from "lucide-react"
 import Pomodoro from "./Pomodoro"
 import PomodoroWidget from "./PomodoroWidget"
 
