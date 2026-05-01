@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, lazy, Suspense, useEffect } from "react"
+import { useState, useCallback, useMemo, lazy, Suspense, useEffect, Component } from "react"
 import { useGoalData } from "./context/GoalDataContext"
 import { useTheme } from "./context/ThemeContext"
 import GoalSelector from "./components/GoalSelector"
@@ -30,6 +30,41 @@ import { initNotifications } from "./lib/notifications"
 
 import { CheckSquare, Target, Calendar, BarChart2, BookOpen, ClipboardList, Settings, FolderOpen, Zap, Dumbbell, Lightbulb, Apple, ListTodo, RefreshCw, Gift, Lock, Sparkles, X } from "lucide-react"
 import { computeIsPremium, LOCKED_TABS, FREE_LIMITS } from "./lib/plan"
+
+// ─── Error Boundary ──────────────────────────────────────────────────────────
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { hasError: false, error: null }
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error }
+  }
+  componentDidCatch(error, info) {
+    console.error("🔴 Crash React:", error.message, info?.componentStack?.slice(0, 300))
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 24, background: "#0A0A0F", minHeight: "100vh", color: "white", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
+          <div style={{ fontSize: 40 }}>⚠️</div>
+          <h2 style={{ color: "#f87171", fontWeight: 700, fontSize: 18, margin: 0 }}>Une erreur s'est produite</h2>
+          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: 0, maxWidth: 420, textAlign: "center" }}>
+            {this.state.error?.message || "Erreur inconnue"}
+          </p>
+          <code style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "8px 14px", fontSize: 11, color: "#a78bfa", maxWidth: 420, overflowX: "auto" }}>
+            {this.state.error?.stack?.slice(0, 500)}
+          </code>
+          <button onClick={() => window.location.reload()}
+            style={{ marginTop: 8, padding: "10px 22px", background: "#6366f1", border: "none", borderRadius: 10, color: "white", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>
+            Recharger
+          </button>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 const TABS_BY_GOAL = {
   homework: [
@@ -245,6 +280,7 @@ export default function App({ user, onLogout }) {
   const streakColor = data.streak >= 30 ? "#f59e0b" : data.streak >= 14 ? "#f97316" : data.streak >= 7 ? "#818cf8" : "rgba(99,102,241,0.6)"
 
   return (
+    <ErrorBoundary>
     <div className="min-h-screen relative" style={{ background: theme === "light" ? "var(--bg)" : "#070710" }}>
       {confetti.map(p => <ConfettiParticle key={p.id} {...p} />)}
 
@@ -390,5 +426,6 @@ export default function App({ user, onLogout }) {
         </Suspense>
       )}
     </div>
+    </ErrorBoundary>
   )
 }

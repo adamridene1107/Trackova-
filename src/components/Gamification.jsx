@@ -33,26 +33,7 @@ function XPToast({ lastXP }) {
         <Zap size={16} className="text-yellow-400" />
         <span className="text-white font-bold text-sm">+{lastXP.amount} XP</span>
       </div>
-      <p className="text-white/50 text-xs mt-0.5">{lastXP.reasons.join(" · ")}</p>
-      {/* Badges */}
-      <div className="card">
-        <h3 className="text-white/70 text-sm font-semibold mb-4">Badges</h3>
-        <div className="grid grid-cols-3 gap-3">
-          {BADGES.map(b => {
-            const unlocked = isUnlocked(b, xpData)
-            return (
-              <div key={b.id} className="flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all"
-                style={{ background: unlocked ? "rgba(139,92,246,0.1)" : "rgba(255,255,255,0.03)", border: unlocked ? "1px solid rgba(139,92,246,0.25)" : "1px solid rgba(255,255,255,0.06)", opacity: unlocked ? 1 : 0.4 }}>
-                <span className="text-2xl" style={{ filter: unlocked ? "none" : "grayscale(1)" }}>{b.emoji}</span>
-                <p className="text-white/70 text-[11px] font-medium text-center leading-tight">{b.label}</p>
-                <p className="text-white/30 text-[10px] text-center leading-tight">{b.desc}</p>
-                {unlocked && <span className="text-[9px] text-violet-400 font-medium">Débloqué</span>}
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
+      <p className="text-white/50 text-xs mt-0.5">{(lastXP.reasons || []).join(" · ")}</p>
     </div>
   )
 }
