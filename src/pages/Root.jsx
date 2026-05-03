@@ -83,8 +83,7 @@ function RootContent() {
       return (
         <Suspense fallback={<Spinner />}>
           <AuthPage onAuth={(user, isNew) => {
-            // Nouvel utilisateur → accès direct avec plan gratuit
-            window.location.href = "/"
+            window.location.href = isNew ? "/subscribe" : "/"
           }} />
         </Suspense>
       )
