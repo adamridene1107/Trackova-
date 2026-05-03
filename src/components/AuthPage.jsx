@@ -1,18 +1,7 @@
 import { useState } from "react"
-import { Lock, Mail, User, Eye, EyeOff, ArrowLeft, Zap, ShieldQuestion } from "lucide-react"
+import { Lock, Mail, User, Eye, EyeOff, ArrowLeft, Zap } from "lucide-react"
 import { supabase } from "../lib/supabase"
 import { useTheme } from "../context/ThemeContext"
-
-const QUESTIONS = [
-  "Quel est le nom de ton premier animal de compagnie ?",
-  "Dans quelle ville es-tu ne(e) ?",
-  "Quel est le prénom de ta mere ?",
-  "Quel etait le nom de ton école primaire ?",
-  "Quelle est ta couleur preferee ?",
-  "Quel est le prénom de ton meilleur ami d'enfance ?",
-  "Quelle est ta nourriture preferee ?",
-  "Quel est le modèle de ta première voiture ?",
-]
 
 export default function AuthPage({ onAuth }) {
   const { theme } = useTheme()
@@ -33,14 +22,6 @@ export default function AuthPage({ onAuth }) {
   const [success, setSuccess] = useState("")
   const [loading, setLoading] = useState(false)
   const [acceptTerms, setAcceptTerms] = useState(false)
-  const [q1, setQ1] = useState(QUESTIONS[0])
-  const [a1, setA1] = useState("")
-  const [q2, setQ2] = useState(QUESTIONS[1])
-  const [a2, setA2] = useState("")
-  const [forgotQ1, setForgotQ1] = useState("")
-  const [forgotQ2, setForgotQ2] = useState("")
-  const [forgotA1, setForgotA1] = useState("")
-  const [forgotA2, setForgotA2] = useState("")
 
   const goTo = (m) => { setMode(m); setError(""); setSuccess("") }
 
@@ -57,20 +38,14 @@ export default function AuthPage({ onAuth }) {
       if (!name.trim()) { setLoading(false); return setError("Entre ton prénom") }
       if (password.length < 6) { setLoading(false); return setError("Mot de passe trop court (6 min)") }
       if (!acceptTerms) { setLoading(false); return setError("Tu dois accepter les CGU") }
-      setLoading(false); goTo("questions"); return
-
-    } else if (mode === "questions") {
-      if (!a1.trim() || !a2.trim()) { setLoading(false); return setError("Réponds aux deux questions") }
-      if (q1 === q2) { setLoading(false); return setError("Choisis deux questions differentes") }
       const { data, error } = await supabase.auth.signUp({
         email, password,
-        options: { data: { name: name.trim(), q1, a1: a1.trim().toLowerCase(), q2, a2: a2.trim().toLowerCase() } }
+        options: { data: { name: name.trim() } }
       })
       if (error) { setError(error.message) }
       else if (data.user) {
-        // Envoyer email de bienvenue
-      fetch("/api/welcome-email", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ email, name: name.trim() }) }).catch(()=>{})
-      onAuth({ id: data.user.id, email: data.user.email, name: name.trim() }, true)
+        fetch("/api/welcome-email", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ email, name: name.trim() }) }).catch(()=>{})
+        onAuth({ id: data.user.id, email: data.user.email, name: name.trim() }, true)
       }
 
     } else if (mode === "forgot") {
@@ -91,12 +66,11 @@ export default function AuthPage({ onAuth }) {
   }
 
   const titles = {
-    login: { h: "Bon retour 👋", p: "Content de te revoir !" },
-    signup: { h: "Crée ton compte", p: "7 jours gratuits, sans carte requise" },
-    questions: { h: "Questions de sécurité", p: "Pour récupérer ton compte si besoin" },
-    forgot: { h: "Mot de passe oublie", p: "Entre ton email pour continuer" },
-    verify: { h: "Email envoyé !", p: "Vérifie ta boite mail" },
-    reset: { h: "Nouveau mot de passe", p: "Choisis un nouveau mot de passe" },
+    login:  { h: "Bon retour 👋",        p: "Content de te revoir !" },
+    signup: { h: "Crée ton compte",      p: "Accès gratuit · Sans carte requise" },
+    forgot: { h: "Mot de passe oublié",  p: "Entre ton email pour continuer" },
+    verify: { h: "Email envoyé !",       p: "Vérifie ta boite mail" },
+    reset:  { h: "Nouveau mot de passe", p: "Choisis un nouveau mot de passe" },
   }
 
   return (
@@ -168,24 +142,6 @@ export default function AuthPage({ onAuth }) {
                 </button>
               </div>
             </>}
-            {mode === "questions" && <>
-              <div className="px-3 py-2 rounded-xl text-xs mb-2" style={{ background:"rgba(139,92,246,0.06)", border:"1px solid rgba(139,92,246,0.1)", color: textMuted }}>
-                <ShieldQuestion size={12} className="inline mr-1.5 text-violet-400" />
-                Ces réponses serviront a récupérer ton compte
-              </div>
-              <div className="space-y-2">
-                <select value={q1} onChange={e => setQ1(e.target.value)} className="input w-full text-sm">
-                  {QUESTIONS.map(q => <option key={q} value={q}>{q}</option>)}
-                </select>
-                <input value={a1} onChange={e => setA1(e.target.value)} placeholder="Ta réponse" className="input" />
-              </div>
-              <div className="space-y-2">
-                <select value={q2} onChange={e => setQ2(e.target.value)} className="input w-full text-sm">
-                  {QUESTIONS.map(q => <option key={q} value={q}>{q}</option>)}
-                </select>
-                <input value={a2} onChange={e => setA2(e.target.value)} placeholder="Ta réponse" className="input" />
-              </div>
-            </>}
             {mode === "forgot" && (
               <div className="relative">
                 <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
@@ -207,8 +163,7 @@ export default function AuthPage({ onAuth }) {
               <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 text-sm mt-2">
                 {loading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> :
                   mode === "login" ? "Se connecter" :
-                  mode === "signup" ? "Continuer" :
-                  mode === "questions" ? "Créer mon compte" :
+                  mode === "signup" ? "Créer mon compte" :
                   mode === "forgot" ? "Envoyer le lien" : "Réinitialiser"}
               </button>
             )}
