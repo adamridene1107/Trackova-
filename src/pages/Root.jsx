@@ -29,17 +29,23 @@ function RootContent() {
   const [authReady, setAuthReady] = useState(false)
 
   useEffect(() => {
-    // Charge la session initiale en premier
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
+    // getUser() vérifie côté serveur que le compte existe encore
+    // (getSession() lit juste le localStorage → ne détecte pas un compte supprimé)
+    supabase.auth.getUser().then(({ data: { user }, error }) => {
+      if (error || !user) {
+        // Compte supprimé ou token invalide → nettoyer la session locale
+        supabase.auth.signOut()
+        setSession(null)
+      } else {
+        // Récupérer la session complète (contient access_token etc.)
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          setSession(session)
+        })
+      }
       setAuthReady(true)
     })
 
-    // onAuthStateChange ne met à jour que si on est déjà prêt
-    // (évite le flash landing page lors d'un token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      // SIGNED_OUT = vrai logout → on met à jour
-      // TOKEN_REFRESHED / SIGNED_IN = ne pas passer par null
       if (event === "SIGNED_OUT") {
         setSession(null)
       } else if (session) {
