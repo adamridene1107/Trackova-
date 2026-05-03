@@ -1,5 +1,12 @@
 import { useState } from "react"
-import { Zap, Check, Gift, ArrowLeft, Shield } from "lucide-react"
+import { Zap, Check, Gift, ArrowLeft, Shield, Lock } from "lucide-react"
+
+const FREE_LIMITS = [
+  "Objectif du jour (tâches fixes)",
+  "Mood & victoire du jour",
+  "Max 2 tâches ponctuelles/jour",
+  "Max 3 devoirs · Max 1 mission",
+]
 
 const FEATURES = [
   "4 modes : Études, Sport, Créatif, Organisation",
@@ -84,8 +91,40 @@ export default function Subscription() {
           </button>
           {error && <p className="text-red-400 text-xs text-center mt-3">{error}</p>}
         </div>
-        <div className="flex items-center justify-center gap-1.5 text-white/25 text-xs">
+        <div className="flex items-center justify-center gap-1.5 text-white/25 text-xs mb-6">
           <Shield size={11} /> Paiement sécurisé par Stripe
+        </div>
+
+        {/* Plan Gratuit */}
+        <div className="rounded-2xl p-5"
+          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <p className="text-white/70 font-semibold text-sm">Plan Gratuit</p>
+              <p className="text-xl font-bold text-white mt-0.5">0€ <span className="text-xs font-normal text-white/30">/ toujours</span></p>
+            </div>
+            <span className="text-[10px] px-2.5 py-1 rounded-full font-semibold"
+              style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.35)", border: "1px solid rgba(255,255,255,0.1)" }}>
+              Limité
+            </span>
+          </div>
+          <ul className="space-y-1.5 mb-4">
+            {FREE_LIMITS.map(f => (
+              <li key={f} className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+                <Check size={11} style={{ color: "rgba(255,255,255,0.25)", flexShrink: 0 }} />
+                {f}
+              </li>
+            ))}
+            <li className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
+              <Lock size={10} style={{ flexShrink: 0 }} />
+              Stats, Planning, Fichiers, XP…
+            </li>
+          </ul>
+          <a href="/"
+            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-80"
+            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            Continuer gratuitement
+          </a>
         </div>
       </div>
     </div>

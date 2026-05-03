@@ -20,7 +20,6 @@ const SettingsPage = lazy(() => import("./components/SettingsPage"))
 const HistoryPage = lazy(() => import("./components/HistoryPage"))
 const ReferralPage = lazy(() => import("./components/ReferralPage"))
 
-const Onboarding = lazy(() => import("./components/Onboarding"))
 import Idees from "./components/Idees"
 import PlanningHebdo from "./components/PlanningHebdo"
 import { useGamification } from "./hooks/useGamification"
@@ -213,9 +212,7 @@ export default function App({ user, onLogout }) {
   const [giftSeen, setGiftSeen] = useState(false)
   const [confetti, setConfetti] = useState([])
   const [upsellFeature, setUpsellFeature] = useState(null)
-  const [showOnboarding, setShowOnboarding] = useState(() => {
-    try { return !localStorage.getItem("gt_onboarded") } catch { return false }
-  })
+  // Onboarding supprimé — accès direct au dashboard
 
   const spawnConfetti = useCallback(() => {
     const colors = ["#6366f1","#818cf8","#a5b4fc","#c7d2fe","#f472b6","#34d399","#fbbf24"]
@@ -414,11 +411,6 @@ export default function App({ user, onLogout }) {
       {showFocus && (
         <Suspense fallback={null}>
           <FocusMode data={data} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} onClose={() => setShowFocus(false)} onFocusComplete={onFocusComplete} />
-        </Suspense>
-      )}
-      {showOnboarding && (
-        <Suspense fallback={null}>
-          <Onboarding onDone={() => { localStorage.setItem("gt_onboarded", "1"); setShowOnboarding(false) }} />
         </Suspense>
       )}
       {showSettings && (
