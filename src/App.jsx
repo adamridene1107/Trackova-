@@ -281,73 +281,45 @@ export default function App({ user, onLogout }) {
     <div className="min-h-screen relative" style={{ background: "var(--bg)" }}>
       {confetti.map(p => <ConfettiParticle key={p.id} {...p} />)}
 
-      {/* ─── Header ─────────────────────────────────── */}
+      {/* ─── Header slim ─────────────────────────────── */}
       <header className="sticky top-0 z-40 glass-nav">
-
-        {/* Top bar */}
-        <div className="max-w-2xl mx-auto flex items-center justify-between px-3 sm:px-4 pt-2 sm:pt-3.5 pb-1.5 sm:pb-2.5">
-          <div className="flex items-center gap-2">
-            <img src="/logo.svg" alt="Trakova"
-              style={{ height: "72px", width: "auto" }}
-              className="flex-shrink-0 sm:h-24" />
+        <div className="max-w-2xl mx-auto flex items-center justify-between px-4 py-2.5">
+          {/* Left: logo + streak */}
+          <div className="flex items-center gap-2.5">
+            <img src="/logo.svg" alt="Trakova" style={{ height: "52px", width: "auto" }} className="flex-shrink-0" />
             {data.streak > 0 && (
-              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full" style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.18)" }}>
-                <span className="flame-anim text-xs">🔥</span>
-                <span className="text-xs font-semibold tabular-nums" style={{ color: streakColor }}>{data.streak}j</span>
+              <div className="flex items-center gap-1 px-2 py-1 rounded-lg"
+                style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.16)" }}>
+                <span className="flame-anim text-xs leading-none">🔥</span>
+                <span className="text-xs font-semibold tabular-nums" style={{ color: streakColor }}>{data.streak}</span>
               </div>
             )}
-            {/* Badge plan */}
             {!isPremium && (
               <a href="/subscribe"
-                className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold transition-all hover:opacity-80"
-                style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.25)", color: "#fbbf24" }}>
-                Gratuit
+                className="text-[10px] font-semibold px-2 py-1 rounded-lg transition-opacity hover:opacity-75"
+                style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)", color: "#fbbf24" }}>
+                Free
               </a>
             )}
           </div>
-          <div className="flex items-center gap-0">
+          {/* Right: actions */}
+          <div className="flex items-center">
             {isPremium && <Suspense fallback={null}><ExportPDF data={data} /></Suspense>}
-            <button onClick={() => { if (window.confirm("Changer d'objectif ? Tes données actuelles seront conservées.")) resetGoal() }} className="btn-ghost" title="Changer d'objectif"><RefreshCw size={14} /></button>
+            <button onClick={() => { if (window.confirm("Changer d'objectif ? Tes données actuelles seront conservées.")) resetGoal() }}
+              className="btn-ghost" title="Changer d'objectif"><RefreshCw size={14} /></button>
             <button
               onClick={() => isPremium ? setShowFocus(true) : setUpsellFeature("focus")}
               className="btn-ghost"
-              title={isPremium ? "Mode Focus" : "Mode Focus (Pro)"}
-              style={{ color: showFocus ? "#818cf8" : !isPremium ? "rgba(251,191,36,0.5)" : undefined }}>
+              style={{ color: showFocus ? "#818cf8" : !isPremium ? "rgba(251,191,36,0.45)" : undefined }}>
               <Zap size={14} />
             </button>
             <button onClick={() => setShowSettings(true)} className="btn-ghost"><Settings size={14} /></button>
           </div>
         </div>
-
-        {/* Tab navigation */}
-        <nav
-          className="max-w-2xl mx-auto flex overflow-x-auto px-2 sm:px-3 pb-2 gap-0.5 sm:gap-1"
-          style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "none", msOverflowStyle: "none" }}>
-          {tabs.map(t => {
-            const Icon = t.icon
-            const active = activeTab === t.id
-            const locked = !isPremium && LOCKED_TABS.has(t.id)
-            return (
-              <button key={t.id} onClick={() => handleTabClick(t.id)}
-                className={`nav-tab flex-shrink-0 ${active ? "active" : ""} ${locked ? "opacity-50" : ""}`}>
-                {locked
-                  ? <Lock size={12} style={{ color: "#fbbf24" }} />
-                  : <Icon size={13} />}
-                <span className="text-[11px] sm:text-xs">{t.label}</span>
-                {t.id === "devoirs" && urgentCount > 0 && !locked && (
-                  <span className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold leading-none flex-shrink-0"
-                    style={{ background: "#6366f1", color: "#fff" }}>
-                    {urgentCount > 9 ? "9+" : urgentCount}
-                  </span>
-                )}
-              </button>
-            )
-          })}
-        </nav>
       </header>
 
       {/* ─── Main content ────────────────────────────── */}
-      <main className="max-w-2xl mx-auto p-4 pb-10 relative z-10">
+      <main className="max-w-2xl mx-auto p-4 pb-28 relative z-10">
         <Suspense fallback={
           <div className="flex items-center justify-center py-20">
             <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: "rgba(99,102,241,0.2)", borderTopColor: "#818cf8" }} />
@@ -373,6 +345,32 @@ export default function App({ user, onLogout }) {
           <div className={activeTab === "referral"     ? "tab-content" : "hidden"}>{isPremium && <ReferralPage user={user} />}</div>
         </Suspense>
       </main>
+
+      {/* ─── Bottom Tab Bar ──────────────────────────── */}
+      <nav className="bottom-nav" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+        <div className="max-w-2xl mx-auto flex overflow-x-auto px-2" style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "none" }}>
+          {tabs.map(t => {
+            const Icon = t.icon
+            const active = activeTab === t.id
+            const locked = !isPremium && LOCKED_TABS.has(t.id)
+            return (
+              <button key={t.id} onClick={() => handleTabClick(t.id)}
+                className={`bottom-tab ${active ? "active" : ""} ${locked ? "opacity-40" : ""}`}>
+                {locked
+                  ? <Lock size={16} style={{ color: "#fbbf24" }} />
+                  : <Icon size={16} />}
+                <span>{t.label}</span>
+                {t.id === "devoirs" && urgentCount > 0 && !locked && (
+                  <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold"
+                    style={{ background: "#6366f1", color: "#fff" }}>
+                    {urgentCount > 9 ? "9+" : urgentCount}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      </nav>
 
       {/* ─── Upsell modal ────────────────────────────── */}
       {upsellFeature && (
