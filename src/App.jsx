@@ -147,7 +147,7 @@ function UpsellModal({ feature, onClose }) {
     <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(12px)" }}
       onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="w-full max-w-sm fade-up" style={{
+      <div className="w-full max-w-sm modal-enter" style={{
         background: "var(--surface)",
         border: "1px solid rgba(139,92,246,0.25)",
         borderRadius: "1.5rem",
@@ -292,10 +292,10 @@ export default function App({ user, onLogout }) {
           <img src="/logo.svg" alt="Trakova" style={{ height: "56px", width: "auto" }} className="mb-3" />
           <div className="flex items-center gap-2 flex-wrap">
             {data.streak > 0 && (
-              <div className="flex items-center gap-1 px-2 py-1 rounded-lg"
+              <div className="flex items-center gap-1 px-2 py-1 rounded-lg streak-badge"
                 style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.16)" }}>
                 <span className="flame-anim text-xs leading-none">🔥</span>
-                <span className="text-xs font-semibold tabular-nums" style={{ color: streakColor }}>{data.streak} jours</span>
+                <span className="text-xs font-semibold tabular-nums number-reveal" style={{ color: streakColor }}>{data.streak} jours</span>
               </div>
             )}
             {!isPremium && (
@@ -309,7 +309,7 @@ export default function App({ user, onLogout }) {
         </div>
 
         {/* Navigation tabs */}
-        <nav className="flex-1 overflow-y-auto p-2 space-y-0.5">
+        <nav className="flex-1 overflow-y-auto p-2 space-y-0.5 sidebar-stagger">
           {tabs.map(t => {
             const Icon = t.icon
             const active = activeTab === t.id
@@ -322,7 +322,7 @@ export default function App({ user, onLogout }) {
                 </span>
                 <span className="flex-1 truncate">{t.label}</span>
                 {t.id === "devoirs" && urgentCount > 0 && !locked && (
-                  <span className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0"
+                  <span className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0 badge-urgent"
                     style={{ background: "#6366f1", color: "#fff" }}>
                     {urgentCount > 9 ? "9+" : urgentCount}
                   </span>
@@ -452,7 +452,7 @@ export default function App({ user, onLogout }) {
       {/* ─── Gift modal ──────────────────────────────── */}
       {giftMsg && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-6" style={{ background: "rgba(0,0,0,0.8)", backdropFilter: "blur(16px)" }}>
-          <div className="w-full max-w-sm fade-up text-center" style={{ background: "var(--surface)", border: "1px solid rgba(99,102,241,0.25)", borderRadius: "1.5rem", padding: "2rem", boxShadow: "0 40px 100px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.05) inset" }}>
+          <div className="w-full max-w-sm modal-enter text-center" style={{ background: "var(--surface)", border: "1px solid rgba(99,102,241,0.25)", borderRadius: "1.5rem", padding: "2rem", boxShadow: "0 40px 100px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.05) inset" }}>
             <div className="text-5xl mb-4">🎁</div>
             <h2 className="text-white font-bold text-xl mb-2" style={{ letterSpacing: "-0.025em" }}>Cadeau reçu !</h2>
             <p className="text-sm mb-1" style={{ color: "var(--text-muted)" }}>Tu as reçu</p>
@@ -473,7 +473,7 @@ export default function App({ user, onLogout }) {
       )}
       {showSettings && (
         <Suspense fallback={null}>
-          <SettingsPage user={user} data={data} onLogout={onLogout} resetGoal={() => { resetGoal(); setShowSettings(false) }} onClose={() => setShowSettings(false)} />
+          <SettingsPage user={user} data={data} isPremium={isPremium} onLogout={onLogout} resetGoal={() => { resetGoal(); setShowSettings(false) }} onClose={() => setShowSettings(false)} />
         </Suspense>
       )}
     </div>

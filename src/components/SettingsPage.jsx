@@ -44,7 +44,7 @@ function saveUsers(u) { localStorage.setItem("gt_users", JSON.stringify(u)) }
 function getSettings() { try { return JSON.parse(localStorage.getItem("gt_settings") || "{}") } catch { return {} } }
 function saveSettings(s) { localStorage.setItem("gt_settings", JSON.stringify(s)) }
 
-export default function SettingsPage({ user, data, onLogout, resetGoal, onClose }) {
+export default function SettingsPage({ user, data, isPremium, onLogout, resetGoal, onClose }) {
   const [toast, setToast] = useState("")
   const [section, setSection] = useState("profil")
 
@@ -370,30 +370,66 @@ export default function SettingsPage({ user, data, onLogout, resetGoal, onClose 
             {section === "abo" && (
               <Section icon={CreditCard} title="Abonnement">
                 <div className="space-y-4">
-                  <div className="px-4 py-3 rounded-xl" style={{ background:"rgba(139,92,246,0.08)", border:"1px solid rgba(139,92,246,0.15)" }}>
-                    <p className="text-violet-400 text-xs font-medium mb-1">Plan actuel</p>
-                    <p className="text-white font-bold">Trakova Premium — 6€/mois</p>
-                    <p className="text-white/40 text-xs mt-1">Essai gratuit 7 jours · Sans engagement</p>
-                  </div>
-                  {cancelStatus === "done" ? (
-                    <div className="px-4 py-3 rounded-xl text-sm text-amber-400" style={{ background:"rgba(251,191,36,0.08)", border:"1px solid rgba(251,191,36,0.2)" }}>
-                      Abonnement résilié — accès jusqu'au {cancelEndDate}
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <button onClick={cancelSub} disabled={cancelStatus==="loading"}
-                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm transition-all"
-                        style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", color:"#f87171" }}>
-                        {cancelStatus === "loading" ? <span className="w-4 h-4 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin"/> :
-                         cancelStatus === "confirm" ? "Confirmer la résiliation" : "Résilier mon abonnement"}
-                      </button>
-                      {cancelStatus === "confirm" && (
-                        <div className="flex gap-2">
-                          <p className="text-white/30 text-xs flex-1">Ton accès reste actif jusqu'à la fin de la période en cours.</p>
-                          <button onClick={() => setCancelStatus("")} className="text-white/30 text-xs hover:text-white/60">Annuler</button>
+                  {isPremium ? (
+                    /* ── Plan Premium ── */
+                    <>
+                      <div className="px-4 py-3 rounded-xl" style={{ background:"rgba(139,92,246,0.08)", border:"1px solid rgba(139,92,246,0.18)" }}>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background:"rgba(139,92,246,0.2)", color:"#a78bfa" }}>PREMIUM</span>
+                        </div>
+                        <p className="font-bold" style={{ color: textCol }}>Trakova Premium — 6€/mois</p>
+                        <p className="text-xs mt-1" style={{ color: mutedCol }}>Toutes les fonctionnalités débloquées · Sans engagement</p>
+                      </div>
+                      {cancelStatus === "done" ? (
+                        <div className="px-4 py-3 rounded-xl text-sm text-amber-400" style={{ background:"rgba(251,191,36,0.08)", border:"1px solid rgba(251,191,36,0.2)" }}>
+                          Abonnement résilié — accès jusqu'au {cancelEndDate}
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <button onClick={cancelSub} disabled={cancelStatus==="loading"}
+                            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm transition-all"
+                            style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", color:"#f87171" }}>
+                            {cancelStatus === "loading" ? <span className="w-4 h-4 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin"/> :
+                             cancelStatus === "confirm" ? "Confirmer la résiliation" : "Résilier mon abonnement"}
+                          </button>
+                          {cancelStatus === "confirm" && (
+                            <div className="flex gap-2">
+                              <p className="text-xs flex-1" style={{ color: mutedCol }}>Ton accès reste actif jusqu'à la fin de la période en cours.</p>
+                              <button onClick={() => setCancelStatus("")} className="text-xs hover:opacity-80 transition-opacity" style={{ color: mutedCol }}>Annuler</button>
+                            </div>
+                          )}
                         </div>
                       )}
-                    </div>
+                    </>
+                  ) : (
+                    /* ── Plan Free ── */
+                    <>
+                      <div className="px-4 py-3 rounded-xl" style={{ background:"rgba(251,191,36,0.06)", border:"1px solid rgba(251,191,36,0.18)" }}>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background:"rgba(251,191,36,0.15)", color:"#fbbf24" }}>GRATUIT</span>
+                        </div>
+                        <p className="font-bold" style={{ color: textCol }}>Plan Free</p>
+                        <p className="text-xs mt-1" style={{ color: mutedCol }}>Accès limité aux fonctionnalités de base</p>
+                      </div>
+                      <div className="space-y-2">
+                        {[
+                          "Missions & tâches illimitées",
+                          "Stats avancées & historique",
+                          "Fichiers & ressources",
+                          "Système XP, niveaux & badges",
+                          "Planning hebdo",
+                        ].map(f => (
+                          <div key={f} className="flex items-center gap-2.5 text-sm" style={{ color: mutedCol }}>
+                            <span style={{ color:"#a78bfa", fontSize:"10px" }}>✦</span>
+                            {f}
+                          </div>
+                        ))}
+                      </div>
+                      <a href="/subscribe"
+                        className="btn-primary w-full flex items-center justify-center gap-2 py-3 text-sm">
+                        ✦ Passer au Pro — 6€/mois
+                      </a>
+                    </>
                   )}
                 </div>
               </Section>
