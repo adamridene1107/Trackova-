@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -32,7 +33,7 @@
     -moz-osx-font-smoothing: grayscale;
   }
   * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-  h1, h2, h3 { font-family: 'Inter', sans-serif; letter-spacing: -0.03em; line-height: 1.1; }
+  h1, h2, h3 { font-family: 'Clash Display', 'Inter', sans-serif; letter-spacing: -0.025em; line-height: 1.1; }
 }
 
 @layer components {
@@ -116,6 +117,17 @@
 
   /* ─── Glow Orbs (hidden) ─────────────────────────── */
   .glow-orb, .glow-orb-violet { display: none; }
+
+  /* ─── Sidebar (desktop) ─────────────────────────── */
+  .sidebar-tab {
+    @apply flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-all text-left;
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    letter-spacing: -0.01em;
+  }
+  .sidebar-tab:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+  .sidebar-tab.active { background: rgba(255,255,255,0.07); color: var(--text); }
+  .sidebar-tab.active .sidebar-tab-icon { color: var(--primary-text); }
 
   /* ─── Top Nav Tabs (desktop fallback) ────────────── */
   .nav-tab {

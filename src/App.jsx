@@ -278,20 +278,24 @@ export default function App({ user, onLogout }) {
 
   return (
     <ErrorBoundary>
-    <div className="min-h-screen relative" style={{ background: "var(--bg)" }}>
+    <div className="min-h-screen flex" style={{ background: "var(--bg)" }}>
       {confetti.map(p => <ConfettiParticle key={p.id} {...p} />)}
 
-      {/* ─── Header slim ─────────────────────────────── */}
-      <header className="sticky top-0 z-40 glass-nav">
-        <div className="max-w-2xl mx-auto flex items-center justify-between px-4 py-2.5">
-          {/* Left: logo + streak */}
-          <div className="flex items-center gap-2.5">
-            <img src="/logo.svg" alt="Trakova" style={{ height: "52px", width: "auto" }} className="flex-shrink-0" />
+      {/* ══════════════════════════════════════════════
+          SIDEBAR — desktop uniquement
+      ══════════════════════════════════════════════ */}
+      <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 z-40 w-[220px]"
+        style={{ background: "var(--surface)", borderRight: "1px solid var(--border)" }}>
+
+        {/* Logo + infos */}
+        <div className="px-4 pt-5 pb-4" style={{ borderBottom: "1px solid var(--border)" }}>
+          <img src="/logo.svg" alt="Trakova" style={{ height: "56px", width: "auto" }} className="mb-3" />
+          <div className="flex items-center gap-2 flex-wrap">
             {data.streak > 0 && (
               <div className="flex items-center gap-1 px-2 py-1 rounded-lg"
                 style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.16)" }}>
                 <span className="flame-anim text-xs leading-none">🔥</span>
-                <span className="text-xs font-semibold tabular-nums" style={{ color: streakColor }}>{data.streak}</span>
+                <span className="text-xs font-semibold tabular-nums" style={{ color: streakColor }}>{data.streak} jours</span>
               </div>
             )}
             {!isPremium && (
@@ -302,53 +306,123 @@ export default function App({ user, onLogout }) {
               </a>
             )}
           </div>
-          {/* Right: actions */}
-          <div className="flex items-center">
-            {isPremium && <Suspense fallback={null}><ExportPDF data={data} /></Suspense>}
-            <button onClick={() => { if (window.confirm("Changer d'objectif ? Tes données actuelles seront conservées.")) resetGoal() }}
-              className="btn-ghost" title="Changer d'objectif"><RefreshCw size={14} /></button>
-            <button
-              onClick={() => isPremium ? setShowFocus(true) : setUpsellFeature("focus")}
-              className="btn-ghost"
-              style={{ color: showFocus ? "#818cf8" : !isPremium ? "rgba(251,191,36,0.45)" : undefined }}>
-              <Zap size={14} />
-            </button>
-            <button onClick={() => setShowSettings(true)} className="btn-ghost"><Settings size={14} /></button>
-          </div>
         </div>
-      </header>
 
-      {/* ─── Main content ────────────────────────────── */}
-      <main className="max-w-2xl mx-auto p-4 pb-28 relative z-10">
-        <Suspense fallback={
-          <div className="flex items-center justify-center py-20">
-            <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: "rgba(99,102,241,0.2)", borderTopColor: "#818cf8" }} />
-          </div>
-        }>
-          <div className={activeTab === "today"        ? "tab-content" : "hidden"}>
-            {isPremium && <Suspense fallback={null}><WeekSummary data={data} /></Suspense>}
-            {isPremium && <Suspense fallback={null}><AmbientSound /></Suspense>}
-            <DailyCheck data={data} today={today} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} updateDevoirs={updateDevoirs} onTaskComplete={handleTaskComplete} onFocusComplete={onFocusComplete} showPomodoro={data.goal === "homework"} isPremium={isPremium} freeLimits={FREE_LIMITS} />
-          </div>
-          {/* Onglets locked : ne pas charger si free (évite crash des libs) */}
-          <div className={activeTab === "seance"       ? "tab-content" : "hidden"}>{isPremium && <Seance data={data} updateEntry={updateEntry} getTodayEntry={getTodayEntry} />}</div>
-          <div className={activeTab === "idees"        ? "tab-content" : "hidden"}>{isPremium && <Idees />}</div>
-          <div className={activeTab === "devoirs"      ? "tab-content" : "hidden"}><Devoirs devoirs={data.devoirs || []} updateDevoirs={updateDevoirs} goalId={data.goal} isPremium={isPremium} freeLimits={FREE_LIMITS} /></div>
-          <div className={activeTab === "planning"     ? "tab-content" : "hidden"}>{isPremium && <PlanningHebdo weekPlan={data.weekPlan || {}} updateWeekPlan={updateWeekPlan} />}</div>
-          <div className={activeTab === "missions"     ? "tab-content" : "hidden"}><Missions data={data} updateMissions={updateMissions} isPremium={isPremium} freeLimits={FREE_LIMITS} onUpsell={() => setUpsellFeature("missions")} /></div>
-          <div className={activeTab === "resources"    ? "tab-content" : "hidden"}>{isPremium && <Resources goalId={data.goal} />}</div>
-          <div className={activeTab === "calendar"     ? "tab-content" : "hidden"}>{isPremium && <ProgressCalendar data={data} />}</div>
-          <div className={activeTab === "stats"        ? "tab-content" : "hidden"}>{isPremium && <ProgressChart data={data} />}</div>
-          <div className={activeTab === "fichiers"     ? "tab-content" : "hidden"}>{isPremium && <MesFichiers goalId={data.goal} />}</div>
-          <div className={activeTab === "xp"           ? "tab-content" : "hidden"}>{isPremium && <Gamification />}</div>
-          <div className={activeTab === "history"      ? "tab-content" : "hidden"}>{isPremium && <HistoryPage data={data} />}</div>
-          <div className={activeTab === "referral"     ? "tab-content" : "hidden"}>{isPremium && <ReferralPage user={user} />}</div>
-        </Suspense>
-      </main>
+        {/* Navigation tabs */}
+        <nav className="flex-1 overflow-y-auto p-2 space-y-0.5">
+          {tabs.map(t => {
+            const Icon = t.icon
+            const active = activeTab === t.id
+            const locked = !isPremium && LOCKED_TABS.has(t.id)
+            return (
+              <button key={t.id} onClick={() => handleTabClick(t.id)}
+                className={`sidebar-tab ${active ? "active" : ""} ${locked ? "opacity-40" : ""}`}>
+                <span className="sidebar-tab-icon flex-shrink-0">
+                  {locked ? <Lock size={15} style={{ color: "#fbbf24" }} /> : <Icon size={15} />}
+                </span>
+                <span className="flex-1 truncate">{t.label}</span>
+                {t.id === "devoirs" && urgentCount > 0 && !locked && (
+                  <span className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0"
+                    style={{ background: "#6366f1", color: "#fff" }}>
+                    {urgentCount > 9 ? "9+" : urgentCount}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </nav>
 
-      {/* ─── Bottom Tab Bar ──────────────────────────── */}
-      <nav className="bottom-nav" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-        <div className="max-w-2xl mx-auto flex overflow-x-auto px-2" style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "none" }}>
+        {/* Actions bas */}
+        <div className="p-2 space-y-0.5" style={{ borderTop: "1px solid var(--border)" }}>
+          {isPremium && (
+            <div className="px-1">
+              <Suspense fallback={null}><ExportPDF data={data} /></Suspense>
+            </div>
+          )}
+          <button onClick={() => { if (window.confirm("Changer d'objectif ? Tes données actuelles seront conservées.")) resetGoal() }}
+            className="sidebar-tab">
+            <RefreshCw size={15} /><span>Changer d'objectif</span>
+          </button>
+          <button
+            onClick={() => isPremium ? setShowFocus(true) : setUpsellFeature("focus")}
+            className="sidebar-tab"
+            style={{ color: showFocus ? "#818cf8" : !isPremium ? "rgba(251,191,36,0.5)" : undefined }}>
+            <Zap size={15} /><span>Mode Focus</span>
+          </button>
+          <button onClick={() => setShowSettings(true)} className="sidebar-tab">
+            <Settings size={15} /><span>Paramètres</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* ══════════════════════════════════════════════
+          ZONE PRINCIPALE
+      ══════════════════════════════════════════════ */}
+      <div className="flex-1 flex flex-col min-h-screen lg:ml-[220px]">
+
+        {/* Header mobile uniquement */}
+        <header className="lg:hidden sticky top-0 z-40 glass-nav">
+          <div className="flex items-center justify-between px-4 py-2.5">
+            <div className="flex items-center gap-2.5">
+              <img src="/logo.svg" alt="Trakova" style={{ height: "48px", width: "auto" }} />
+              {data.streak > 0 && (
+                <div className="flex items-center gap-1 px-2 py-1 rounded-lg"
+                  style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.16)" }}>
+                  <span className="flame-anim text-xs leading-none">🔥</span>
+                  <span className="text-xs font-semibold tabular-nums" style={{ color: streakColor }}>{data.streak}</span>
+                </div>
+              )}
+              {!isPremium && (
+                <a href="/subscribe"
+                  className="text-[10px] font-semibold px-2 py-1 rounded-lg"
+                  style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)", color: "#fbbf24" }}>
+                  Free
+                </a>
+              )}
+            </div>
+            <div className="flex items-center">
+              {isPremium && <Suspense fallback={null}><ExportPDF data={data} /></Suspense>}
+              <button onClick={() => { if (window.confirm("Changer d'objectif ? Tes données actuelles seront conservées.")) resetGoal() }} className="btn-ghost"><RefreshCw size={14} /></button>
+              <button onClick={() => isPremium ? setShowFocus(true) : setUpsellFeature("focus")} className="btn-ghost"
+                style={{ color: showFocus ? "#818cf8" : !isPremium ? "rgba(251,191,36,0.45)" : undefined }}><Zap size={14} /></button>
+              <button onClick={() => setShowSettings(true)} className="btn-ghost"><Settings size={14} /></button>
+            </div>
+          </div>
+        </header>
+
+        {/* Contenu principal */}
+        <main className="flex-1 max-w-2xl mx-auto w-full p-4 pb-28 lg:pb-8">
+          <Suspense fallback={
+            <div className="flex items-center justify-center py-20">
+              <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: "rgba(99,102,241,0.2)", borderTopColor: "#818cf8" }} />
+            </div>
+          }>
+            <div className={activeTab === "today"     ? "tab-content" : "hidden"}>
+              {isPremium && <Suspense fallback={null}><WeekSummary data={data} /></Suspense>}
+              {isPremium && <Suspense fallback={null}><AmbientSound /></Suspense>}
+              <DailyCheck data={data} today={today} getTodayEntry={getTodayEntry} toggleTask={toggleTask} updateEntry={updateEntry} updateDevoirs={updateDevoirs} onTaskComplete={handleTaskComplete} onFocusComplete={onFocusComplete} showPomodoro={data.goal === "homework"} isPremium={isPremium} freeLimits={FREE_LIMITS} />
+            </div>
+            <div className={activeTab === "seance"    ? "tab-content" : "hidden"}>{isPremium && <Seance data={data} updateEntry={updateEntry} getTodayEntry={getTodayEntry} />}</div>
+            <div className={activeTab === "idees"     ? "tab-content" : "hidden"}>{isPremium && <Idees />}</div>
+            <div className={activeTab === "devoirs"   ? "tab-content" : "hidden"}><Devoirs devoirs={data.devoirs || []} updateDevoirs={updateDevoirs} goalId={data.goal} isPremium={isPremium} freeLimits={FREE_LIMITS} /></div>
+            <div className={activeTab === "planning"  ? "tab-content" : "hidden"}>{isPremium && <PlanningHebdo weekPlan={data.weekPlan || {}} updateWeekPlan={updateWeekPlan} />}</div>
+            <div className={activeTab === "missions"  ? "tab-content" : "hidden"}><Missions data={data} updateMissions={updateMissions} isPremium={isPremium} freeLimits={FREE_LIMITS} onUpsell={() => setUpsellFeature("missions")} /></div>
+            <div className={activeTab === "resources" ? "tab-content" : "hidden"}>{isPremium && <Resources goalId={data.goal} />}</div>
+            <div className={activeTab === "calendar"  ? "tab-content" : "hidden"}>{isPremium && <ProgressCalendar data={data} />}</div>
+            <div className={activeTab === "stats"     ? "tab-content" : "hidden"}>{isPremium && <ProgressChart data={data} />}</div>
+            <div className={activeTab === "fichiers"  ? "tab-content" : "hidden"}>{isPremium && <MesFichiers goalId={data.goal} />}</div>
+            <div className={activeTab === "xp"        ? "tab-content" : "hidden"}>{isPremium && <Gamification />}</div>
+            <div className={activeTab === "history"   ? "tab-content" : "hidden"}>{isPremium && <HistoryPage data={data} />}</div>
+            <div className={activeTab === "referral"  ? "tab-content" : "hidden"}>{isPremium && <ReferralPage user={user} />}</div>
+          </Suspense>
+        </main>
+      </div>
+
+      {/* ══════════════════════════════════════════════
+          BOTTOM TAB BAR — mobile uniquement
+      ══════════════════════════════════════════════ */}
+      <nav className="lg:hidden bottom-nav">
+        <div className="flex overflow-x-auto px-2" style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "none" }}>
           {tabs.map(t => {
             const Icon = t.icon
             const active = activeTab === t.id
@@ -356,9 +430,7 @@ export default function App({ user, onLogout }) {
             return (
               <button key={t.id} onClick={() => handleTabClick(t.id)}
                 className={`bottom-tab ${active ? "active" : ""} ${locked ? "opacity-40" : ""}`}>
-                {locked
-                  ? <Lock size={16} style={{ color: "#fbbf24" }} />
-                  : <Icon size={16} />}
+                {locked ? <Lock size={16} style={{ color: "#fbbf24" }} /> : <Icon size={16} />}
                 <span>{t.label}</span>
                 {t.id === "devoirs" && urgentCount > 0 && !locked && (
                   <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold"
