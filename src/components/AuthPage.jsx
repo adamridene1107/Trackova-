@@ -6,11 +6,13 @@ import { useTheme } from "../context/ThemeContext"
 export default function AuthPage({ onAuth }) {
   const { theme } = useTheme()
   const isDark = theme !== "light"
-  const pageBg = isDark ? "#0A0A0F" : "#f0f0f5"
-  const cardBg = isDark ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.95)"
-  const textPrimary = isDark ? "#ffffff" : "#1a1a2e"
-  const textMuted = isDark ? "rgba(255,255,255,0.4)" : "rgba(26,26,46,0.5)"
-  const borderColor = isDark ? "rgba(139,92,246,0.15)" : "rgba(0,0,0,0.1)"
+
+  const bg          = isDark ? "#0F0F11"               : "#F8F8FA"
+  const surface     = isDark ? "#131318"               : "#ffffff"
+  const border      = isDark ? "rgba(255,255,255,0.07)": "rgba(0,0,0,0.08)"
+  const textPrimary = isDark ? "#E2E2E8"               : "#1a1a2e"
+  const textMuted   = isDark ? "rgba(226,226,232,0.48)": "rgba(26,26,46,0.5)"
+  const textFaint   = isDark ? "rgba(226,226,232,0.22)": "rgba(26,26,46,0.3)"
 
   const [mode, setMode] = useState("login")
   const [email, setEmail] = useState("")
@@ -66,120 +68,167 @@ export default function AuthPage({ onAuth }) {
   }
 
   const titles = {
-    login:  { h: "Bon retour 👋",        p: "Content de te revoir !" },
-    signup: { h: "Crée ton compte",      p: "Accès gratuit · Sans carte requise" },
-    forgot: { h: "Mot de passe oublié",  p: "Entre ton email pour continuer" },
-    verify: { h: "Email envoyé !",       p: "Vérifie ta boite mail" },
-    reset:  { h: "Nouveau mot de passe", p: "Choisis un nouveau mot de passe" },
+    login:  { h: "Bon retour",          p: "Content de te revoir !" },
+    signup: { h: "Crée ton compte",     p: "Accès gratuit · Sans carte requise" },
+    forgot: { h: "Mot de passe oublié", p: "Entre ton email pour continuer" },
+    verify: { h: "Email envoyé !",      p: "Vérifie ta boite mail" },
+    reset:  { h: "Nouveau mot de passe",p: "Choisis un nouveau mot de passe" },
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden" style={{ background: pageBg }}>
-      {/* Animated mesh background */}
-      <div className="mesh-bg">
-        <div className="mesh-orb mesh-orb-1" style={{ top: "-120px", left: "-100px" }} />
-        <div className="mesh-orb mesh-orb-2" style={{ bottom: "-100px", right: "-80px" }} />
-        <div className="mesh-orb mesh-orb-3" style={{ top: "40%", left: "50%", transform: "translate(-50%,-50%)" }} />
-      </div>
-      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{
-        backgroundImage: "radial-gradient(rgba(255,255,255,0.8) 1px, transparent 1px)",
-        backgroundSize: "24px 24px",
-      }} />
+  const inputIcon = { position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: textFaint, pointerEvents: "none" }
 
-      <div className="w-full max-w-sm relative z-10 fade-up">
-        <button onClick={() => goTo(mode === "login" || mode === "signup" ? "login" : "login")}
-          style={{ color: textMuted }} className="inline-flex items-center gap-1.5 text-xs mb-8 transition-all hover:-translate-x-1">
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: bg }}>
+      <div className="w-full max-w-sm fade-up">
+
+        {/* Back button */}
+        <button
+          onClick={() => goTo(mode === "login" || mode === "signup" ? "login" : "login")}
+          className="inline-flex items-center gap-1.5 text-xs mb-8 transition-opacity hover:opacity-80"
+          style={{ color: textMuted }}>
           <ArrowLeft size={12} />
-          {mode === "login" || mode === "signup" ? <a href="/">Retour</a> : "Retour a la connexion"}
+          {mode === "login" || mode === "signup"
+            ? <a href="/">Retour à l'accueil</a>
+            : "Retour à la connexion"}
         </button>
+
+        {/* Logo */}
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center relative overflow-hidden float"
-            style={{ background: "linear-gradient(135deg,#8b5cf6,#6366f1)", boxShadow: "0 14px 36px rgba(139,92,246,0.55), 0 0 0 1px rgba(255,255,255,0.1) inset" }}>
-            <Zap size={30} className="text-white relative z-10" />
-            <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.25), transparent 60%)" }} />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+            style={{ background: "#6366f1" }}>
+            <Zap size={18} className="text-white" />
           </div>
-          <span style={{ color: textPrimary, letterSpacing: "-0.02em" }} className="font-bold text-3xl">Trakova</span>
+          <span className="font-bold text-2xl" style={{ color: textPrimary, letterSpacing: "-0.02em" }}>Trakova</span>
         </div>
-        <div className="mb-8" key={mode}>
-          <h1 style={{ color: textPrimary, letterSpacing: "-0.03em" }} className="text-4xl font-bold mb-2 slide-in-right">{titles[mode]?.h}</h1>
-          <p style={{ color: textMuted, animationDelay: "0.08s" }} className="text-sm slide-in-right">{titles[mode]?.p}</p>
+
+        {/* Title */}
+        <div className="mb-7" key={mode}>
+          <h1 className="text-3xl font-bold mb-1.5 slide-in-right" style={{ color: textPrimary, letterSpacing: "-0.03em" }}>
+            {titles[mode]?.h}
+          </h1>
+          <p className="text-sm slide-in-right" style={{ color: textMuted, animationDelay: "0.06s" }}>
+            {titles[mode]?.p}
+          </p>
         </div>
-        <div className="card-premium" style={{ background: isDark ? undefined : cardBg }}>
-          <form onSubmit={handleSubmit} className="space-y-4">
+
+        {/* Card */}
+        <div className="rounded-xl p-5" style={{ background: surface, border: `1px solid ${border}` }}>
+          <form onSubmit={handleSubmit} className="space-y-3">
+
             {mode === "signup" && <>
               <div className="relative">
-                <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
-                <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Prénom" className="input pl-10" />
+                <User size={13} style={inputIcon} />
+                <input type="text" value={name} onChange={e => setName(e.target.value)}
+                  placeholder="Prénom" className="input pl-9" style={{ color: textPrimary }} />
               </div>
               <div className="relative">
-                <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className="input pl-10" />
+                <Mail size={13} style={inputIcon} />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                  placeholder="Email" className="input pl-9" style={{ color: textPrimary }} />
               </div>
               <div className="relative">
-                <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
-                <input type={show ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder="Mot de passe" className="input pl-10 pr-10" />
-                <button type="button" onClick={() => setShow(!show)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30">
-                  {show ? <EyeOff size={14} /> : <Eye size={14} />}
+                <Lock size={13} style={inputIcon} />
+                <input type={show ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
+                  placeholder="Mot de passe" className="input pl-9 pr-10" style={{ color: textPrimary }} />
+                <button type="button" onClick={() => setShow(!show)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity hover:opacity-80"
+                  style={{ color: textFaint }}>
+                  {show ? <EyeOff size={13} /> : <Eye size={13} />}
                 </button>
               </div>
-              <label className="flex items-start gap-2.5 cursor-pointer">
-                <input type="checkbox" checked={acceptTerms} onChange={e => setAcceptTerms(e.target.checked)} className="mt-0.5 flex-shrink-0 accent-violet-500" />
-                <span style={{ color: textMuted }} className="text-xs leading-relaxed">
-                  J'accepte les <a href="/cgu" target="_blank" className="text-violet-400 underline">CGU</a> et la <a href="/privacy" target="_blank" className="text-violet-400 underline">politique de confidentialité</a>
+              <label className="flex items-start gap-2.5 cursor-pointer pt-1">
+                <input type="checkbox" checked={acceptTerms} onChange={e => setAcceptTerms(e.target.checked)}
+                  className="mt-0.5 flex-shrink-0 accent-indigo-500" />
+                <span className="text-xs leading-relaxed" style={{ color: textMuted }}>
+                  J'accepte les{" "}
+                  <a href="/cgu" target="_blank" className="text-indigo-400 hover:underline">CGU</a>
+                  {" "}et la{" "}
+                  <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">politique de confidentialité</a>
                 </span>
               </label>
             </>}
+
             {mode === "login" && <>
               <div className="relative">
-                <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className="input pl-10" />
+                <Mail size={13} style={inputIcon} />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                  placeholder="Email" className="input pl-9" style={{ color: textPrimary }} />
               </div>
               <div className="relative">
-                <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
-                <input type={show ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder="Mot de passe" className="input pl-10 pr-10" />
-                <button type="button" onClick={() => setShow(!show)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30">
-                  {show ? <EyeOff size={14} /> : <Eye size={14} />}
+                <Lock size={13} style={inputIcon} />
+                <input type={show ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
+                  placeholder="Mot de passe" className="input pl-9 pr-10" style={{ color: textPrimary }} />
+                <button type="button" onClick={() => setShow(!show)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity hover:opacity-80"
+                  style={{ color: textFaint }}>
+                  {show ? <EyeOff size={13} /> : <Eye size={13} />}
                 </button>
               </div>
             </>}
+
             {mode === "forgot" && (
               <div className="relative">
-                <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className="input pl-10" />
+                <Mail size={13} style={inputIcon} />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                  placeholder="Email" className="input pl-9" style={{ color: textPrimary }} />
               </div>
             )}
+
             {mode === "reset" && (
               <div className="relative">
-                <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30" />
-                <input type={show ? "text" : "password"} value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="Nouveau mot de passe" className="input pl-10 pr-10" />
-                <button type="button" onClick={() => setShow(!show)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30">
-                  {show ? <EyeOff size={14} /> : <Eye size={14} />}
+                <Lock size={13} style={inputIcon} />
+                <input type={show ? "text" : "password"} value={newPassword} onChange={e => setNewPassword(e.target.value)}
+                  placeholder="Nouveau mot de passe" className="input pl-9 pr-10" style={{ color: textPrimary }} />
+                <button type="button" onClick={() => setShow(!show)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity hover:opacity-80"
+                  style={{ color: textFaint }}>
+                  {show ? <EyeOff size={13} /> : <Eye size={13} />}
                 </button>
               </div>
             )}
-            {error && <div className="px-3 py-2 rounded-xl text-xs text-red-400" style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.15)" }}>{error}</div>}
-            {success && <div className="px-3 py-2 rounded-xl text-xs text-emerald-400" style={{ background:"rgba(52,211,153,0.08)", border:"1px solid rgba(52,211,153,0.15)" }}>{success}</div>}
+
+            {error && (
+              <div className="px-3 py-2 rounded-lg text-xs text-red-400"
+                style={{ background:"rgba(239,68,68,0.07)", border:"1px solid rgba(239,68,68,0.14)" }}>
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="px-3 py-2 rounded-lg text-xs text-emerald-400"
+                style={{ background:"rgba(52,211,153,0.07)", border:"1px solid rgba(52,211,153,0.14)" }}>
+                {success}
+              </div>
+            )}
+
             {mode !== "verify" && (
-              <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 text-sm mt-2">
-                {loading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> :
-                  mode === "login" ? "Se connecter" :
-                  mode === "signup" ? "Créer mon compte" :
-                  mode === "forgot" ? "Envoyer le lien" : "Réinitialiser"}
+              <button type="submit" disabled={loading}
+                className="btn-primary w-full flex items-center justify-center gap-2 py-3 text-sm mt-1">
+                {loading
+                  ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  : mode === "login"  ? "Se connecter"
+                  : mode === "signup" ? "Créer mon compte"
+                  : mode === "forgot" ? "Envoyer le lien"
+                  : "Réinitialiser"}
               </button>
             )}
           </form>
         </div>
+
+        {/* Links below card */}
         {(mode === "login" || mode === "signup") && (
-          <div className="mt-5 space-y-2 text-center">
+          <div className="mt-4 space-y-2 text-center">
             {mode === "login" && (
-              <button onClick={() => goTo("forgot")} style={{ color: textMuted }} className="block w-full text-xs hover:text-violet-400 transition-colors">
-                Mot de passe oublie ?
+              <button onClick={() => goTo("forgot")}
+                className="block w-full text-xs transition-opacity hover:opacity-80"
+                style={{ color: textMuted }}>
+                Mot de passe oublié ?
               </button>
             )}
-            <p style={{ color: textMuted }} className="text-xs">
+            <p className="text-xs" style={{ color: textMuted }}>
               {mode === "login" ? "Pas encore de compte ?" : "Déjà un compte ?"}{" "}
-              <button onClick={() => goTo(mode === "login" ? "signup" : "login")} className="text-violet-400 hover:text-violet-300 transition-colors">
-                {mode === "login" ? "S inscrire" : "Se connecter"}
+              <button onClick={() => goTo(mode === "login" ? "signup" : "login")}
+                className="text-indigo-400 hover:text-indigo-300 transition-colors">
+                {mode === "login" ? "S'inscrire" : "Se connecter"}
               </button>
             </p>
           </div>

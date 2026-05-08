@@ -278,23 +278,11 @@ export default function App({ user, onLogout }) {
 
   return (
     <ErrorBoundary>
-    <div className="min-h-screen relative" style={{ background: theme === "light" ? "var(--bg)" : "#070710" }}>
+    <div className="min-h-screen relative" style={{ background: "var(--bg)" }}>
       {confetti.map(p => <ConfettiParticle key={p.id} {...p} />)}
 
-      {/* Ambient orbs background */}
-      {theme !== "light" && (
-        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden>
-          <div className="mesh-orb" style={{ width: 500, height: 500, top: "-15%", left: "-10%", background: "radial-gradient(circle, rgba(99,102,241,0.15), transparent 70%)", animation: "meshFloat1 20s ease-in-out infinite" }} />
-          <div className="mesh-orb" style={{ width: 400, height: 400, bottom: "-10%", right: "-10%", background: "radial-gradient(circle, rgba(168,85,247,0.12), transparent 70%)", animation: "meshFloat2 26s ease-in-out infinite" }} />
-        </div>
-      )}
-
       {/* ─── Header ─────────────────────────────────── */}
-      <header className="sticky top-0 z-40 glass-nav"
-        style={{
-          background: theme === "light" ? "rgba(244,244,249,0.65)" : "rgba(7,7,16,0.55)",
-          borderBottom: `1px solid ${theme === "light" ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)"}`,
-        }}>
+      <header className="sticky top-0 z-40 glass-nav">
 
         {/* Top bar */}
         <div className="max-w-2xl mx-auto flex items-center justify-between px-3 sm:px-4 pt-2 sm:pt-3.5 pb-1.5 sm:pb-2.5">
