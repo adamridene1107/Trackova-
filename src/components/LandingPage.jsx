@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import { useTheme } from "../context/ThemeContext"
-import { ArrowRight, CheckCircle2, Flame, Star, Zap, Gift, BookOpen, Dumbbell, Palette, Layout, Timer, BarChart2, FolderOpen, ChevronDown, Shield, Users, TrendingUp, Lock } from "lucide-react"
+import { ArrowRight, CheckCircle2, Flame, Zap, Gift, BookOpen, Dumbbell, Palette, Layout, Timer, BarChart2, FolderOpen, ChevronDown, Shield, Lock } from "lucide-react"
 
 const CATEGORIES = [
   { icon: BookOpen, label: "Études",           desc: "Devoirs, révisions, Pomodoro. Ne rate plus jamais une deadline.", color: "#6366f1", bg: "rgba(99,102,241,0.1)",  border: "rgba(99,102,241,0.2)" },
@@ -16,11 +16,6 @@ const FEATURES = [
   { icon: FolderOpen, label: "Fichiers & Ressources", desc: "Stocke tes fichiers et accède aux meilleures ressources par catégorie." },
 ]
 
-const TESTIMONIALS = [
-  { name: "Lucas M.",  role: "Étudiant en médecine",  text: "47 jours de streak. Je révise tous les soirs sans même y penser. Ça a changé ma façon de travailler.",   avatar: "L", color: "#6366f1", streak: 47 },
-  { name: "Sarah K.",  role: "Graphiste freelance",    text: "Le système XP m'a totalement motivée. Je check l'app avant même mon café. 3 projets livrés ce mois.",      avatar: "S", color: "#a855f7", streak: 31 },
-  { name: "Thomas R.", role: "Passionné de sport",     text: "3 mois de séances loguées. Les graphiques de progression c'est hyper satisfaisant. +12kg au deadlift.",     avatar: "T", color: "#3b82f6", streak: 89 },
-]
 
 const STEPS = [
   { num: "01", title: "Choisis ton objectif",    desc: "Études, sport, créatif ou organisation — l'app s'adapte à ton domaine.",     icon: "🎯" },
@@ -28,12 +23,6 @@ const STEPS = [
   { num: "03", title: "Regarde ton streak monter", desc: "La progression devient visible. La motivation suit. L'habitude s'installe.",  icon: "🔥" },
 ]
 
-const STATS = [
-  { value: "15k+", label: "Utilisateurs actifs" },
-  { value: "91%",  label: "Taux de rétention" },
-  { value: "3.2M", label: "Tâches complétées" },
-  { value: "4.9★", label: "Note moyenne" },
-]
 
 const FAQ = [
   { q: "Comment s'organiser quand on est étudiant ?",   a: "Trakova centralise tes devoirs, révisions et objectifs. Tu crées des tâches quotidiennes, suis ta progression et maintiens un streak de travail régulier." },
@@ -44,7 +33,6 @@ const FAQ = [
   { q: "Y a-t-il un engagement ?",                      a: "Aucun engagement. Tu peux annuler à tout moment depuis les paramètres, sans frais ni pénalité. L'essai de 7 jours ne demande aucune carte bancaire." },
 ]
 
-const RECENT_USERS = ["A","M","J","K","T","S","R","L"]
 
 function Confetti({ items }) {
   return items.map(p => (
@@ -52,27 +40,6 @@ function Confetti({ items }) {
   ))
 }
 
-function AnimatedCount({ target, suffix = "" }) {
-  const [count, setCount] = useState(0)
-  const ref = useRef(null)
-  useEffect(() => {
-    const observer = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return
-      observer.disconnect()
-      const num = parseFloat(target.replace(/[^0-9.]/g, ""))
-      const steps = 40
-      let i = 0
-      const interval = setInterval(() => {
-        i++
-        setCount(Math.round((num * i) / steps * 10) / 10)
-        if (i >= steps) clearInterval(interval)
-      }, 30)
-    }, { threshold: 0.5 })
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [target])
-  return <span ref={ref}>{count}{suffix}</span>
-}
 
 export default function LandingPage({ onGetStarted }) {
   const { theme } = useTheme()
@@ -81,12 +48,6 @@ export default function LandingPage({ onGetStarted }) {
   const videoRef = useRef(null)
   const [videoMuted, setVideoMuted] = useState(true)
   const [confetti, setConfetti] = useState([])
-  const [recentJoined, setRecentJoined] = useState(false)
-
-  useEffect(() => {
-    const t = setTimeout(() => setRecentJoined(true), 3500)
-    return () => clearTimeout(t)
-  }, [])
 
   const spawn = (e) => {
     const r = e.currentTarget.getBoundingClientRect()
@@ -159,19 +120,6 @@ export default function LandingPage({ onGetStarted }) {
             Études, sport, projets, organisation — un seul outil pour tout tracker, gamifier et célébrer chaque victoire.
           </p>
 
-          {/* Social proof avatars */}
-          <div className="flex items-center justify-center gap-2 mb-8">
-            <div className="flex -space-x-2">
-              {RECENT_USERS.map((u, i) => (
-                <div key={i} className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold ring-2" style={{ background: `hsl(${i * 40 + 220},70%,55%)`, ringColor: bg }}>
-                  {u}
-                </div>
-              ))}
-            </div>
-            <p className="text-sm" style={{ color: muted }}>
-              <span style={{ color: text, fontWeight: 600 }}>+15 000</span> personnes ont déjà rejoint
-            </p>
-          </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
             <button onClick={spawn} className="btn-primary flex items-center gap-2 text-sm px-7 py-3.5 w-full sm:w-auto justify-center">
@@ -189,26 +137,9 @@ export default function LandingPage({ onGetStarted }) {
           <div className="flex items-center justify-center flex-wrap gap-4 text-xs" style={{ color: faint }}>
             <span className="flex items-center gap-1.5"><Shield size={11} /> Aucune carte requise</span>
             <span className="flex items-center gap-1.5"><Lock size={11} /> Annulable à tout moment</span>
-            <span className="flex items-center gap-1.5"><Star size={11} fill="currentColor" /> Note 4.9/5</span>
           </div>
         </div>
 
-        {/* Stats bar */}
-        <div className="relative max-w-2xl mx-auto mt-16 grid grid-cols-2 sm:grid-cols-4 gap-3 stagger">
-          {STATS.map((s, i) => (
-            <div key={i} className="text-center py-5 px-3 rounded-2xl card-lift shine-on-hover"
-              style={{
-                background: isDark ? "rgba(14,14,28,0.55)" : "rgba(255,255,255,0.7)",
-                border: `1px solid ${border}`,
-                backdropFilter: "blur(16px) saturate(160%)",
-                WebkitBackdropFilter: "blur(16px) saturate(160%)",
-                boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset, 0 8px 24px rgba(0,0,0,0.2)",
-              }}>
-              <p className="text-2xl font-bold gradient-text" style={{ letterSpacing: "-0.03em" }}>{s.value}</p>
-              <p className="text-xs mt-1" style={{ color: faint }}>{s.label}</p>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* ── DEMO VIDEO ────────────────────────────────── */}
@@ -327,46 +258,6 @@ export default function LandingPage({ onGetStarted }) {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ──────────────────────────────── */}
-      <section className="py-20 px-6">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#818cf8", letterSpacing: "0.12em" }}>TÉMOIGNAGES</p>
-            <h2 className="text-3xl font-bold" style={{ color: text }}>Ils ont changé leurs habitudes</h2>
-            <p className="text-sm mt-2" style={{ color: faint }}>Des vraies personnes, des vrais résultats</p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="p-5 rounded-2xl flex flex-col card-lift"
-                style={{
-                  background: isDark ? "rgba(14,14,28,0.55)" : "rgba(255,255,255,0.7)",
-                  border: `1px solid ${border}`,
-                  backdropFilter: "blur(20px) saturate(160%)",
-                  WebkitBackdropFilter: "blur(20px) saturate(160%)",
-                }}>
-                <div className="flex items-center gap-0.5 mb-3">
-                  {[1,2,3,4,5].map(s => <Star key={s} size={12} fill="#818cf8" style={{ color: "#818cf8" }} />)}
-                </div>
-                <p className="text-sm leading-relaxed mb-4 flex-1" style={{ color: muted }}>"{t.text}"</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ background: t.color }}>{t.avatar}</div>
-                    <div>
-                      <p className="text-xs font-semibold" style={{ color: text }}>{t.name}</p>
-                      <p className="text-xs" style={{ color: faint }}>{t.role}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 px-2 py-1 rounded-full" style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.18)" }}>
-                    <span className="text-xs">🔥</span>
-                    <span className="text-xs font-bold" style={{ color: "#818cf8" }}>{t.streak}j</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── PRICING ───────────────────────────────────── */}
       <section className="py-20 px-6">
         <div className="max-w-md mx-auto">
@@ -422,7 +313,6 @@ export default function LandingPage({ onGetStarted }) {
             <div className="flex items-center justify-center gap-4 mt-4 flex-wrap">
               <span className="flex items-center gap-1 text-xs" style={{ color: faint }}><Lock size={10} /> Paiement Stripe sécurisé</span>
               <span className="flex items-center gap-1 text-xs" style={{ color: faint }}><Shield size={10} /> Annulation instantanée</span>
-              <span className="flex items-center gap-1 text-xs" style={{ color: faint }}><Users size={10} /> 15k+ utilisateurs</span>
             </div>
           </div>
         </div>
@@ -457,7 +347,7 @@ export default function LandingPage({ onGetStarted }) {
           <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(99,102,241,0.12) 0%, transparent 70%)" }} />
           <div className="relative">
             <h2 className="text-4xl font-bold mb-4" style={{ color: text, letterSpacing: "-0.03em" }}>Prêt à passer<br />au niveau supérieur ?</h2>
-            <p className="mb-8 text-sm" style={{ color: muted }}>Rejoins des milliers d'utilisateurs qui ont transformé leur quotidien.</p>
+            <p className="mb-8 text-sm" style={{ color: muted }}>Commence aujourd'hui et transforme tes objectifs en habitudes.</p>
             <button onClick={spawn} className="btn-primary flex items-center gap-2 mx-auto text-sm px-7 py-3.5">
               Commencer gratuitement <ArrowRight size={15} />
             </button>
@@ -487,18 +377,6 @@ export default function LandingPage({ onGetStarted }) {
         </button>
       </div>
 
-      {/* ── NOTIFICATION SOCIALE ──────────────────────── */}
-      {recentJoined && (
-        <div className="fixed bottom-20 sm:bottom-6 left-4 z-40 flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl fade-up"
-          style={{ background: surface, border: `1px solid ${border}`, boxShadow: "0 16px 48px rgba(0,0,0,0.3)", maxWidth: "280px" }}>
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0" style={{ background: "#6366f1" }}>M</div>
-          <div>
-            <p className="text-xs font-semibold" style={{ color: text }}>Mehdi vient de rejoindre 🎉</p>
-            <p className="text-xs" style={{ color: faint }}>Il y a 2 minutes · Mode Études</p>
-          </div>
-          <button onClick={() => setRecentJoined(false)} className="text-xs ml-1 flex-shrink-0" style={{ color: faint }}>✕</button>
-        </div>
-      )}
     </div>
   )
 }
